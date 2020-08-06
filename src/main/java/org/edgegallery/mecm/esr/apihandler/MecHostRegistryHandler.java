@@ -52,7 +52,8 @@ public class MecHostRegistryHandler {
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/mechost",
             method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addMecHostRecord(@PathVariable("tenant_id") String tenantId, @RequestBody MecHost mecHost) {
+    public ResponseEntity<String> addMecHostRecord(@PathVariable("tenant_id") String tenantId,
+                                                   @RequestBody MecHost mecHost) {
         // TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
     }
