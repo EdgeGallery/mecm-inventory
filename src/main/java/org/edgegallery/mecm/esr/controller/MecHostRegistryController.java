@@ -109,7 +109,7 @@ public class MecHostRegistryController {
      */
     @ApiOperation(value = "Deletes all MEC host records", response = String.class)
     @RequestMapping(path = "/tenant/{tenant_id}/mechosts",
-            method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String deleteAllMecHostRecords(@PathVariable("tenant_id") String tenantId) {
         // TODO: implementation
         return null;
@@ -124,7 +124,7 @@ public class MecHostRegistryController {
      */
     @ApiOperation(value = "Deletes MEC host record", response = String.class)
     @RequestMapping(path = "/tenant/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String deleteMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                      @PathVariable("mechost_ip") String mecHostIp) {
         // TODO: implementation
