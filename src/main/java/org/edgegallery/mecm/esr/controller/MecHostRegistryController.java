@@ -14,32 +14,33 @@
  *  limitations under the License.
  */
 
-package org.mec.mecm.esr.controller;
+package org.edgegallery.mecm.esr.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.mec.mecm.esr.model.MecHost;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.edgegallery.mecm.esr.model.MecHost;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 /**
- * MEC host inventory controller.
+ * MEC host registry controller.
  */
-@Api(value = "MEC host inventory api system")
+@Api(value = "ESR MEC host registry api system")
 @Validated
 @RestController
-public class MecHostInventoryController {
-    private final static Logger logger = LoggerFactory.getLogger(MecHostInventoryController.class);
+public class MecHostRegistryController {
 
     // TODO pre authorization & parameter validations
 
     /**
-     * Adds a new MEC host record entry into the inventory.
+     * Adds a new MEC host record entry into the registry.
      *
      * @param tenantId tenant ID
      * @param mecHost mec host record details
@@ -47,14 +48,14 @@ public class MecHostInventoryController {
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
     @RequestMapping(path = "/esr/v1/tenant/{tenant_id}/mechost",
-            method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String addMecHostRecord(@PathVariable("tenant_id") String tenantId, @RequestBody MecHost mecHost) {
         // TODO: implementation
         return null;
     }
 
     /**
-     * Updates an exiting MEC host record in the inventory matching the given tenant ID & mec host IP.
+     * Updates an exiting MEC host record in the registry matching the given tenant ID & mec host IP.
      *
      * @param tenantId tenant ID
      * @param mecHostIp mec host IP
@@ -63,7 +64,7 @@ public class MecHostInventoryController {
      */
     @ApiOperation(value = "Updates existing MEC host record", response = String.class)
     @RequestMapping(path = "/esr/v1/tenant/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public String updateMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                      @PathVariable("mechost_ip") String mecHostIp, @RequestBody MecHost mecHost) {
         // TODO: implementation
@@ -78,14 +79,14 @@ public class MecHostInventoryController {
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
     @RequestMapping(path = "/tenant/{tenant_id}/mechosts",
-            method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MecHost> getAllMecHostRecords(@PathVariable("tenant_id") String tenantId) {
         // TODO: implementation
         return null;
     }
 
     /**
-     * Retrieves a specific MEC host record in the inventory matching the given tenant ID & mec host IP.
+     * Retrieves a specific MEC host record in the registry matching the given tenant ID & mec host IP.
      *
      * @param tenantId tenant ID
      * @param mecHostIp MEC host IP
@@ -93,7 +94,7 @@ public class MecHostInventoryController {
      */
     @ApiOperation(value = "Retrieves MEC host record", response = MecHost.class)
     @RequestMapping(path = "/tenant/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public MecHost getMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                   @PathVariable("mechost_ip") String mecHostIp) {
         // TODO: implementation
@@ -115,7 +116,7 @@ public class MecHostInventoryController {
     }
 
     /**
-     * Deletes a specific MEC host record in the inventory matching the given tenant ID & mec host IP.
+     * Deletes a specific MEC host record in the registry matching the given tenant ID & mec host IP.
      *
      * @param tenantId tenant ID
      * @param mecHostIp MEC host IP

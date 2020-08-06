@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.mec.mecm.esr;
+package org.edgegallery.mecm.esr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
+/**
+ * External system registry application.
+ */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class EsrApplication {
-    private final static Logger logger = LoggerFactory.getLogger(EsrApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(EsrApplication.class);
 
     /**
      * External system registry entry function.

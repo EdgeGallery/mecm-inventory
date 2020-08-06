@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-package org.mec.mecm.esr.model;
+package org.edgegallery.mecm.esr.model;
 
 /**
- * MEC host schema.
+ * Application lifecycle management registry schema.
  */
-public class MecHost {
+public class AppLCM {
     // TODO implementation
 }
