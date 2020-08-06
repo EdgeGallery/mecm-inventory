@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.esr.controller;
+package org.edgegallery.mecm.esr.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,12 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * MEC host registry controller.
+ * MEC host registry API handler.
  */
 @Api(value = "ESR MEC host registry api system")
 @Validated
 @RestController
-public class MecHostRegistryController {
+public class MecHostRegistryHandler {
 
     // TODO pre authorization & parameter validations
 

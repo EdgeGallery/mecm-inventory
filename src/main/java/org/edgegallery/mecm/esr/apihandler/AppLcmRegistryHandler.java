@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.esr.controller;
+package org.edgegallery.mecm.esr.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,12 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Application LCM registry controller.
+ * Application LCM registry API handler.
  */
 @Api(value = "ESR applcm registry api system")
 @Validated
 @RestController
-public class AppLcmRegistryController {
+public class AppLcmRegistryHandler {
 
     // TODO pre authorization & parameter validations
 
