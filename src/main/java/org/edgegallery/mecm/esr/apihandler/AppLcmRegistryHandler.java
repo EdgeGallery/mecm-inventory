@@ -51,7 +51,7 @@ public class AppLcmRegistryHandler {
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/applcm",
-            method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addAppLcmRecord(@PathVariable("tenant_id") String tenantId,
                                                 @RequestBody AppLCM appLcm) {
         // TODO: implementation
@@ -68,7 +68,7 @@ public class AppLcmRegistryHandler {
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}",
-            method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> updateAppLCMRecord(@PathVariable("tenant_id") String tenantId,
                                      @PathVariable("applcm_ip") String appLcmIp, @RequestBody AppLCM appLcm) {
         // TODO: implementation
@@ -113,7 +113,7 @@ public class AppLcmRegistryHandler {
      */
     @ApiOperation(value = "Deletes all application LCM records", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/applcms",
-            method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> deleteAllAppLcmRecords(@PathVariable("tenant_id") String tenantId) {
         // TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
@@ -128,7 +128,7 @@ public class AppLcmRegistryHandler {
      */
     @ApiOperation(value = "Deletes application LCM record", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}",
-            method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> deleteAppLcmRecord(@PathVariable("tenant_id") String tenantId,
                                      @PathVariable("applcm_ip") String appLcmIp) {
         // TODO: implementation

@@ -51,7 +51,7 @@ public class MecHostRegistryHandler {
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/mechost",
-            method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                                    @RequestBody MecHost mecHost) {
         // TODO: implementation
@@ -68,7 +68,7 @@ public class MecHostRegistryHandler {
      */
     @ApiOperation(value = "Updates existing MEC host record", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> updateMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                      @PathVariable("mechost_ip") String mecHostIp, @RequestBody MecHost mecHost) {
         // TODO: implementation
@@ -113,7 +113,7 @@ public class MecHostRegistryHandler {
      */
     @ApiOperation(value = "Deletes all MEC host records", response = String.class)
     @RequestMapping(path = "/tenant/{tenant_id}/mechosts",
-            method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> deleteAllMecHostRecords(@PathVariable("tenant_id") String tenantId) {
         // TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
@@ -128,7 +128,7 @@ public class MecHostRegistryHandler {
      */
     @ApiOperation(value = "Deletes MEC host record", response = String.class)
     @RequestMapping(path = "/tenant/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> deleteMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                      @PathVariable("mechost_ip") String mecHostIp) {
         // TODO: implementation
