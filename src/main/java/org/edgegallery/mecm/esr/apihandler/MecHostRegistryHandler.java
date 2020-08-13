@@ -18,6 +18,7 @@ package org.edgegallery.mecm.esr.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import org.edgegallery.mecm.esr.model.MecHost;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * MEC host registry API handler.
@@ -46,7 +45,7 @@ public class MecHostRegistryHandler {
      * Adds a new MEC host record entry into the registry.
      *
      * @param tenantId tenant ID
-     * @param mecHost mec host record details
+     * @param mecHost  mec host record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
@@ -61,22 +60,23 @@ public class MecHostRegistryHandler {
     /**
      * Updates an exiting MEC host record in the registry matching the given tenant ID & mec host IP.
      *
-     * @param tenantId tenant ID
+     * @param tenantId  tenant ID
      * @param mecHostIp mec host IP
-     * @param mecHost mec host record details
+     * @param mecHost   mec host record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing MEC host record", response = String.class)
     @RequestMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}",
             method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> updateMecHostRecord(@PathVariable("tenant_id") String tenantId,
-                                     @PathVariable("mechost_ip") String mecHostIp, @RequestBody MecHost mecHost) {
+                                                      @PathVariable("mechost_ip") String mecHostIp,
+                                                      @RequestBody MecHost mecHost) {
         // TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
-     * Retrieves all MEC host records
+     * Retrieves all MEC host records.
      *
      * @param tenantId tenant ID
      * @return MEC host records & status code 200 on success, error code on failure
@@ -92,7 +92,7 @@ public class MecHostRegistryHandler {
     /**
      * Retrieves a specific MEC host record in the registry matching the given tenant ID & mec host IP.
      *
-     * @param tenantId tenant ID
+     * @param tenantId  tenant ID
      * @param mecHostIp MEC host IP
      * @return MEC host record & status code 200 on success, error code on failure
      */
@@ -100,7 +100,7 @@ public class MecHostRegistryHandler {
     @RequestMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}",
             method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MecHost> getMecHostRecord(@PathVariable("tenant_id") String tenantId,
-                                  @PathVariable("mechost_ip") String mecHostIp) {
+                                                    @PathVariable("mechost_ip") String mecHostIp) {
         // TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -122,7 +122,7 @@ public class MecHostRegistryHandler {
     /**
      * Deletes a specific MEC host record in the registry matching the given tenant ID & mec host IP.
      *
-     * @param tenantId tenant ID
+     * @param tenantId  tenant ID
      * @param mecHostIp MEC host IP
      * @return status code 200 on success, error code on failure
      */
@@ -130,7 +130,7 @@ public class MecHostRegistryHandler {
     @RequestMapping(path = "/tenant/{tenant_id}/mechosts/{mechost_ip}",
             method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> deleteMecHostRecord(@PathVariable("tenant_id") String tenantId,
-                                     @PathVariable("mechost_ip") String mecHostIp) {
+                                                      @PathVariable("mechost_ip") String mecHostIp) {
         // TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
     }

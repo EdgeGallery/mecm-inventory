@@ -19,6 +19,7 @@ package org.edgegallery.mecm.esr.model;
 /**
  * Application lifecycle management registry schema.
  */
-public class AppLCM {
+public class AppLcm {
     // TODO implementation
 }
+

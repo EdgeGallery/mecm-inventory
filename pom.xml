@@ -19,11 +19,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>org.edgegallery.mecm</groupId>
 	<artifactId>esr</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
 	<name>esr</name>
 	<description>External system registry</description>
+
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-boot.version>2.2.6.RELEASE</spring-boot.version>
@@ -41,7 +44,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<dependencies>
 		<!-- Spring -->
 		<dependency>
@@ -93,6 +95,7 @@
 		</dependency>
 		<!-- end of swagger ui -->
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -119,7 +122,59 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- TODO: Static code scanning related plugins -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<consoleOutput>true</consoleOutput>
+					<failOnViolation>true</failOnViolation>
+					<violationSeverity>warning</violationSeverity>
+					<configLocation>
+						https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
+					</configLocation>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<failOnViolation>true</failOnViolation>
+					<failurePriority>2</failurePriority>
+					<maxAllowedViolations>0</maxAllowedViolations>
+					<printFailingErrors>true</printFailingErrors>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.4</version>
+				<configuration>
+					<failOnError>true</failOnError>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<!-- TODO: Reporting related plugins -->
