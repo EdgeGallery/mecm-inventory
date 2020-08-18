@@ -49,7 +49,7 @@ public class AppLcmRegistryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
-    @RequestMapping(path = "/tenants/{tenant_id}/applcm",
+    @RequestMapping(path = "/tenants/{tenant_id}/applcms",
             method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addAppLcmRecord(@PathVariable("tenant_id") String tenantId,
                                                   @RequestBody AppLcm appLcm) {
