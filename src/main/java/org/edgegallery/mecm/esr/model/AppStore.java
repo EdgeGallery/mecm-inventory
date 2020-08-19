@@ -17,7 +17,7 @@
 package org.edgegallery.mecm.esr.model;
 
 /**
- * MEC host registry schema.
+ * App store registry schema.
  */
 public class AppStore {
     // TODO implementation
