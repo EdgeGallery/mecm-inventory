@@ -49,7 +49,7 @@ public class MecHostRegistryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
-    @RequestMapping(path = "/tenants/{tenant_id}/mechost",
+    @RequestMapping(path = "/tenants/{tenant_id}/mechosts",
             method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                                    @RequestBody MecHost mecHost) {
