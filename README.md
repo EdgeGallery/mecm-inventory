@@ -1,7 +1,7 @@
-# mecm-esr
+# mecm-inventory
 
 #### 介绍
-repo for mecm esr
+repo for mecm inventory
 
 #### 软件架构
 软件架构说明

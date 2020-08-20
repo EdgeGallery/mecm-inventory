@@ -21,10 +21,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.edgegallery.mecm</groupId>
-	<artifactId>esr</artifactId>
+	<artifactId>inventory</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>esr</name>
+	<name>inventory</name>
 	<description>External system registry</description>
 
 	<properties>

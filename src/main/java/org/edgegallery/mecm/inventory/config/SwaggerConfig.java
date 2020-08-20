@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.edgegallery.mecm.esr.config;
+package org.edgegallery.mecm.inventory.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,14 +38,14 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors.basePackage("org.edgegallery.mecm.esr"))
+                .apis(RequestHandlerSelectors.basePackage("org.edgegallery.mecm.inventory"))
                 .paths(PathSelectors.regex("/.*")).build().apiInfo(apiEndPointsInfo());
     }
 
     private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder().title("ESR REST API").license("Apache 2.0")
+        return new ApiInfoBuilder().title("Inventory REST API").license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html").version("1.0.0")
-                .description("ESR REST API").build();
+                .description("Inventory REST API").build();
     }
 }
 

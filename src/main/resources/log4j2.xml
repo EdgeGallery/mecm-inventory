@@ -17,8 +17,8 @@
 <Configuration monitorInterval="10">
     <Appenders>
         <RollingFile name="RollingFileInfo"
-                     fileName="${env:LOG_DIR:-/var/log/esr}/esr.log"
-                     filePattern="${env:LOG_DIR:-/var/log/esr}/$${date:yyyy-MM}/esr-%d{yyyy-MM-dd}-%i.log"
+                     fileName="${env:LOG_DIR:-/var/log/inventory}/inventory.log"
+                     filePattern="${env:LOG_DIR:-/var/log/inventory}/$${date:yyyy-MM}/inventory-%d{yyyy-MM-dd}-%i.log"
                      filePermissions="rw-------">
             <!-- TODO: Re-check log file permissions as per security WG -->
             <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
