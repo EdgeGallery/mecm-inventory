@@ -1,7 +1,7 @@
-# mecm-esr
+# mecm-inventory
 
 #### Description
-repo for mecm esr
+repo for mecm inventory
 
 #### Software Architecture
 Software architecture description

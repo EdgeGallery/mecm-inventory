@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.esr.apihandler;
+package org.edgegallery.mecm.inventory.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import org.edgegallery.mecm.esr.model.AppLcm;
+import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Application LCM registry API handler.
  */
-@Api(value = "ESR applcm registry api system")
+@Api(value = "Inventory applcm registry api system")
 @Validated
-@RequestMapping("/esr/v1")
+@RequestMapping("/inventory/v1")
 @RestController
 public class AppLcmRegistryHandler {
 

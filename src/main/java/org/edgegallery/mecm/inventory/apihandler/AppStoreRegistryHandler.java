@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.esr.apihandler;
+package org.edgegallery.mecm.inventory.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import org.edgegallery.mecm.esr.model.AppStore;
-import org.edgegallery.mecm.esr.model.MecHost;
+import org.edgegallery.mecm.inventory.model.AppStore;
+import org.edgegallery.mecm.inventory.model.MecHost;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +34,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Application store registry API handler.
  */
-@Api(value = "ESR MEC Application store registry api system")
+@Api(value = "Inventory MEC Application store registry api system")
 @Validated
-@RequestMapping("/esr/v1")
+@RequestMapping("/inventory/v1")
 @RestController
 public class AppStoreRegistryHandler {
 
@@ -102,7 +102,7 @@ public class AppStoreRegistryHandler {
     @RequestMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}",
             method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppStore> getAppStoreRecord(@PathVariable("tenant_id") String tenantId,
-                                                     @PathVariable("appstore_ip") String appStoreIp) {
+                                                      @PathVariable("appstore_ip") String appStoreIp) {
         // TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
     }

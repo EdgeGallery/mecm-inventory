@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.esr.model;
+package org.edgegallery.mecm.inventory.model;
 
 /**
  * MEC host registry schema.

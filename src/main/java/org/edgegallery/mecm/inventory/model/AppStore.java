@@ -14,12 +14,11 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.esr.model;
+package org.edgegallery.mecm.inventory.model;
 
 /**
- * Application lifecycle management registry schema.
+ * App store registry schema.
  */
-public class AppLcm {
+public class AppStore {
     // TODO implementation
 }
-

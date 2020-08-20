@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.esr;
+package org.edgegallery.mecm.inventory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +27,9 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
  * External system registry application.
  */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
-public class EsrApplication {
+public class InventoryApplication {
 
-    private static final Logger logger = LoggerFactory.getLogger(EsrApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(InventoryApplication.class);
 
     /**
      * External system registry entry function.
@@ -38,8 +38,8 @@ public class EsrApplication {
      */
     public static void main(String[] args) {
         // TODO: Token & https based support.
-        logger.info("ESR application starting----");
-        SpringApplication.run(EsrApplication.class, args);
+        logger.info("Inventory application starting----");
+        SpringApplication.run(InventoryApplication.class, args);
     }
 
 }

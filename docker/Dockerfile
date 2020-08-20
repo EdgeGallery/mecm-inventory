@@ -29,12 +29,12 @@ RUN apk update &&\
 WORKDIR $APP_HOME
 
 # Copy the application & scripts
-ADD target/esr-0.0.1-SNAPSHOT.jar $APP_HOME/
+ADD target/inventory-0.0.1-SNAPSHOT.jar $APP_HOME/
 ADD configs/*.sh $APP_HOME/
 
 RUN chmod 750 $APP_HOME &&\
     chmod 550 $APP_HOME/*.sh &&\
-    chmod 550 $APP_HOME/esr-0.0.1-SNAPSHOT.jar &&\
+    chmod 550 $APP_HOME/inventory-0.0.1-SNAPSHOT.jar &&\
     chown -R $USER_NAME:$GROUP_NAME /var/log &&\
     chown -R $USER_NAME:$GROUP_NAME $APP_HOME
 
