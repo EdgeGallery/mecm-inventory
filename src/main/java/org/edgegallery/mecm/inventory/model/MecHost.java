@@ -17,77 +17,47 @@
 package org.edgegallery.mecm.inventory.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import org.hibernate.annotations.CreationTimestamp;
+
 
 /**
  * MEC host registry schema.
  */
-@Entity
+
 public class MecHost {
 
-    @JsonIgnore
-    @Id
-    @Column(name = "mec_host_id")
     private String mecHostId;
 
-    @NotBlank(message = "Provide the MEC host IP")
-    @Column(name = "mec_host_ip")
     private String mecHostIp;
 
-    @NotBlank(message = "Provide the MEC host name")
-    @Column(name = "mec_host_name")
     private String mecHostName;
 
-    @NotBlank(message = "Provide the ZIP code")
-    @Column(name = "zip_code")
     private String zipCode;
 
-    @NotBlank(message = "Provide the city name")
-    @Column(name = "city")
     private String city;
 
-    @NotBlank(message = "Provide the MEC address")
-    @Column(name = "address")
     private String address;
 
-    @Column(name = "affinity")
     private String affinity;
 
-    @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "password")
     private String password;
 
-    @Column(name = "edge_name")
     private String edgeName;
 
-    @Column(name = "edge_repo_ip")
     private String edgeRepoIp;
 
-    @Column(name = "edge_repo_port")
     private String edgeRepoPort;
 
-    @Column(name = "edge_repo_username")
     private String edgeRepoUsername;
 
-    @Column(name = "edge_repo_password")
     private String edgeRepoPassword;
 
-    @Column(name = "tenent_id")
     private String tenantId;
 
-    @Column(name = "applcm_ip")
     private String applcmIp;
 
-    @Column(name = "createTime")
-    @CreationTimestamp
     private LocalDateTime createTime;
 
     /**

@@ -16,44 +16,26 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * Application lifecycle management registry schema.
  */
-@Entity
+
 public class AppLcm {
 
-    @JsonIgnore
-    @Id
-    @Column(name = "applcm_id")
     private String applcmId;
 
-    @NotBlank(message = "Provide the application lcm IP")
-    @Column(name = "applcm_ip")
     private String applcmIp;
 
-    @NotBlank(message = "Provide the application lcm port")
-    @Column(name = "applcm_port")
     private String applcmPort;
 
-    @Column(name = "applcm_username")
     private String userName;
 
-    @Column(name = "applcm_password")
     private String password;
 
-    @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "createTime")
-    @CreationTimestamp
     private LocalDateTime createTime;
 
     /**

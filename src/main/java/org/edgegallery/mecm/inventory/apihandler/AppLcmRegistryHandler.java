@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Application LCM registry API handler.
@@ -132,6 +134,44 @@ public class AppLcmRegistryHandler {
     public ResponseEntity<String> deleteAppLcmRecord(@PathVariable("tenant_id") String tenantId,
                                                      @PathVariable("applcm_ip") String appLcmIp) {
         // TODO: implementation
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Uploads K8s configuration file to applcm.
+     * @param tenantId tenant ID
+     * @param appLcmIp applcm IP
+     * @param hostIp edge host IP
+     * @param file configuration file
+     * @return status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Upload K8s configuration file to applcm", response = String.class)
+    @RequestMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}/host/{hostIp}/k8sconfig",
+            method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String>  uploadConfigFile(@PathVariable("tenant_id") String tenantId,
+                                                    @PathVariable("applcm_ip") String appLcmIp,
+                                                    @PathVariable("hostIp") String hostIp,
+                                                    @RequestParam("file") MultipartFile file) {
+
+        //TODO: implementation
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Deletes K8s configuration file from applcm.
+     * @param tenantId tenant ID
+     * @param appLcmIp applcm IP
+     * @param hostIp edge host IP
+     * @return status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Deletes K8s configuration file from applcm", response = String.class)
+    @RequestMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}/host/{hostIp}/k8sconfig",
+            method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String>  deleteConfigFile(@PathVariable("tenant_id") String tenantId,
+                                                    @PathVariable("applcm_ip") String appLcmIp,
+                                                    @PathVariable("hostIp") String hostIp) {
+
+        //TODO: implementation
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

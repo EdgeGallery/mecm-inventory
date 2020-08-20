@@ -16,58 +16,33 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import org.hibernate.annotations.CreationTimestamp;
+
 
 /**
  * App store registry schema.
  */
-@Entity
+
 public class AppStore {
 
-    @JsonIgnore
-    @Id
-    @Column(name = "appstore_id")
     private String appStoreId;
 
-    @NotBlank(message = "Provide the application store IP")
-    @Column(name = "appstore_ip")
     private String appstoreIp;
 
-    @NotBlank(message = "Provide the application store port")
-    @Column(name = "appstore_port")
     private String appstorePort;
 
-    @NotBlank(message = "Provide the application store uri")
-    @Column(name = "appstore_uri")
     private String uri;
 
-    @NotBlank(message = "Provide the application store user name")
-    @Column(name = "appstore_username")
     private String userName;
 
-    @NotBlank(message = "Provide the application store password")
-    @Column(name = "appstore_password")
     private String password;
 
-    @NotBlank(message = "Provide the application store name")
-    @Column(name = "appstore_name")
     private String appstoreName;
 
-    @Column(name = "appstore_producer")
     private String producer;
 
-    @NotBlank(message = "Provide the tenant ID")
-    @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "createTime")
-    @CreationTimestamp
     private LocalDateTime createTime;
 
     /**
