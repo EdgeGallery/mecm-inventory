@@ -16,9 +16,37 @@
 
 package org.edgegallery.mecm.inventory.model;
 
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+
 /**
  * App store registry schema.
  */
+@Setter
+@Getter
+@ToString
 public class AppStore {
-    // TODO implementation
+
+    private String appStoreId;
+
+    private String appstoreIp;
+
+    private String appstorePort;
+
+    private String uri;
+
+    private String userName;
+
+    private String password;
+
+    private String appstoreName;
+
+    private String producer;
+
+    private String tenantId;
+
+    private LocalDateTime createTime;
 }

@@ -16,10 +16,30 @@
 
 package org.edgegallery.mecm.inventory.model;
 
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Application lifecycle management registry schema.
  */
+@Setter
+@Getter
+@ToString
 public class AppLcm {
-    // TODO implementation
-}
 
+    private String applcmId;
+
+    private String applcmIp;
+
+    private String applcmPort;
+
+    private String userName;
+
+    private String password;
+
+    private String tenantId;
+
+    private LocalDateTime createTime;
+}

@@ -16,9 +16,51 @@
 
 package org.edgegallery.mecm.inventory.model;
 
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * MEC host registry schema.
  */
+
+@Setter
+@Getter
+@ToString
 public class MecHost {
-    // TODO implementation
+
+    private String mecHostId;
+
+    private String mecHostIp;
+
+    private String mecHostName;
+
+    private String zipCode;
+
+    private String city;
+
+    private String address;
+
+    private String affinity;
+
+    private String userName;
+
+    private String password;
+
+    private String edgeName;
+
+    private String edgeRepoIp;
+
+    private String edgeRepoPort;
+
+    private String edgeRepoUsername;
+
+    private String edgeRepoPassword;
+
+    private String tenantId;
+
+    private String applcmIp;
+
+    private LocalDateTime createTime;
 }

@@ -31,6 +31,7 @@
 		<java.version>1.8</java.version>
 		<spring-boot.version>2.2.6.RELEASE</spring-boot.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<lombok.version>1.18.10</lombok.version>
 	</properties>
 
 	<dependencyManagement>
@@ -94,6 +95,11 @@
 			<version>2.9.2</version>
 		</dependency>
 		<!-- end of swagger ui -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

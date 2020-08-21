@@ -24,10 +24,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -39,8 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MecHostRegistryHandler {
 
-    // TODO pre authorization & parameter validations
-
     /**
      * Adds a new MEC host record entry into the registry.
      *
@@ -49,11 +50,10 @@ public class MecHostRegistryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
-    @RequestMapping(path = "/tenants/{tenant_id}/mechosts",
-            method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                                    @RequestBody MecHost mecHost) {
-        // TODO: implementation
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -66,12 +66,11 @@ public class MecHostRegistryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing MEC host record", response = String.class)
-    @RequestMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.PUT, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PutMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> updateMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                                       @PathVariable("mechost_ip") String mecHostIp,
                                                       @RequestBody MecHost mecHost) {
-        // TODO: implementation
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -82,10 +81,9 @@ public class MecHostRegistryHandler {
      * @return MEC host records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
-    @RequestMapping(path = "/tenants/{tenant_id}/mechosts",
-            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MecHost>> getAllMecHostRecords(@PathVariable("tenant_id") String tenantId) {
-        // TODO: implementation
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -97,11 +95,10 @@ public class MecHostRegistryHandler {
      * @return MEC host record & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves MEC host record", response = MecHost.class)
-    @RequestMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MecHost> getMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                                     @PathVariable("mechost_ip") String mecHostIp) {
-        // TODO: implementation
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -112,10 +109,9 @@ public class MecHostRegistryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all MEC host records", response = String.class)
-    @RequestMapping(path = "/tenant/{tenant_id}/mechosts",
-            method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @DeleteMapping(path = "/tenant/{tenant_id}/mechosts", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> deleteAllMecHostRecords(@PathVariable("tenant_id") String tenantId) {
-        // TODO: implementation
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -127,11 +123,10 @@ public class MecHostRegistryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes MEC host record", response = String.class)
-    @RequestMapping(path = "/tenant/{tenant_id}/mechosts/{mechost_ip}",
-            method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @DeleteMapping(path = "/tenant/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> deleteMecHostRecord(@PathVariable("tenant_id") String tenantId,
                                                       @PathVariable("mechost_ip") String mecHostIp) {
-        // TODO: implementation
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
