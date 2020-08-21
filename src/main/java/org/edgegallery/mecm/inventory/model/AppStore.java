@@ -17,12 +17,17 @@
 package org.edgegallery.mecm.inventory.model;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 
 /**
  * App store registry schema.
  */
-
+@Setter
+@Getter
+@ToString
 public class AppStore {
 
     private String appStoreId;
@@ -44,164 +49,4 @@ public class AppStore {
     private String tenantId;
 
     private LocalDateTime createTime;
-
-    /**
-     * Retrieves application store ID.
-     * @return application store ID
-     */
-    public String getAppStoreId() {
-        return appStoreId;
-    }
-
-    /**
-     * Sets application store ID.
-     * @param appStoreId application store ID
-     */
-    public void setAppStoreId(String appStoreId) {
-        this.appStoreId = appStoreId;
-    }
-
-    /**
-     * Retrieves application store IP.
-     * @return application store IP
-     */
-    public String getAppstoreIp() {
-        return appstoreIp;
-    }
-
-    /**
-     * Sets application store IP.
-     * @param appstoreIp application store IP
-     */
-    public void setAppstoreIp(String appstoreIp) {
-        this.appstoreIp = appstoreIp;
-    }
-
-    /**
-     * Retrieves application store port.
-     * @return application store port
-     */
-    public String getAppstorePort() {
-        return appstorePort;
-    }
-
-    /**
-     * Sets application store port.
-     * @param appstorePort application store port
-     */
-    public void setAppstorePort(String appstorePort) {
-        this.appstorePort = appstorePort;
-    }
-
-    /**
-     * Retrieves application store URI.
-     * @return application store URI
-     */
-    public String getUri() {
-        return uri;
-    }
-
-    /**
-     * Sets application store URI.
-     * @param uri application store URI
-     */
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    /**
-     * Retrieves application store user name.
-     * @return application store user.
-     */
-    public String getUserName() {
-        return userName;
-    }
-
-    /**
-     * Sets application store user name.
-     * @param userName application store user name
-     */
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    /**
-     * Retrieves application store password.
-     * @return application store password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets application store password.
-     * @param password application store password
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Retrieves application store name.
-     * @return application store name
-     */
-    public String getAppstoreName() {
-        return appstoreName;
-    }
-
-    /**
-     * Sets application store name.
-     * @param appstoreName application store name
-     */
-    public void setAppstoreName(String appstoreName) {
-        this.appstoreName = appstoreName;
-    }
-
-    /**
-     * Retrieves application store producer.
-     * @return application store producer
-     */
-    public String getProducer() {
-        return producer;
-    }
-
-    /**
-     * Sets application store producer.
-     * @param producer application store producer
-     */
-    public void setProducer(String producer) {
-        this.producer = producer;
-    }
-
-    /**
-     * Retrieves tenant ID.
-     * @return tenant ID
-     */
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    /**
-     * Sets tenant ID.
-     * @param tenantId tenant ID
-     */
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    /**
-     * Retrieves record creation time.
-     * @return record creation time
-     */
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    /**
-     * Sets record creation time.
-     * @param createTime record creation time
-     */
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
 }
