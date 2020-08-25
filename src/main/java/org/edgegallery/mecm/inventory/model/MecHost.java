@@ -16,11 +16,20 @@
 
 package org.edgegallery.mecm.inventory.model;
 
+import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
+import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
+import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
+
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.common.ConstraintType;
+import org.edgegallery.mecm.inventory.common.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -33,37 +42,58 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 public class MecHost {
 
-    private String mecHostId;
-
+    @NotEmpty(message = "mechost IP is empty")
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
     private String mecHostIp;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String mecHostName;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String zipCode;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String city;
 
+    @Size(max = 256)
     private String address;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String affinity;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String userName;
 
+    @CustomConstraint(ConstraintType.PASSWORD)
     private String password;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String edgeName;
 
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
     private String edgeRepoIp;
 
+    @Size(max = 5)
+    @Pattern(regexp = PORT_REGEX)
     private String edgeRepoPort;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String edgeRepoUsername;
 
+    @CustomConstraint(ConstraintType.PASSWORD)
     private String edgeRepoPassword;
 
-    private String tenantId;
-
+    @NotEmpty(message = "applcm IP is empty")
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
     private String applcmIp;
-
-    private LocalDateTime createTime;
 }
