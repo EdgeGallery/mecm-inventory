@@ -17,17 +17,21 @@
 package org.edgegallery.mecm.inventory.model;
 
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * MEC host registry schema.
  */
 
-@Setter
+@Validated
 @Getter
+@Setter
 @ToString
+@AllArgsConstructor
 public class MecHost {
 
     private String mecHostId;

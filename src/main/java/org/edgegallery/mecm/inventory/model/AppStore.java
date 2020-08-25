@@ -16,37 +16,62 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import java.time.LocalDateTime;
+import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
+import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
+import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
+import static org.edgegallery.mecm.inventory.common.Constants.URI_REGEX;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.common.ConstraintType;
+import org.edgegallery.mecm.inventory.common.CustomConstraint;
+import org.springframework.validation.annotation.Validated;
 
 
 /**
  * App store registry schema.
  */
-@Setter
+@Validated
 @Getter
+@Setter
 @ToString
-public class AppStore {
+@AllArgsConstructor
+public final class AppStore {
 
-    private String appStoreId;
-
+    @NotEmpty(message = "appstore IP is empty")
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
     private String appstoreIp;
 
+    @NotEmpty(message = "appstore port is empty")
+    @Size(max = 5)
+    @Pattern(regexp = PORT_REGEX)
     private String appstorePort;
 
+    @NotEmpty(message = "appstore URI is empty")
+    @Size(max = 128)
+    @Pattern(regexp = URI_REGEX)
     private String uri;
 
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String userName;
 
+    @CustomConstraint(ConstraintType.PASSWORD)
     private String password;
 
+    @NotEmpty(message = "appstore name is empty")
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String appstoreName;
 
+    @NotEmpty(message = "producer is empty")
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String producer;
-
-    private String tenantId;
-
-    private LocalDateTime createTime;
 }
