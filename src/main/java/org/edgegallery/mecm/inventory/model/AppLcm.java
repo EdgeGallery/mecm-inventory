@@ -16,45 +16,46 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import org.edgegallery.mecm.inventory.common.ConstraintType;
-import org.edgegallery.mecm.inventory.common.CustomConstraint;
-import org.springframework.validation.annotation.Validated;
 
 /**
- * Application lifecycle management input request schema.
+ * Application lifecycle management schema.
  */
-@Validated
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "applcminventory")
 public final class AppLcm {
 
-    @NotEmpty(message = "applcm IP is empty")
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
+    @Id
+    @Column(name = "applcm_id")
+    private String applcmId;
+
+    @Column(name = "tenant_id")
+    private String tenantId;
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
+
+    @Column(name = "applcm_ip")
     private String applcmIp;
 
-    @NotEmpty(message = "applcm port is empty")
-    @Size(max = 5)
-    @Pattern(regexp = PORT_REGEX)
+    @Column(name = "applcm_port")
     private String applcmPort;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Column(name = "user_name")
     private String userName;
 
-    @CustomConstraint(ConstraintType.PASSWORD)
+    @Column(name = "password")
     private String password;
 }

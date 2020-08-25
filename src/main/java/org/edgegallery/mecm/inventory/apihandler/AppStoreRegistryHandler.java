@@ -21,8 +21,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.validation.Valid;
-import org.edgegallery.mecm.inventory.model.AppStore;
-import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.model.AppStoreDto;
+import org.edgegallery.mecm.inventory.model.MecHostDtp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,14 +49,14 @@ public class AppStoreRegistryHandler {
      * Adds a new application store record entry into the registry.
      *
      * @param tenantId tenant ID
-     * @param appStore application store record details
+     * @param appStoreDto application store record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application store record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addAppStoreRecord(
             @PathVariable("tenant_id") String tenantId,
-            @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStore appStore) {
+            @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -66,7 +66,7 @@ public class AppStoreRegistryHandler {
      *
      * @param tenantId   tenant ID
      * @param appStoreIp application store IP
-     * @param appStore   application store record details
+     * @param appStoreDto   application store record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application store record", response = String.class)
@@ -74,7 +74,7 @@ public class AppStoreRegistryHandler {
     public ResponseEntity<String> updateAppStoreRecord(
             @PathVariable("tenant_id") String tenantId,
             @PathVariable("appstore_ip") String appStoreIp,
-            @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStore appStore) {
+            @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -87,7 +87,7 @@ public class AppStoreRegistryHandler {
      */
     @ApiOperation(value = "Retrieves all application store records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AppStore>> getAllAppStoreRecords(@PathVariable("tenant_id") String tenantId) {
+    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(@PathVariable("tenant_id") String tenantId) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -100,10 +100,10 @@ public class AppStoreRegistryHandler {
      * @param appStoreIp application store IP
      * @return application store record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves application store record", response = MecHost.class)
+    @ApiOperation(value = "Retrieves application store record", response = MecHostDtp.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppStore> getAppStoreRecord(@PathVariable("tenant_id") String tenantId,
-                                                      @PathVariable("appstore_ip") String appStoreIp) {
+    public ResponseEntity<AppStoreDto> getAppStoreRecord(@PathVariable("tenant_id") String tenantId,
+                                                         @PathVariable("appstore_ip") String appStoreIp) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

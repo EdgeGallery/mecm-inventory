@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.validation.Valid;
-import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.model.MecHostDtp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,14 +48,14 @@ public class MecHostRegistryHandler {
      * Adds a new MEC host record entry into the registry.
      *
      * @param tenantId tenant ID
-     * @param mecHost  mec host record details
+     * @param mecHostDtp  mec host record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addMecHostRecord(
             @PathVariable("tenant_id") String tenantId,
-            @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHost mecHost) {
+            @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDtp mecHostDtp) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -65,7 +65,7 @@ public class MecHostRegistryHandler {
      *
      * @param tenantId  tenant ID
      * @param mecHostIp mec host IP
-     * @param mecHost   mec host record details
+     * @param mecHostDtp   mec host record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing MEC host record", response = String.class)
@@ -73,7 +73,7 @@ public class MecHostRegistryHandler {
     public ResponseEntity<String> updateMecHostRecord(
             @PathVariable("tenant_id") String tenantId,
             @PathVariable("mechost_ip") String mecHostIp,
-            @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHost mecHost) {
+            @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDtp mecHostDtp) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -86,7 +86,7 @@ public class MecHostRegistryHandler {
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MecHost>> getAllMecHostRecords(@PathVariable("tenant_id") String tenantId) {
+    public ResponseEntity<List<MecHostDtp>> getAllMecHostRecords(@PathVariable("tenant_id") String tenantId) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -98,10 +98,10 @@ public class MecHostRegistryHandler {
      * @param mecHostIp MEC host IP
      * @return MEC host record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves MEC host record", response = MecHost.class)
+    @ApiOperation(value = "Retrieves MEC host record", response = MecHostDtp.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MecHost> getMecHostRecord(@PathVariable("tenant_id") String tenantId,
-                                                    @PathVariable("mechost_ip") String mecHostIp) {
+    public ResponseEntity<MecHostDtp> getMecHostRecord(@PathVariable("tenant_id") String tenantId,
+                                                       @PathVariable("mechost_ip") String mecHostIp) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

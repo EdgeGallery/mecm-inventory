@@ -20,11 +20,17 @@ import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
 
+import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.common.ConstraintType;
@@ -32,67 +38,65 @@ import org.edgegallery.mecm.inventory.common.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * MEC host registry input request schema.
+ * MEC host registry schema.
  */
-@Validated
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "mechostinventory")
 public class MecHost {
 
-    @NotEmpty(message = "mechost IP is empty")
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
-    private String mecHostIp;
+    @Id
+    @Column(name = "mechost_id")
+    private String mechostId;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
-    private String mecHostName;
+    @Column(name = "tenant_id")
+    private String tenantId;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
+
+    @Column(name = "mechost_ip")
+    private String mechostIp;
+
+    @Column(name = "mechost_name")
+    private String mechostName;
+
+    @Column(name = "zip_code")
     private String zipCode;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Column(name = "city")
     private String city;
 
-    @Size(max = 256)
+    @Column(name = "address")
     private String address;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Column(name = "affinity")
     private String affinity;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Column(name = "user_name")
     private String userName;
 
-    @CustomConstraint(ConstraintType.PASSWORD)
+    @Column(name = "password")
     private String password;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Column(name = "edge_name")
     private String edgeName;
 
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
-    private String edgeRepoIp;
+    @Column(name = "edgerepo_ip")
+    private String edgerepoIp;
 
-    @Size(max = 5)
-    @Pattern(regexp = PORT_REGEX)
-    private String edgeRepoPort;
+    @Column(name = "edgerepo_port")
+    private String edgerepoPort;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
-    private String edgeRepoUsername;
+    @Column(name = "edgerepo_username")
+    private String edgerepoUsername;
 
-    @CustomConstraint(ConstraintType.PASSWORD)
-    private String edgeRepoPassword;
+    @Column(name = "edgerepo_password")
+    private String edgerepoPassword;
 
-    @NotEmpty(message = "applcm IP is empty")
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
+    @Column(name = "applcm_ip")
     private String applcmIp;
 }

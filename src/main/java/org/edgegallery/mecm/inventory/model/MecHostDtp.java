@@ -19,19 +19,12 @@ package org.edgegallery.mecm.inventory.model;
 import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.URI_REGEX;
 
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.common.ConstraintType;
@@ -39,44 +32,67 @@ import org.edgegallery.mecm.inventory.common.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * App store registry schema.
+ * MEC host registry input request schema.
  */
+@Validated
 @Getter
 @Setter
-@NoArgsConstructor
+@ToString
 @AllArgsConstructor
-@Entity
-@Table(name = "appstoreinventory")
-public final class AppStore {
+public class MecHostDtp {
 
-    @Id
-    @Column(name = "appstore_id")
-    private String appstoreId;
+    @NotEmpty(message = "mechost IP is empty")
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
+    private String mecHostIp;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
+    private String mecHostName;
 
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
+    private String zipCode;
 
-    @Column(name = "appstore_ip")
-    private String appstoreIp;
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
+    private String city;
 
-    @Column(name = "appstore_port")
-    private String appstorePort;
+    @Size(max = 256)
+    private String address;
 
-    @Column(name = "uri")
-    private String uri;
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
+    private String affinity;
 
-    @Column(name = "user_name")
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String userName;
 
-    @Column(name = "password")
+    @CustomConstraint(ConstraintType.PASSWORD)
     private String password;
 
-    @Column(name = "appstore_name")
-    private String appstoreName;
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
+    private String edgeName;
 
-    @Column(name = "producer")
-    private String producer;
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
+    private String edgeRepoIp;
+
+    @Size(max = 5)
+    @Pattern(regexp = PORT_REGEX)
+    private String edgeRepoPort;
+
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
+    private String edgeRepoUsername;
+
+    @CustomConstraint(ConstraintType.PASSWORD)
+    private String edgeRepoPassword;
+
+    @NotEmpty(message = "applcm IP is empty")
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
+    private String applcmIp;
 }

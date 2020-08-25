@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.validation.Valid;
-import org.edgegallery.mecm.inventory.model.AppLcm;
+import org.edgegallery.mecm.inventory.model.AppLcmDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +50,14 @@ public class AppLcmRegistryHandler {
      * Adds a new application LCM record entry into the registry.
      *
      * @param tenantId tenant ID
-     * @param appLcm   application lifecycle manager record details
+     * @param appLcmDto   application lifecycle manager record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addAppLcmRecord(
             @PathVariable("tenant_id") String tenantId,
-            @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcm appLcm) {
+            @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -67,7 +67,7 @@ public class AppLcmRegistryHandler {
      *
      * @param tenantId tenant ID
      * @param appLcmIp application LCM IP
-     * @param appLcm   application lifecycle manager record details
+     * @param appLcmDto   application lifecycle manager record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)
@@ -75,7 +75,7 @@ public class AppLcmRegistryHandler {
     public ResponseEntity<String> updateAppLcmRecord(
             @PathVariable("tenant_id") String tenantId,
             @PathVariable("applcm_ip") String appLcmIp,
-            @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcm appLcm) {
+            @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -88,7 +88,7 @@ public class AppLcmRegistryHandler {
      */
     @ApiOperation(value = "Retrieves all application LCM records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AppLcm>> getAllAppLcmRecords(@PathVariable("tenant_id") String tenantId) {
+    public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(@PathVariable("tenant_id") String tenantId) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -100,10 +100,10 @@ public class AppLcmRegistryHandler {
      * @param appLcmIp application LCM IP
      * @return application LCM record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves application LCM record", response = AppLcm.class)
+    @ApiOperation(value = "Retrieves application LCM record", response = AppLcmDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppLcm> getAppLcmRecord(@PathVariable("tenant_id") String tenantId,
-                                                  @PathVariable("applcm_ip") String appLcmIp) {
+    public ResponseEntity<AppLcmDto> getAppLcmRecord(@PathVariable("tenant_id") String tenantId,
+                                                     @PathVariable("applcm_ip") String appLcmIp) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

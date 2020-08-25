@@ -21,17 +21,11 @@ import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.URI_REGEX;
 
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.common.ConstraintType;
@@ -39,44 +33,44 @@ import org.edgegallery.mecm.inventory.common.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * App store registry schema.
+ * App store registry input request schema.
  */
+@Validated
 @Getter
 @Setter
-@NoArgsConstructor
+@ToString
 @AllArgsConstructor
-@Entity
-@Table(name = "appstoreinventory")
-public final class AppStore {
+public final class AppStoreDto {
 
-    @Id
-    @Column(name = "appstore_id")
-    private String appstoreId;
-
-    @Column(name = "tenant_id")
-    private String tenantId;
-
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
-
-    @Column(name = "appstore_ip")
+    @NotEmpty(message = "appstore IP is empty")
+    @Size(max = 15)
+    @Pattern(regexp = IP_REGEX)
     private String appstoreIp;
 
-    @Column(name = "appstore_port")
+    @NotEmpty(message = "appstore port is empty")
+    @Size(max = 5)
+    @Pattern(regexp = PORT_REGEX)
     private String appstorePort;
 
-    @Column(name = "uri")
+    @NotEmpty(message = "appstore URI is empty")
+    @Size(max = 128)
+    @Pattern(regexp = URI_REGEX)
     private String uri;
 
-    @Column(name = "user_name")
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String userName;
 
-    @Column(name = "password")
+    @CustomConstraint(ConstraintType.PASSWORD)
     private String password;
 
-    @Column(name = "appstore_name")
+    @NotEmpty(message = "appstore name is empty")
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String appstoreName;
 
-    @Column(name = "producer")
+    @NotEmpty(message = "producer is empty")
+    @Size(max = 128)
+    @Pattern(regexp = NAME_REGEX)
     private String producer;
 }
