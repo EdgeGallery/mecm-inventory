@@ -20,7 +20,6 @@ import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
 import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
 
-import java.time.LocalDateTime;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

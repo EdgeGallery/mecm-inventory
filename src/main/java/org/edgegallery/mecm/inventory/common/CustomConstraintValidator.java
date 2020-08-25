@@ -43,7 +43,7 @@ public final class CustomConstraintValidator implements ConstraintValidator<Cust
     /**
      * Checks if input param is valid as per the constraint.
      *
-     * @param param input parameter
+     * @param param   input parameter
      * @param context context have constraint information
      * @return true if valid, false otherwise
      */
