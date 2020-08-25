@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * App store registry schema.
+ * App store Inventory schema.
  */
 @Getter
 @Setter

@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * MEC host registry schema.
+ * MEC host Inventory schema.
  */
 @Getter
 @Setter

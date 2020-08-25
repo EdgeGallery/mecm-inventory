@@ -24,7 +24,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 /**
- * External system registry application.
+ * External system Inventory application.
  */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class InventoryApplication {
@@ -32,7 +32,7 @@ public class InventoryApplication {
     private static final Logger logger = LoggerFactory.getLogger(InventoryApplication.class);
 
     /**
-     * External system registry entry function.
+     * External system Inventory entry function.
      *
      * @param args arguments
      */

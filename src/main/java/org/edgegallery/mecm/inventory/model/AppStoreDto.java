@@ -33,7 +33,7 @@ import org.edgegallery.mecm.inventory.common.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * App store registry input request schema.
+ * App store Inventory input request schema.
  */
 @Validated
 @Getter

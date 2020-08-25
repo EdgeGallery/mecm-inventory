@@ -36,16 +36,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * MEC host registry API handler.
+ * MEC host Inventory API handler.
  */
-@Api(value = "Inventory MEC host registry api system")
+@Api(value = "Inventory MEC host Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")
 @RestController
-public class MecHostRegistryHandler {
+public class MecHostInventoryHandler {
 
     /**
-     * Adds a new MEC host record entry into the registry.
+     * Adds a new MEC host record entry into the Inventory.
      *
      * @param tenantId   tenant ID
      * @param mecHostDto mec host record details
@@ -61,7 +61,7 @@ public class MecHostRegistryHandler {
     }
 
     /**
-     * Updates an exiting MEC host record in the registry matching the given tenant ID & mec host IP.
+     * Updates an exiting MEC host record in the Inventory matching the given tenant ID & mec host IP.
      *
      * @param tenantId   tenant ID
      * @param mecHostIp  mec host IP
@@ -92,7 +92,7 @@ public class MecHostRegistryHandler {
     }
 
     /**
-     * Retrieves a specific MEC host record in the registry matching the given tenant ID & mec host IP.
+     * Retrieves a specific MEC host record in the Inventory matching the given tenant ID & mec host IP.
      *
      * @param tenantId  tenant ID
      * @param mecHostIp MEC host IP
@@ -120,7 +120,7 @@ public class MecHostRegistryHandler {
     }
 
     /**
-     * Deletes a specific MEC host record in the registry matching the given tenant ID & mec host IP.
+     * Deletes a specific MEC host record in the Inventory matching the given tenant ID & mec host IP.
      *
      * @param tenantId  tenant ID
      * @param mecHostIp MEC host IP

@@ -38,16 +38,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Application LCM registry API handler.
+ * Application LCM Inventory API handler.
  */
-@Api(value = "Inventory applcm registry api system")
+@Api(value = "Inventory applcm Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")
 @RestController
-public class AppLcmRegistryHandler {
+public class AppLcmInventoryHandler {
 
     /**
-     * Adds a new application LCM record entry into the registry.
+     * Adds a new application LCM record entry into the Inventory.
      *
      * @param tenantId  tenant ID
      * @param appLcmDto application lifecycle manager record details
@@ -63,7 +63,7 @@ public class AppLcmRegistryHandler {
     }
 
     /**
-     * Updates an exiting application LCM record in the registry matching the given tenant ID & appLCM IP.
+     * Updates an exiting application LCM record in the Inventory matching the given tenant ID & appLCM IP.
      *
      * @param tenantId  tenant ID
      * @param appLcmIp  application LCM IP
@@ -94,7 +94,7 @@ public class AppLcmRegistryHandler {
     }
 
     /**
-     * Retrieves a specific application LCM record in the registry matching the given tenant ID & appLCM IP.
+     * Retrieves a specific application LCM record in the Inventory matching the given tenant ID & appLCM IP.
      *
      * @param tenantId tenant ID
      * @param appLcmIp application LCM IP
@@ -122,7 +122,7 @@ public class AppLcmRegistryHandler {
     }
 
     /**
-     * Deletes a specific application LCM record in the registry matching the given tenant ID & appLCM IP.
+     * Deletes a specific application LCM record in the Inventory matching the given tenant ID & appLCM IP.
      *
      * @param tenantId tenant ID
      * @param appLcmIp application LCM IP

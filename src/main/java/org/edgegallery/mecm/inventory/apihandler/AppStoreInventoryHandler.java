@@ -37,16 +37,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Application store registry API handler.
+ * Application store Inventory API handler.
  */
-@Api(value = "Inventory MEC Application store registry api system")
+@Api(value = "Inventory MEC Application store Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")
 @RestController
-public class AppStoreRegistryHandler {
+public class AppStoreInventoryHandler {
 
     /**
-     * Adds a new application store record entry into the registry.
+     * Adds a new application store record entry into the Inventory.
      *
      * @param tenantId    tenant ID
      * @param appStoreDto application store record details
@@ -62,7 +62,7 @@ public class AppStoreRegistryHandler {
     }
 
     /**
-     * Updates an exiting application store record in the registry matching the given tenant ID & application store IP.
+     * Updates an exiting application store record in the Inventory matching the given tenant ID & application store IP.
      *
      * @param tenantId    tenant ID
      * @param appStoreIp  application store IP
@@ -93,7 +93,7 @@ public class AppStoreRegistryHandler {
     }
 
     /**
-     * Retrieves a specific application store record in the registry matching the given tenant ID & application store
+     * Retrieves a specific application store record in the Inventory matching the given tenant ID & application store
      * IP.
      *
      * @param tenantId   tenant ID
@@ -122,7 +122,7 @@ public class AppStoreRegistryHandler {
     }
 
     /**
-     * Deletes a specific application store record in the registry matching the given tenant ID & application store IP.
+     * Deletes a specific application store record in the Inventory matching the given tenant ID & application store IP.
      *
      * @param tenantId   tenant ID
      * @param appStoreIp application store IP

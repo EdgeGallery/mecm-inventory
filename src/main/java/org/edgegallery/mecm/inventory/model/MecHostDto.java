@@ -32,7 +32,7 @@ import org.edgegallery.mecm.inventory.common.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * MEC host registry input request schema.
+ * MEC host Inventory input request schema.
  */
 @Validated
 @Getter
