@@ -39,7 +39,7 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @ToString
 @AllArgsConstructor
-public class MecHostDtp {
+public class MecHostDto {
 
     @NotEmpty(message = "mechost IP is empty")
     @Size(max = 15)

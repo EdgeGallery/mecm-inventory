@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.validation.Valid;
 import org.edgegallery.mecm.inventory.model.AppStoreDto;
-import org.edgegallery.mecm.inventory.model.MecHostDtp;
+import org.edgegallery.mecm.inventory.model.MecHostDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +48,7 @@ public class AppStoreRegistryHandler {
     /**
      * Adds a new application store record entry into the registry.
      *
-     * @param tenantId tenant ID
+     * @param tenantId    tenant ID
      * @param appStoreDto application store record details
      * @return status code 200 on success, error code on failure
      */
@@ -64,9 +64,9 @@ public class AppStoreRegistryHandler {
     /**
      * Updates an exiting application store record in the registry matching the given tenant ID & application store IP.
      *
-     * @param tenantId   tenant ID
-     * @param appStoreIp application store IP
-     * @param appStoreDto   application store record details
+     * @param tenantId    tenant ID
+     * @param appStoreIp  application store IP
+     * @param appStoreDto application store record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application store record", response = String.class)
@@ -100,7 +100,7 @@ public class AppStoreRegistryHandler {
      * @param appStoreIp application store IP
      * @return application store record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves application store record", response = MecHostDtp.class)
+    @ApiOperation(value = "Retrieves application store record", response = MecHostDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppStoreDto> getAppStoreRecord(@PathVariable("tenant_id") String tenantId,
                                                          @PathVariable("appstore_ip") String appStoreIp) {

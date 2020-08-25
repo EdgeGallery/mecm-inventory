@@ -49,8 +49,8 @@ public class AppLcmRegistryHandler {
     /**
      * Adds a new application LCM record entry into the registry.
      *
-     * @param tenantId tenant ID
-     * @param appLcmDto   application lifecycle manager record details
+     * @param tenantId  tenant ID
+     * @param appLcmDto application lifecycle manager record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
@@ -65,9 +65,9 @@ public class AppLcmRegistryHandler {
     /**
      * Updates an exiting application LCM record in the registry matching the given tenant ID & appLCM IP.
      *
-     * @param tenantId tenant ID
-     * @param appLcmIp application LCM IP
-     * @param appLcmDto   application lifecycle manager record details
+     * @param tenantId  tenant ID
+     * @param appLcmIp  application LCM IP
+     * @param appLcmDto application lifecycle manager record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)

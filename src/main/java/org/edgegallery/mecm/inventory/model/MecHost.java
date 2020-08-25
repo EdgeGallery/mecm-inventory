@@ -16,26 +16,15 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
-
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import org.edgegallery.mecm.inventory.common.ConstraintType;
-import org.edgegallery.mecm.inventory.common.CustomConstraint;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * MEC host registry schema.
