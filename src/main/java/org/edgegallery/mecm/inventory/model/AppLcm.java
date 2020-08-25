@@ -32,7 +32,7 @@ import org.edgegallery.mecm.inventory.common.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Application lifecycle management registry schema.
+ * Application lifecycle management input request schema.
  */
 @Validated
 @Getter

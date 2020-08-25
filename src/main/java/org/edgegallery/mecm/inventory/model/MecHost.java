@@ -24,9 +24,8 @@ import lombok.ToString;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * MEC host registry schema.
+ * MEC host registry input request schema.
  */
-
 @Validated
 @Getter
 @Setter

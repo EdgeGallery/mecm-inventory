@@ -34,7 +34,7 @@ import org.springframework.validation.annotation.Validated;
 
 
 /**
- * App store registry schema.
+ * App store registry input request schema.
  */
 @Validated
 @Getter

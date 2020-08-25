@@ -18,7 +18,9 @@ package org.edgegallery.mecm.inventory.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
+import javax.validation.Valid;
 import org.edgegallery.mecm.inventory.model.AppStore;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.springframework.http.HttpStatus;
@@ -52,8 +54,9 @@ public class AppStoreRegistryHandler {
      */
     @ApiOperation(value = "Adds new application store record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> addAppStoreRecord(@PathVariable("tenant_id") String tenantId,
-                                                    @RequestBody AppStore appStore) {
+    public ResponseEntity<String> addAppStoreRecord(
+            @PathVariable("tenant_id") String tenantId,
+            @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStore appStore) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -68,9 +71,10 @@ public class AppStoreRegistryHandler {
      */
     @ApiOperation(value = "Updates existing application store record", response = String.class)
     @PutMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> updateAppStoreRecord(@PathVariable("tenant_id") String tenantId,
-                                                       @PathVariable("appstore_ip") String appStoreIp,
-                                                       @RequestBody AppStore appStore) {
+    public ResponseEntity<String> updateAppStoreRecord(
+            @PathVariable("tenant_id") String tenantId,
+            @PathVariable("appstore_ip") String appStoreIp,
+            @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStore appStore) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

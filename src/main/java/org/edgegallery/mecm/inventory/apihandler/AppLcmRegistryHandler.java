@@ -18,7 +18,9 @@ package org.edgegallery.mecm.inventory.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
+import javax.validation.Valid;
 import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,8 +55,9 @@ public class AppLcmRegistryHandler {
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> addAppLcmRecord(@PathVariable("tenant_id") String tenantId,
-                                                  @RequestBody AppLcm appLcm) {
+    public ResponseEntity<String> addAppLcmRecord(
+            @PathVariable("tenant_id") String tenantId,
+            @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcm appLcm) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -69,9 +72,10 @@ public class AppLcmRegistryHandler {
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)
     @PutMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> updateAppLcmRecord(@PathVariable("tenant_id") String tenantId,
-                                                     @PathVariable("applcm_ip") String appLcmIp,
-                                                     @RequestBody AppLcm appLcm) {
+    public ResponseEntity<String> updateAppLcmRecord(
+            @PathVariable("tenant_id") String tenantId,
+            @PathVariable("applcm_ip") String appLcmIp,
+            @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcm appLcm) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
