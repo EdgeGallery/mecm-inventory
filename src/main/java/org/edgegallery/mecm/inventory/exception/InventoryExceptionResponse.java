@@ -24,9 +24,9 @@ import java.util.List;
  */
 public class InventoryExceptionResponse {
 
-    private LocalDateTime timestamp;
-    private String message;
-    private List<String> details;
+    private final LocalDateTime timestamp;
+    private final String message;
+    private final List<String> details;
 
     /**
      * Constructor to create exception response.

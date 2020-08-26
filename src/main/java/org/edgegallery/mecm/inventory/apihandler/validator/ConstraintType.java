@@ -20,5 +20,5 @@ package org.edgegallery.mecm.inventory.apihandler.validator;
  * Constraint types.
  */
 public enum ConstraintType {
-    PASSWORD; // Constraint type for password validation
+    PASSWORD // Constraint type for password validation
 }

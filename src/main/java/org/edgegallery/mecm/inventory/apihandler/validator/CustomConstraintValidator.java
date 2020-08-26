@@ -16,13 +16,13 @@
 
 package org.edgegallery.mecm.inventory.apihandler.validator;
 
-import static org.edgegallery.mecm.inventory.utils.Constants.lowerCaseRegex;
-import static org.edgegallery.mecm.inventory.utils.Constants.maxPasswordCount;
-import static org.edgegallery.mecm.inventory.utils.Constants.maxPasswordSize;
-import static org.edgegallery.mecm.inventory.utils.Constants.minPasswordSize;
-import static org.edgegallery.mecm.inventory.utils.Constants.singleDigitRegex;
-import static org.edgegallery.mecm.inventory.utils.Constants.specialCharRegex;
-import static org.edgegallery.mecm.inventory.utils.Constants.upperCaseRegex;
+import static org.edgegallery.mecm.inventory.utils.Constants.LOWER_CASE_REGEX;
+import static org.edgegallery.mecm.inventory.utils.Constants.MAX_PWD_COUNT;
+import static org.edgegallery.mecm.inventory.utils.Constants.MAX_PWD_SIZE;
+import static org.edgegallery.mecm.inventory.utils.Constants.MIN_PWD_SIZE;
+import static org.edgegallery.mecm.inventory.utils.Constants.SINGLE_DIGIT_REGEX;
+import static org.edgegallery.mecm.inventory.utils.Constants.SPECIAL_CHAR_REGEX;
+import static org.edgegallery.mecm.inventory.utils.Constants.UPPER_CASE_REGEX;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +36,7 @@ public final class CustomConstraintValidator implements ConstraintValidator<Cust
 
     private ConstraintType type;
 
+    @Override
     public void initialize(CustomConstraint constraintAnnotation) {
         this.type = constraintAnnotation.value();
     }
@@ -58,26 +59,22 @@ public final class CustomConstraintValidator implements ConstraintValidator<Cust
     }
 
     private boolean isPasswordValid(String pwd) {
-        if ((pwd.length() >= minPasswordSize) && (pwd.length() <= maxPasswordSize)) {
+        if ((pwd.length() >= MIN_PWD_SIZE) && (pwd.length() <= MAX_PWD_SIZE)) {
             // password must satisfy any two conditions
             int pwdValidCount = 0;
-            if (isRegexMatched(singleDigitRegex, pwd)) {
+            if (isRegexMatched(SINGLE_DIGIT_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            if (isRegexMatched(lowerCaseRegex, pwd)) {
+            if (isRegexMatched(LOWER_CASE_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            if (isRegexMatched(upperCaseRegex, pwd)) {
+            if (isRegexMatched(UPPER_CASE_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            if (isRegexMatched(specialCharRegex, pwd)) {
+            if (isRegexMatched(SPECIAL_CHAR_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            if (pwdValidCount < maxPasswordCount) {
-                return false;
-            } else {
-                return true;
-            }
+            return pwdValidCount >= MAX_PWD_COUNT;
         } else {
             return false;
         }

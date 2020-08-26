@@ -39,11 +39,11 @@ import org.springframework.web.util.WebUtils;
 class TraceLogFilter extends OncePerRequestFilter implements Ordered {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TraceLogFilter.class);
-    private static final int offset = 10;
+    private static final int OFFSET = 10;
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - offset;
+        return Ordered.LOWEST_PRECEDENCE - OFFSET;
     }
 
     @Override
