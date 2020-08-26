@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.common;
+package org.edgegallery.mecm.inventory.apihandler.validator;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;

@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.common;
+package org.edgegallery.mecm.inventory.apihandler.validator;
 
-import static org.edgegallery.mecm.inventory.common.Constants.lowerCaseRegex;
-import static org.edgegallery.mecm.inventory.common.Constants.maxPasswordCount;
-import static org.edgegallery.mecm.inventory.common.Constants.maxPasswordSize;
-import static org.edgegallery.mecm.inventory.common.Constants.minPasswordSize;
-import static org.edgegallery.mecm.inventory.common.Constants.singleDigitRegex;
-import static org.edgegallery.mecm.inventory.common.Constants.specialCharRegex;
-import static org.edgegallery.mecm.inventory.common.Constants.upperCaseRegex;
+import static org.edgegallery.mecm.inventory.utils.Constants.lowerCaseRegex;
+import static org.edgegallery.mecm.inventory.utils.Constants.maxPasswordCount;
+import static org.edgegallery.mecm.inventory.utils.Constants.maxPasswordSize;
+import static org.edgegallery.mecm.inventory.utils.Constants.minPasswordSize;
+import static org.edgegallery.mecm.inventory.utils.Constants.singleDigitRegex;
+import static org.edgegallery.mecm.inventory.utils.Constants.specialCharRegex;
+import static org.edgegallery.mecm.inventory.utils.Constants.upperCaseRegex;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

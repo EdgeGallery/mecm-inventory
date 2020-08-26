@@ -14,14 +14,11 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.repository;
-
-import org.edgegallery.mecm.inventory.model.AppLcm;
-import org.springframework.data.repository.CrudRepository;
+package org.edgegallery.mecm.inventory.apihandler.validator;
 
 /**
- * Application LCM repository.
+ * Constraint types.
  */
-public interface AppLcmRepository extends CrudRepository<AppLcm, String> {
-
+public enum ConstraintType {
+    PASSWORD; // Constraint type for password validation
 }

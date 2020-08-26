@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.service.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -27,19 +27,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Application lifecycle management schema.
+ * App store Inventory schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "applcminventory")
-public final class AppLcm {
+@Table(name = "appstoreinventory")
+public final class AppStore {
 
     @Id
-    @Column(name = "applcm_id")
-    private String applcmId;
+    @Column(name = "appstore_id")
+    private String appstoreId;
 
     @Column(name = "tenant_id")
     private String tenantId;
@@ -47,15 +47,24 @@ public final class AppLcm {
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
-    @Column(name = "applcm_ip")
-    private String applcmIp;
+    @Column(name = "appstore_ip")
+    private String appstoreIp;
 
-    @Column(name = "applcm_port")
-    private String applcmPort;
+    @Column(name = "appstore_port")
+    private String appstorePort;
+
+    @Column(name = "uri")
+    private String uri;
 
     @Column(name = "user_name")
     private String userName;
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "appstore_name")
+    private String appstoreName;
+
+    @Column(name = "producer")
+    private String producer;
 }

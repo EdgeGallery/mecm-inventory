@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.apihandler.dto;
 
-import static org.edgegallery.mecm.inventory.common.Constants.IP_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.NAME_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.PORT_REGEX;
-import static org.edgegallery.mecm.inventory.common.Constants.URI_REGEX;
+import static org.edgegallery.mecm.inventory.utils.Constants.IP_REGEX;
+import static org.edgegallery.mecm.inventory.utils.Constants.NAME_REGEX;
+import static org.edgegallery.mecm.inventory.utils.Constants.PORT_REGEX;
+import static org.edgegallery.mecm.inventory.utils.Constants.URI_REGEX;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -28,8 +28,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.edgegallery.mecm.inventory.common.ConstraintType;
-import org.edgegallery.mecm.inventory.common.CustomConstraint;
+import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
+import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**

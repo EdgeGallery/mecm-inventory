@@ -14,14 +14,13 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.common;
+package org.edgegallery.mecm.inventory.utils;
 
 /**
  * Common constants.
  */
 public final class Constants {
 
-    public static final String ID_REGEX = "^[a-zA-Z0-9]*$|^[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9]$";
     public static final String IP_REGEX = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.)"
             + "{3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
     public static final String PORT_REGEX = "^([1-9]|[1-9]\\d{1,3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d"

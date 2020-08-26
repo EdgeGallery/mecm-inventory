@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.validation.Valid;
-import org.edgegallery.mecm.inventory.model.AppLcmDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.AppLcmDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

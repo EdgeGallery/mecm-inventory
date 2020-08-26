@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.repository;
+package org.edgegallery.mecm.inventory.service.repository;
 
-import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.service.model.AppStore;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- * MEC host repository.
+ * Application store repository.
  */
-public interface MecHostRepository extends CrudRepository<MecHost, String> {
+public interface AppStoreRepository extends CrudRepository<AppStore, String> {
 
 }
