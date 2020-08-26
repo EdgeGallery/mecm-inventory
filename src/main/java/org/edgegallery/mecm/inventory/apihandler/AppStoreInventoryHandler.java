@@ -62,7 +62,8 @@ public class AppStoreInventoryHandler {
     }
 
     /**
-     * Updates an exiting application store record in the Inventory matching the given tenant ID & application store IP.
+     * Updates an exiting application store record in the Inventory matching the given tenant ID & application store
+     * IP.
      *
      * @param tenantId    tenant ID
      * @param appStoreIp  application store IP
@@ -122,7 +123,8 @@ public class AppStoreInventoryHandler {
     }
 
     /**
-     * Deletes a specific application store record in the Inventory matching the given tenant ID & application store IP.
+     * Deletes a specific application store record in the Inventory matching the given tenant ID & application store
+     * IP.
      *
      * @param tenantId   tenant ID
      * @param appStoreIp application store IP
