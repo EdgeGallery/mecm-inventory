@@ -29,7 +29,7 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class InventoryApplication {
 
-    private static final Logger logger = LoggerFactory.getLogger(InventoryApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryApplication.class);
 
     /**
      * External system Inventory entry function.
@@ -38,7 +38,7 @@ public class InventoryApplication {
      */
     public static void main(String[] args) {
         // TODO: Token & https based support.
-        logger.info("Inventory application starting----");
+        LOGGER.info("Inventory application starting----");
         SpringApplication.run(InventoryApplication.class, args);
     }
 
