@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.service.model;
+package org.edgegallery.mecm.inventory.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -27,19 +27,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * App store Inventory schema.
+ * MEC host Inventory schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "appstoreinventory")
-public final class AppStore {
+@Table(name = "mechostinventory")
+public final class MecHost implements BaseModel {
 
     @Id
-    @Column(name = "appstore_id")
-    private String appstoreId;
+    @Column(name = "mechost_id")
+    private String mechostId;
 
     @Column(name = "tenant_id")
     private String tenantId;
@@ -47,14 +47,23 @@ public final class AppStore {
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
-    @Column(name = "appstore_ip")
-    private String appstoreIp;
+    @Column(name = "mechost_ip")
+    private String mechostIp;
 
-    @Column(name = "appstore_port")
-    private String appstorePort;
+    @Column(name = "mechost_name")
+    private String mechostName;
 
-    @Column(name = "uri")
-    private String uri;
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "affinity")
+    private String affinity;
 
     @Column(name = "user_name")
     private String userName;
@@ -62,9 +71,26 @@ public final class AppStore {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "appstore_name")
-    private String appstoreName;
+    @Column(name = "edge_name")
+    private String edgeName;
 
-    @Column(name = "producer")
-    private String producer;
+    @Column(name = "edgerepo_ip")
+    private String edgerepoIp;
+
+    @Column(name = "edgerepo_port")
+    private String edgerepoPort;
+
+    @Column(name = "edgerepo_username")
+    private String edgerepoUsername;
+
+    @Column(name = "edgerepo_password")
+    private String edgerepoPassword;
+
+    @Column(name = "applcm_ip")
+    private String applcmIp;
+
+    @Override
+    public String getIdentifier() {
+        return mechostId;
+    }
 }

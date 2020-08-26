@@ -17,7 +17,6 @@
 package org.edgegallery.mecm.inventory.exception;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Inventory exception response.
@@ -26,7 +25,7 @@ public class InventoryExceptionResponse {
 
     private final LocalDateTime timestamp;
     private final String message;
-    private final List<String> details;
+    private final String details;
 
     /**
      * Constructor to create exception response.
@@ -35,7 +34,7 @@ public class InventoryExceptionResponse {
      * @param message   message
      * @param details   details
      */
-    public InventoryExceptionResponse(LocalDateTime timestamp, String message, List<String> details) {
+    public InventoryExceptionResponse(LocalDateTime timestamp, String message, String details) {
         super();
         this.timestamp = timestamp;
         this.message = message;
@@ -56,7 +55,7 @@ public class InventoryExceptionResponse {
      *
      * @return error details
      */
-    public List<String> getDetails() {
+    public String getDetails() {
         return details;
     }
 

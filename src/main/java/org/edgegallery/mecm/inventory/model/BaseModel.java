@@ -14,14 +14,17 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.service.repository;
-
-import org.edgegallery.mecm.inventory.model.MecHost;
-import org.springframework.data.repository.CrudRepository;
+package org.edgegallery.mecm.inventory.model;
 
 /**
- * MEC host repository.
+ * Base inventory model.
  */
-public interface MecHostRepository extends CrudRepository<MecHost, String> {
+public interface BaseModel {
 
+    /**
+     * Returns identifier.
+     *
+     * @return identifier
+     */
+    String getIdentifier();
 }

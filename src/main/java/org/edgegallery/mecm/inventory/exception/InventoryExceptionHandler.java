@@ -17,8 +17,6 @@
 package org.edgegallery.mecm.inventory.exception;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,14 +47,9 @@ public class InventoryExceptionHandler {
      * @return response entity with error details
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<InventoryExceptionResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<String> errorMsg = new ArrayList<>();
-        if (ex.getBindingResult().hasErrors()) {
-            ex.getBindingResult().getAllErrors().forEach(error -> errorMsg.add(error.getDefaultMessage()));
-        }
+    public ResponseEntity<InventoryExceptionResponse> illegalArgumentNotValid(IllegalArgumentException ex) {
         InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
-                "input validation failed",
-                errorMsg);
+                "input validation failed", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

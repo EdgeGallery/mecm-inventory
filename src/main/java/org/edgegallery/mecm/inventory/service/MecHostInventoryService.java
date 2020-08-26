@@ -16,9 +16,40 @@
 
 package org.edgegallery.mecm.inventory.service;
 
+import java.util.List;
+import org.edgegallery.mecm.inventory.model.BaseModel;
 import org.springframework.stereotype.Service;
 
 @Service("MecHostInventoryService")
-public final class MecHostInventoryService {
-    // TODO implementation
+public final class MecHostInventoryService implements InventoryService {
+
+    @Override
+    public String addRecord(BaseModel model) {
+        return null;
+    }
+
+    @Override
+    public String updateRecord(BaseModel model) {
+        return null;
+    }
+
+    @Override
+    public List<BaseModel> getTenantRecords(String tenantId) {
+        return null;
+    }
+
+    @Override
+    public BaseModel getRecord(String id) {
+        return null;
+    }
+
+    @Override
+    public String deleteTenantRecords(String tenantId) {
+        return null;
+    }
+
+    @Override
+    public String deleteRecord(String id) {
+        return null;
+    }
 }

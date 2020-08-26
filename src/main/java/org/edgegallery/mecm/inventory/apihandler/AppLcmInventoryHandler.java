@@ -22,6 +22,10 @@ import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.validation.Valid;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppLcmDto;
+import org.edgegallery.mecm.inventory.model.AppLcm;
+import org.edgegallery.mecm.inventory.service.AppLcmInventoryService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +50,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class AppLcmInventoryHandler {
 
+    @Autowired
+    private AppLcmInventoryService service;
+
     /**
      * Adds a new application LCM record entry into the Inventory.
      *
@@ -58,8 +65,11 @@ public class AppLcmInventoryHandler {
     public ResponseEntity<String> addAppLcmRecord(
             @PathVariable("tenant_id") String tenantId,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        ModelMapper mapper = new ModelMapper();
+        AppLcm lcm = mapper.map(appLcmDto, AppLcm.class);
+        lcm.setApplcmId(appLcmDto.getApplcmIp() + tenantId);
+        String response = service.addRecord(lcm);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**

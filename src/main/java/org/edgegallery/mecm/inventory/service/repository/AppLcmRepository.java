@@ -16,7 +16,7 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
-import org.edgegallery.mecm.inventory.service.model.AppLcm;
+import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.springframework.data.repository.CrudRepository;
 
 /**
