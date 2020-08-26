@@ -14,32 +14,48 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.service.model;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
- * Application lifecycle management registry schema.
+ * Application lifecycle management schema.
  */
-@Setter
 @Getter
-@ToString
-public class AppLcm {
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "applcminventory")
+public final class AppLcm {
 
+    @Id
+    @Column(name = "applcm_id")
     private String applcmId;
 
-    private String applcmIp;
-
-    private String applcmPort;
-
-    private String userName;
-
-    private String password;
-
+    @Column(name = "tenant_id")
     private String tenantId;
 
+    @Column(name = "create_time")
     private LocalDateTime createTime;
+
+    @Column(name = "applcm_ip")
+    private String applcmIp;
+
+    @Column(name = "applcm_port")
+    private String applcmPort;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "password")
+    private String password;
 }

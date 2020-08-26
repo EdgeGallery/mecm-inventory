@@ -14,39 +14,14 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.service.repository;
 
-import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
+import org.edgegallery.mecm.inventory.service.model.AppStore;
+import org.springframework.data.repository.CrudRepository;
 
 /**
- * App store registry schema.
+ * Application store repository.
  */
-@Setter
-@Getter
-@ToString
-public class AppStore {
+public interface AppStoreRepository extends CrudRepository<AppStore, String> {
 
-    private String appStoreId;
-
-    private String appstoreIp;
-
-    private String appstorePort;
-
-    private String uri;
-
-    private String userName;
-
-    private String password;
-
-    private String appstoreName;
-
-    private String producer;
-
-    private String tenantId;
-
-    private LocalDateTime createTime;
 }

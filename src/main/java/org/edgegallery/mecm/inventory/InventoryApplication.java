@@ -24,21 +24,21 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 /**
- * External system registry application.
+ * External system Inventory application.
  */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class InventoryApplication {
 
-    private static final Logger logger = LoggerFactory.getLogger(InventoryApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryApplication.class);
 
     /**
-     * External system registry entry function.
+     * External system Inventory entry function.
      *
      * @param args arguments
      */
     public static void main(String[] args) {
         // TODO: Token & https based support.
-        logger.info("Inventory application starting----");
+        LOGGER.info("Inventory application starting----");
         SpringApplication.run(InventoryApplication.class, args);
     }
 
