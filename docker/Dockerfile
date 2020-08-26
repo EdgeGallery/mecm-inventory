@@ -29,8 +29,8 @@ RUN apk update &&\
 WORKDIR $APP_HOME
 
 # Copy the application & scripts
-ADD target/inventory-0.0.1-SNAPSHOT.jar $APP_HOME/
-ADD configs/*.sh $APP_HOME/
+COPY target/inventory-0.0.1-SNAPSHOT.jar $APP_HOME/
+COPY configs/*.sh $APP_HOME/
 
 RUN chmod 750 $APP_HOME &&\
     chmod 550 $APP_HOME/*.sh &&\
