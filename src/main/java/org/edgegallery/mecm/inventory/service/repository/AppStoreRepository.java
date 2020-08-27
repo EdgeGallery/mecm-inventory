@@ -18,7 +18,6 @@ package org.edgegallery.mecm.inventory.service.repository;
 
 import java.util.List;
 import javax.transaction.Transactional;
-import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.edgegallery.mecm.inventory.model.AppStore;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,7 +27,7 @@ import org.springframework.data.repository.query.Param;
 /**
  * Application store repository.
  */
-public interface AppStoreRepository extends CrudRepository<AppLcm, String>, BaseRepository<AppStore> {
+public interface AppStoreRepository extends CrudRepository<AppStore, String>, BaseRepository<AppStore> {
 
     @Transactional
     @Modifying

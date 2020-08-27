@@ -67,7 +67,8 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/applcms")
+    @PostMapping(path = "/tenants/{tenant_id}/applcms",
+            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> addAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
