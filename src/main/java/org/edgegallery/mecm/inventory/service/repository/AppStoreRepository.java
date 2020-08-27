@@ -16,9 +16,25 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
+import java.util.List;
+import javax.transaction.Transactional;
+import org.edgegallery.mecm.inventory.model.AppLcm;
+import org.edgegallery.mecm.inventory.model.AppStore;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
 /**
  * Application store repository.
  */
-public interface AppStoreRepository {
+public interface AppStoreRepository extends CrudRepository<AppLcm, String>, BaseRepository<AppStore> {
 
+    @Transactional
+    @Modifying
+    @Query("delete from AppStore m where m.tenantId=:tenantId")
+    void deleteByTenantId(@Param("tenantId") String tenantId);
+
+    @Query(value = "SELECT * FROM appstoreinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
+    List<AppStore> findByTenantId(@Param("tenantId") String tenantId);
 }

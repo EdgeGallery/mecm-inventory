@@ -28,7 +28,7 @@ public class InventoryExceptionResponse {
 
     private final LocalDateTime timestamp;
     private final String message;
-    private List<String> details;
+    private final List<String> details;
 
     /**
      * Constructor to create exception response.

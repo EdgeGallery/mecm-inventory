@@ -16,71 +16,81 @@
 
 package org.edgegallery.mecm.inventory.model;
 
+import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * MEC host Inventory schema.
  */
-//@Getter
-//@Setter
-////@NoArgsConstructor
-//@AllArgsConstructor
-//@Entity
-//@Table(name = "mechostinventory")
-public final class MecHost {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "mechostinventory")
+public final class MecHost implements BaseModel {
 
-//    @Id
-//    @Column(name = "mechost_id")
-//    private String mechostId;
-//
-//    @Column(name = "tenant_id")
-//    private String tenantId;
-//
-//    @Column(name = "created_time")
-//    private LocalDateTime createTime;
-//
-//    @Column(name = "mechost_ip")
-//    private String mechostIp;
-//
-//    @Column(name = "mechost_name")
-//    private String mechostName;
-//
-//    @Column(name = "zip_code")
-//    private String zipCode;
-//
-//    @Column(name = "city")
-//    private String city;
-//
-//    @Column(name = "address")
-//    private String address;
-//
-//    @Column(name = "affinity")
-//    private String affinity;
-//
-//    @Column(name = "user_name")
-//    private String userName;
-//
-//    @Column(name = "password")
-//    private String password;
-//
-//    @Column(name = "edge_name")
-//    private String edgeName;
-//
-//    @Column(name = "edgerepo_ip")
-//    private String edgerepoIp;
-//
-//    @Column(name = "edgerepo_port")
-//    private String edgerepoPort;
-//
-//    @Column(name = "edgerepo_username")
-//    private String edgerepoUsername;
-//
-//    @Column(name = "edgerepo_password")
-//    private String edgerepoPassword;
-//
-//    @Column(name = "applcm_ip")
-//    private String applcmIp;
-//
-//    @Override
-//    public String getIdentifier() {
-//        return mechostId;
-//    }
+    @Id
+    @Column(name = "mechost_id")
+    private String mechostId;
+
+    @Column(name = "tenant_id")
+    private String tenantId;
+
+    @Column(name = "created_time")
+    private LocalDateTime createTime;
+
+    @Column(name = "mechost_ip")
+    private String mechostIp;
+
+    @Column(name = "mechost_name")
+    private String mechostName;
+
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "affinity")
+    private String affinity;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "edge_name")
+    private String edgeName;
+
+    @Column(name = "edgerepo_ip")
+    private String edgerepoIp;
+
+    @Column(name = "edgerepo_port")
+    private String edgerepoPort;
+
+    @Column(name = "edgerepo_username")
+    private String edgerepoUsername;
+
+    @Column(name = "edgerepo_password")
+    private String edgerepoPassword;
+
+    @Column(name = "applcm_ip")
+    private String applcmIp;
+
+    @Override
+    public String getIdentifier() {
+        return mechostId;
+    }
 }

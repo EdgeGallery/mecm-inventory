@@ -22,7 +22,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>inventory</name>
-	<description>Application Package Manager</description>
+	<description>MECM Inventory</description>
 
 	<properties>
 		<java.version>1.8</java.version>

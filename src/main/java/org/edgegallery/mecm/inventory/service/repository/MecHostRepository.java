@@ -16,9 +16,26 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
+import java.util.List;
+import javax.transaction.Transactional;
+import org.edgegallery.mecm.inventory.model.AppLcm;
+import org.edgegallery.mecm.inventory.model.MecHost;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
 /**
  * MEC host repository.
  */
-public interface MecHostRepository {
+public interface MecHostRepository extends CrudRepository<AppLcm, String>, BaseRepository<MecHost> {
 
+    @Transactional
+    @Modifying
+    @Query("delete from MecHost m where m.tenantId=:tenantId")
+    void deleteByTenantId(@Param("tenantId") String tenantId);
+
+    @Query(value = "SELECT * FROM mechostinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
+    List<MecHost> findByTenantId(@Param("tenantId") String tenantId);
 }
+
