@@ -17,7 +17,9 @@
 package org.edgegallery.mecm.inventory.service;
 
 import java.util.List;
+import java.util.Optional;
 import org.edgegallery.mecm.inventory.model.BaseModel;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  * Inventory service.
@@ -28,47 +30,59 @@ public interface InventoryService {
      * Adds a record to inventor.
      *
      * @param model inventory model
+     * @param repository operating repository
+     * @param <T> type of model
      * @return status
      */
-    String addRecord(BaseModel model);
+    <T extends BaseModel> String addRecord(T model, CrudRepository<T, String> repository);
 
     /**
      * Updates a record to inventor.
      *
      * @param model inventory model
+     * @param repository operating repository
+     * @param <T> type of model
      * @return status
      */
-    String updateRecord(BaseModel model);
+    <T extends BaseModel> String updateRecord(T model, CrudRepository<T, String> repository);
 
     /**
      * Returns records of a given tenant.
      *
      * @param tenantId tenant identifier
+     * @param repository operating repository
+     * @param <T> type of model
      * @return list of records
      */
-    List<BaseModel> getTenantRecords(String tenantId);
+    <T extends BaseModel> List<T> getTenantRecords(String tenantId, CrudRepository<T, String> repository);
 
     /**
      * Returns a record.
      *
      * @param id record identifier
-     * @return record
+     * @param repository operating repository
+     * @param <T> type of model
+     * @return record with optional content
      */
-    BaseModel getRecord(String id);
+    <T extends BaseModel> Optional<T> getRecord(String id, CrudRepository<T, String> repository);
 
     /**
      * Deletes records for a given tenant.
      *
      * @param tenantId tenant identifier
+     * @param repository operating repository
+     * @param <T> type of model
      * @return status
      */
-    String deleteTenantRecords(String tenantId);
+    <T extends BaseModel> String deleteTenantRecords(String tenantId, CrudRepository<T, String> repository);
 
     /**
      * Deletes a record.
      *
      * @param id record identifier
+     * @param repository operating repository
+     * @param <T> type of model
      * @return status
      */
-    String deleteRecord(String id);
+    <T extends BaseModel> String deleteRecord(String id, CrudRepository<T, String> repository);
 }

@@ -19,13 +19,14 @@ package org.edgegallery.mecm.inventory.apihandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppLcmDto;
 import org.edgegallery.mecm.inventory.model.AppLcm;
-import org.edgegallery.mecm.inventory.service.AppLcmInventoryService;
+import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
+import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class AppLcmInventoryHandler {
 
     @Autowired
-    private AppLcmInventoryService service;
+    private InventoryServiceImpl service;
+
+    @Autowired
+    private AppLcmRepository repository;
 
     /**
      * Adds a new application LCM record entry into the Inventory.
@@ -64,20 +68,15 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/applcms")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Operation successful", response = String.class),
-            @ApiResponse(code = 400, message = "Bad request", response = String.class),
-            @ApiResponse(code = 500, message = "Internal server error", response = String.class)
-    })
     public ResponseEntity<String> addAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
         ModelMapper mapper = new ModelMapper();
         AppLcm lcm = mapper.map(appLcmDto, AppLcm.class);
         lcm.setTenantId(tenantId);
-        lcm.setApplcmId(appLcmDto.getApplcmIp() + tenantId);
-        String response = service.addRecord(lcm);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        lcm.setApplcmId(appLcmDto.getApplcmIp() + "_" + tenantId);
+        String status = service.addRecord(lcm, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -89,13 +88,18 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)
-    @PutMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PutMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}",
+            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> updateAppLcmRecord(
-            @PathVariable("tenant_id") String tenantId,
-            @PathVariable("applcm_ip") String appLcmIp,
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        ModelMapper mapper = new ModelMapper();
+        AppLcm lcm = mapper.map(appLcmDto, AppLcm.class);
+        lcm.setTenantId(tenantId);
+        lcm.setApplcmId(appLcmIp + "_" + tenantId);
+        String status = service.updateRecord(lcm, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -106,9 +110,16 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all application LCM records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(@PathVariable("tenant_id") String tenantId) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
+        List<AppLcm> appLcms = service.getTenantRecords(tenantId, repository);
+        List<AppLcmDto> appLcmDtos = new LinkedList<>();
+        for (AppLcm lcm : appLcms) {
+            ModelMapper mapper = new ModelMapper();
+            AppLcmDto appLcmDto = mapper.map(lcm, AppLcmDto.class);
+            appLcmDtos.add(appLcmDto);
+        }
+        return new ResponseEntity<>(appLcmDtos, HttpStatus.OK);
     }
 
     /**
@@ -120,10 +131,17 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Retrieves application LCM record", response = AppLcmDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppLcmDto> getAppLcmRecord(@PathVariable("tenant_id") String tenantId,
-                                                     @PathVariable("applcm_ip") String appLcmIp) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<AppLcmDto> getAppLcmRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp) {
+        Optional<AppLcm> record = service.getRecord(appLcmIp + "_" + tenantId, repository);
+        if (record.isPresent()) {
+            AppLcm lcm = record.get();
+            ModelMapper mapper = new ModelMapper();
+            AppLcmDto appLcmDto = mapper.map(lcm, AppLcmDto.class);
+            return new ResponseEntity<>(appLcmDto, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -133,10 +151,12 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all application LCM records", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteAllAppLcmRecords(@PathVariable("tenant_id") String tenantId) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping(path = "/tenants/{tenant_id}/applcms",
+            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> deleteAllAppLcmRecords(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
+        String status = service.deleteTenantRecords(tenantId, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -147,10 +167,13 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes application LCM record", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteAppLcmRecord(@PathVariable("tenant_id") String tenantId,
-                                                     @PathVariable("applcm_ip") String appLcmIp) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}",
+            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> deleteAppLcmRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp) {
+        String status = service.deleteRecord(appLcmIp + "_" + tenantId, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -165,10 +188,11 @@ public class AppLcmInventoryHandler {
     @ApiOperation(value = "Upload K8s configuration file to applcm", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}/host/{hostIp}/k8sconfig",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadConfigFile(@PathVariable("tenant_id") String tenantId,
-                                                   @PathVariable("applcm_ip") String appLcmIp,
-                                                   @PathVariable("hostIp") String hostIp,
-                                                   @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadConfigFile(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp,
+            @ApiParam(value = "host IP") @PathVariable("hostIp") String hostIp,
+            @RequestParam("file") MultipartFile file) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -182,11 +206,11 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Deletes K8s configuration file from applcm", response = String.class)
     @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}/host/{hostIp}/k8sconfig",
-            produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteConfigFile(@PathVariable("tenant_id") String tenantId,
-                                                   @PathVariable("applcm_ip") String appLcmIp,
-                                                   @PathVariable("hostIp") String hostIp) {
-
+            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> deleteConfigFile(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp,
+            @ApiParam(value = "host IP") @PathVariable("hostIp") String hostIp) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

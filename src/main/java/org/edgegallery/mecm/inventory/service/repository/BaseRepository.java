@@ -16,9 +16,29 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
-/**
- * Application store repository.
- */
-public interface AppStoreRepository {
+import java.util.List;
+import org.edgegallery.mecm.inventory.model.BaseModel;
+import org.springframework.data.repository.query.Param;
 
+/**
+ * Base repository.
+ *
+ * @param <T> type of model
+ */
+public interface BaseRepository<T extends BaseModel> {
+
+    /**
+     * Delete a record by tenant identifier.
+     *
+     * @param tenantId tenant identifier
+     */
+    void deleteByTenantId(@Param("tenantId") String tenantId);
+
+    /**
+     * Returns a record by tenant identifier.
+     *
+     * @param tenantId tenant identifier
+     * @return list of records
+     */
+    List<T> findByTenantId(@Param("tenantId") String tenantId);
 }

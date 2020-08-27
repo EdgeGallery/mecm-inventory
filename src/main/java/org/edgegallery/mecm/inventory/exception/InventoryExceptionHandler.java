@@ -19,7 +19,7 @@ package org.edgegallery.mecm.inventory.exception;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.edgegallery.mecm.inventory.InventoryApplication;
+import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class InventoryExceptionHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryExceptionHandler.class);
 
     /**
      * Returns error code and message for Inventory exception.
@@ -61,12 +61,12 @@ public class InventoryExceptionHandler {
         }
         InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
                 "input validation failed", errorMsg);
-        LOGGER.info(response.toString());
+        LOGGER.info("Method argument error: {}", response);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
-     * Returns error code and message for Inventory exception.
+     * Returns error code and message when argument is illegal.
      *
      * @param ex exception while processing request
      * @return response entity with error code and message
@@ -74,5 +74,16 @@ public class InventoryExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgException(IllegalArgumentException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Returns error code and message when record not found.
+     *
+     * @param ex exception while processing request
+     * @return response entity with error code and message
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

@@ -16,12 +16,9 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
-import org.edgegallery.mecm.inventory.model.MecHost;
-import org.springframework.data.repository.CrudRepository;
-
 /**
  * MEC host repository.
  */
-public interface MecHostRepository extends CrudRepository<MecHost, String> {
+public interface MecHostRepository {
 
 }
