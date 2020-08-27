@@ -193,7 +193,7 @@ public class AppLcmInventoryHandler {
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
             @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp,
             @ApiParam(value = "host IP") @PathVariable("hostIp") String hostIp,
-            @RequestParam("file") MultipartFile file) {
+            @ApiParam(value = "config file") @RequestParam("file") MultipartFile file) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
