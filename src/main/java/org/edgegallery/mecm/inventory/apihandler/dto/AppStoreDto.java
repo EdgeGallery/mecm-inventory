@@ -26,6 +26,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
@@ -40,6 +41,7 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public final class AppStoreDto {
 
     @NotEmpty(message = "appstore IP is empty")

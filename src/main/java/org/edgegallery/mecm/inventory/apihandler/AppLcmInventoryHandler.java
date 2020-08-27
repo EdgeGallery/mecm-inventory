@@ -19,6 +19,8 @@ package org.edgegallery.mecm.inventory.apihandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import javax.validation.Valid;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppLcmDto;
@@ -61,12 +63,18 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(path = "/tenants/{tenant_id}/applcms")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Operation successful", response = String.class),
+            @ApiResponse(code = 400, message = "Bad request", response = String.class),
+            @ApiResponse(code = 500, message = "Internal server error", response = String.class)
+    })
     public ResponseEntity<String> addAppLcmRecord(
-            @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
         ModelMapper mapper = new ModelMapper();
         AppLcm lcm = mapper.map(appLcmDto, AppLcm.class);
+        lcm.setTenantId(tenantId);
         lcm.setApplcmId(appLcmDto.getApplcmIp() + tenantId);
         String response = service.addRecord(lcm);
         return new ResponseEntity<>(response, HttpStatus.OK);

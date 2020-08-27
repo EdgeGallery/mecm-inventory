@@ -44,7 +44,7 @@ public final class MecHost implements BaseModel {
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "create_time")
+    @Column(name = "created_time")
     private LocalDateTime createTime;
 
     @Column(name = "mechost_ip")

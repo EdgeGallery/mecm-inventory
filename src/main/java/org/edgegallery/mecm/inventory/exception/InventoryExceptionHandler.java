@@ -17,6 +17,11 @@
 package org.edgegallery.mecm.inventory.exception;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import org.edgegallery.mecm.inventory.InventoryApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,6 +33,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  */
 @ControllerAdvice
 public class InventoryExceptionHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryApplication.class);
 
     /**
      * Returns error code and message for Inventory exception.
@@ -47,9 +54,25 @@ public class InventoryExceptionHandler {
      * @return response entity with error details
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<InventoryExceptionResponse> illegalArgumentNotValid(IllegalArgumentException ex) {
+    public ResponseEntity<InventoryExceptionResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        List<String> errorMsg = new ArrayList<>();
+        if (ex.getBindingResult().hasErrors()) {
+            ex.getBindingResult().getAllErrors().forEach(error -> errorMsg.add(error.getDefaultMessage()));
+        }
         InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
-                "input validation failed", ex.getMessage());
+                "input validation failed", errorMsg);
+        LOGGER.info(response.toString());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Returns error code and message for Inventory exception.
+     *
+     * @param ex exception while processing request
+     * @return response entity with error code and message
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

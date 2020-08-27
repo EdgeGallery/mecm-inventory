@@ -7,6 +7,9 @@ target/
 *.log
 log/
 
+# Deployment files
+deploy/
+
 # Editor directories and files
 .idea
 .vscode

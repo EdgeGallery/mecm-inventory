@@ -16,19 +16,25 @@
 
 ### Server port #########
 server:
-  port: ${LISTEN_PORT}
+  port: 8806
   address: ${LISTEN_IP:0.0.0.0}
   contextPath: /home
 
 spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/inventorydb
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD:}
+    username: inventory
+    password: mysecretpassword
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         ddl-auto: validate
     open-in-view: false
+
+inventory:
+  async:
+    corepool-size: 50
+    maxpool-size: 50
+    queue-capacity: 500
 

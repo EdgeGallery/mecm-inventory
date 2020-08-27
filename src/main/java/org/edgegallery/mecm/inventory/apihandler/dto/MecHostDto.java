@@ -25,6 +25,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
@@ -39,7 +40,8 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @ToString
 @AllArgsConstructor
-public class MecHostDto {
+@NoArgsConstructor
+public final class MecHostDto {
 
     @NotEmpty(message = "mechost IP is empty")
     @Size(max = 15)
