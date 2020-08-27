@@ -29,9 +29,9 @@ public interface InventoryService {
     /**
      * Adds a record to inventor.
      *
-     * @param model inventory model
+     * @param model      inventory model
      * @param repository operating repository
-     * @param <T> type of model
+     * @param <T>        type of model
      * @return status
      */
     <T extends BaseModel> String addRecord(T model, CrudRepository<T, String> repository);
@@ -39,9 +39,9 @@ public interface InventoryService {
     /**
      * Updates a record to inventor.
      *
-     * @param model inventory model
+     * @param model      inventory model
      * @param repository operating repository
-     * @param <T> type of model
+     * @param <T>        type of model
      * @return status
      */
     <T extends BaseModel> String updateRecord(T model, CrudRepository<T, String> repository);
@@ -49,9 +49,9 @@ public interface InventoryService {
     /**
      * Returns records of a given tenant.
      *
-     * @param tenantId tenant identifier
+     * @param tenantId   tenant identifier
      * @param repository operating repository
-     * @param <T> type of model
+     * @param <T>        type of model
      * @return list of records
      */
     <T extends BaseModel> List<T> getTenantRecords(String tenantId, CrudRepository<T, String> repository);
@@ -59,9 +59,9 @@ public interface InventoryService {
     /**
      * Returns a record.
      *
-     * @param id record identifier
+     * @param id         record identifier
      * @param repository operating repository
-     * @param <T> type of model
+     * @param <T>        type of model
      * @return record with optional content
      */
     <T extends BaseModel> Optional<T> getRecord(String id, CrudRepository<T, String> repository);
@@ -69,9 +69,9 @@ public interface InventoryService {
     /**
      * Deletes records for a given tenant.
      *
-     * @param tenantId tenant identifier
+     * @param tenantId   tenant identifier
      * @param repository operating repository
-     * @param <T> type of model
+     * @param <T>        type of model
      * @return status
      */
     <T extends BaseModel> String deleteTenantRecords(String tenantId, CrudRepository<T, String> repository);
@@ -79,9 +79,9 @@ public interface InventoryService {
     /**
      * Deletes a record.
      *
-     * @param id record identifier
+     * @param id         record identifier
      * @param repository operating repository
-     * @param <T> type of model
+     * @param <T>        type of model
      * @return status
      */
     <T extends BaseModel> String deleteRecord(String id, CrudRepository<T, String> repository);
