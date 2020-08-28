@@ -25,14 +25,12 @@ RUN apk update &&\
     groupadd -r -g $GID $GROUP_NAME &&\
     useradd -r -u $UID -g $GID -d $APP_HOME -s /sbin/nologin -c "Docker image user" $USER_NAME
 
-RUN apk add docker
+# Set the working directory.
+WORKDIR $APP_HOME
 
 # Copy the application & scripts
 COPY target/inventory-0.0.1-SNAPSHOT.jar $APP_HOME/
 COPY configs/*.sh $APP_HOME/
-
-# Set the working directory.
-WORKDIR $APP_HOME
 
 RUN chmod 750 $APP_HOME &&\
     chmod 550 $APP_HOME/*.sh &&\
