@@ -31,10 +31,14 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         ddl-auto: validate
     open-in-view: false
+  http:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
-inventory:
-  async:
-    corepool-size: 50
-    maxpool-size: 50
-    queue-capacity: 500
-
+#### security config ####
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-uri: ${AUTH_SERVER_ADDRESS:http://user-mgmt-svc:8067}/oauth/token_key
