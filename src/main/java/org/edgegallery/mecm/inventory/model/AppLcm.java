@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.service.model;
+package org.edgegallery.mecm.inventory.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -27,43 +27,31 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * MEC host Inventory schema.
+ * Application lifecycle management schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "mechostinventory")
-public class MecHost {
+@Table(name = "applcminventory")
+public final class AppLcm implements BaseModel {
 
     @Id
-    @Column(name = "mechost_id")
-    private String mechostId;
+    @Column(name = "applcm_id")
+    private String applcmId;
 
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "create_time")
+    @Column(name = "created_time")
     private LocalDateTime createTime;
 
-    @Column(name = "mechost_ip")
-    private String mechostIp;
+    @Column(name = "applcm_ip")
+    private String applcmIp;
 
-    @Column(name = "mechost_name")
-    private String mechostName;
-
-    @Column(name = "zip_code")
-    private String zipCode;
-
-    @Column(name = "city")
-    private String city;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "affinity")
-    private String affinity;
+    @Column(name = "applcm_port")
+    private String applcmPort;
 
     @Column(name = "user_name")
     private String userName;
@@ -71,21 +59,8 @@ public class MecHost {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "edge_name")
-    private String edgeName;
-
-    @Column(name = "edgerepo_ip")
-    private String edgerepoIp;
-
-    @Column(name = "edgerepo_port")
-    private String edgerepoPort;
-
-    @Column(name = "edgerepo_username")
-    private String edgerepoUsername;
-
-    @Column(name = "edgerepo_password")
-    private String edgerepoPassword;
-
-    @Column(name = "applcm_ip")
-    private String applcmIp;
+    @Override
+    public String getIdentifier() {
+        return applcmId;
+    }
 }

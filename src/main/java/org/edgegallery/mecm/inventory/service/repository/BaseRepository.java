@@ -17,23 +17,28 @@
 package org.edgegallery.mecm.inventory.service.repository;
 
 import java.util.List;
-import javax.transaction.Transactional;
-import org.edgegallery.mecm.inventory.model.AppStore;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.edgegallery.mecm.inventory.model.BaseModel;
 import org.springframework.data.repository.query.Param;
 
 /**
- * Application store repository.
+ * Base repository.
+ *
+ * @param <T> type of model
  */
-public interface AppStoreRepository extends CrudRepository<AppStore, String>, BaseRepository<AppStore> {
+public interface BaseRepository<T extends BaseModel> {
 
-    @Transactional
-    @Modifying
-    @Query("delete from AppStore m where m.tenantId=:tenantId")
+    /**
+     * Delete a record by tenant identifier.
+     *
+     * @param tenantId tenant identifier
+     */
     void deleteByTenantId(@Param("tenantId") String tenantId);
 
-    @Query(value = "SELECT * FROM appstoreinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<AppStore> findByTenantId(@Param("tenantId") String tenantId);
+    /**
+     * Returns a record by tenant identifier.
+     *
+     * @param tenantId tenant identifier
+     * @return list of records
+     */
+    List<T> findByTenantId(@Param("tenantId") String tenantId);
 }

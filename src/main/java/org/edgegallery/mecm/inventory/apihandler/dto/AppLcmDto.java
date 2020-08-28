@@ -25,6 +25,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
@@ -39,20 +40,21 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public final class AppLcmDto {
 
     @NotEmpty(message = "applcm IP is empty")
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
+    @Size(max = 15, message = "applcm IP length exceeds max size")
+    @Pattern(regexp = IP_REGEX, message = "applcm IP allowed pattern mismatch")
     private String applcmIp;
 
     @NotEmpty(message = "applcm port is empty")
-    @Size(max = 5)
-    @Pattern(regexp = PORT_REGEX)
+    @Size(max = 5, message = "applcm port length exceeds max size")
+    @Pattern(regexp = PORT_REGEX, message = "applcm port allowed pattern mismatch")
     private String applcmPort;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "username length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "applcm username allowed pattern mismatch")
     private String userName;
 
     @CustomConstraint(ConstraintType.PASSWORD)

@@ -85,5 +85,4 @@ public final class CustomConstraintValidator implements ConstraintValidator<Cust
         Matcher m = p.matcher(param);
         return m.matches();
     }
-
 }

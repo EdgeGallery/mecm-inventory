@@ -25,6 +25,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
@@ -39,60 +40,63 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @ToString
 @AllArgsConstructor
-public class MecHostDto {
+@NoArgsConstructor
+public final class MecHostDto {
 
     @NotEmpty(message = "mechost IP is empty")
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
+    @Size(max = 15, message = "mechost IP length exceeds max size")
+    @Pattern(regexp = IP_REGEX, message = "mechost IP allowed pattern mismatch")
     private String mecHostIp;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "mechost name length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "mechost name allowed pattern mismatch")
     private String mecHostName;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "mechost zipcode length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "mechost zipcode allowed pattern mismatch")
     private String zipCode;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "mechost city length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "mechost city allowed pattern mismatch")
     private String city;
 
-    @Size(max = 256)
+    @Size(max = 256, message = "mechost address length exceeds max size")
     private String address;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "mechost affinity length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "mechost affinity allowed pattern mismatch")
     private String affinity;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "mechost username length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "mechost username allowed pattern mismatch")
     private String userName;
 
     @CustomConstraint(ConstraintType.PASSWORD)
     private String password;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "edgeName length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "edgename allowed pattern mismatch")
     private String edgeName;
 
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
+    @NotEmpty(message = "edgerepo IP is empty")
+    @Size(max = 15, message = "edgerepo IP length exceeds max size")
+    @Pattern(regexp = IP_REGEX, message = "edgerepo IP allowed pattern mismatch")
     private String edgeRepoIp;
 
-    @Size(max = 5)
-    @Pattern(regexp = PORT_REGEX)
+    @NotEmpty(message = "edgerepo port is empty")
+    @Size(max = 5, message = "edgerepo port length exceeds max size")
+    @Pattern(regexp = PORT_REGEX, message = "edgerepo port allowed pattern mismatch")
     private String edgeRepoPort;
 
-    @Size(max = 128)
-    @Pattern(regexp = NAME_REGEX)
+    @Size(max = 128, message = "edgerepo username length exceeds max size")
+    @Pattern(regexp = NAME_REGEX, message = "edgerepo username allowed pattern mismatch")
     private String edgeRepoUsername;
 
     @CustomConstraint(ConstraintType.PASSWORD)
     private String edgeRepoPassword;
 
     @NotEmpty(message = "applcm IP is empty")
-    @Size(max = 15)
-    @Pattern(regexp = IP_REGEX)
+    @Size(max = 15, message = "applcm IP length exceeds max size")
+    @Pattern(regexp = IP_REGEX, message = "applcm IP allowed pattern mismatch")
     private String applcmIp;
 }

@@ -18,10 +18,12 @@ package org.edgegallery.mecm.inventory.exception;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.ToString;
 
 /**
  * Inventory exception response.
  */
+@ToString
 public class InventoryExceptionResponse {
 
     private final LocalDateTime timestamp;

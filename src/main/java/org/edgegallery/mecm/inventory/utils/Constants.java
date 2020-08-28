@@ -21,16 +21,12 @@ package org.edgegallery.mecm.inventory.utils;
  */
 public final class Constants {
 
-    private Constants() {
-    }
-
     public static final String IP_REGEX = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.)"
             + "{3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
     public static final String PORT_REGEX = "^([1-9]|[1-9]\\d{1,3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d"
             + "|6553[0-5])$";
     public static final String NAME_REGEX = "^[a-zA-Z0-9]*$|^[a-zA-Z0-9][a-zA-Z0-9_\\-]*[a-zA-Z0-9]$";
     public static final String URI_REGEX = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
-
     public static final int MIN_PWD_SIZE = 8;
     public static final int MAX_PWD_SIZE = 16;
     public static final String SPECIAL_CHAR_REGEX = "^(?=.*[@#$%^&-+=()]$";
@@ -38,4 +34,7 @@ public final class Constants {
     public static final String LOWER_CASE_REGEX = "^(?=.*[a-z])$";
     public static final String UPPER_CASE_REGEX = "^(?=.*[A-Z])$";
     public static final int MAX_PWD_COUNT = 2;
+
+    private Constants() {
+    }
 }

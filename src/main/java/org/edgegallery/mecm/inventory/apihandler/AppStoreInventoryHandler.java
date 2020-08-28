@@ -19,10 +19,17 @@ package org.edgegallery.mecm.inventory.apihandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppStoreDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
+import org.edgegallery.mecm.inventory.model.AppStore;
+import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
+import org.edgegallery.mecm.inventory.service.repository.AppStoreRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +52,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppStoreInventoryHandler {
 
+    @Autowired
+    private InventoryServiceImpl service;
+
+    @Autowired
+    private AppStoreRepository repository;
+
     /**
      * Adds a new application store record entry into the Inventory.
      *
@@ -55,10 +68,14 @@ public class AppStoreInventoryHandler {
     @ApiOperation(value = "Adds new application store record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> addAppStoreRecord(
-            @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        ModelMapper mapper = new ModelMapper();
+        AppStore store = mapper.map(appStoreDto, AppStore.class);
+        store.setTenantId(tenantId);
+        store.setAppstoreId(appStoreDto.getAppstoreIp() + "_" + tenantId);
+        String status = service.addRecord(store, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -73,11 +90,15 @@ public class AppStoreInventoryHandler {
     @ApiOperation(value = "Updates existing application store record", response = String.class)
     @PutMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> updateAppStoreRecord(
-            @PathVariable("tenant_id") String tenantId,
-            @PathVariable("appstore_ip") String appStoreIp,
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip") String appStoreIp,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        ModelMapper mapper = new ModelMapper();
+        AppStore store = mapper.map(appStoreDto, AppStore.class);
+        store.setTenantId(tenantId);
+        store.setAppstoreId(appStoreDto + "_" + tenantId);
+        String status = service.updateRecord(store, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -88,9 +109,16 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all application store records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(@PathVariable("tenant_id") String tenantId) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
+        List<AppStore> appStores = service.getTenantRecords(tenantId, repository);
+        List<AppStoreDto> appStoreDtos = new LinkedList<>();
+        for (AppStore store : appStores) {
+            ModelMapper mapper = new ModelMapper();
+            AppStoreDto appStoreDto = mapper.map(store, AppStoreDto.class);
+            appStoreDtos.add(appStoreDto);
+        }
+        return new ResponseEntity<>(appStoreDtos, HttpStatus.OK);
     }
 
     /**
@@ -103,10 +131,17 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Retrieves application store record", response = MecHostDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppStoreDto> getAppStoreRecord(@PathVariable("tenant_id") String tenantId,
-                                                         @PathVariable("appstore_ip") String appStoreIp) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<AppStoreDto> getAppStoreRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip") String appStoreIp) {
+        Optional<AppStore> record = service.getRecord(appStoreIp + "_" + tenantId, repository);
+        if (record.isPresent()) {
+            AppStore store = record.get();
+            ModelMapper mapper = new ModelMapper();
+            AppStoreDto appStoreDto = mapper.map(store, AppStoreDto.class);
+            return new ResponseEntity<>(appStoreDto, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -117,9 +152,10 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Deletes all application store records", response = String.class)
     @DeleteMapping(path = "/tenant/{tenant_id}/appstores", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteAllAppStoreRecords(@PathVariable("tenant_id") String tenantId) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> deleteAllAppStoreRecords(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
+        String status = service.deleteTenantRecords(tenantId, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -132,9 +168,10 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Deletes application store record", response = String.class)
     @DeleteMapping(path = "/tenant/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteAppStoreRecord(@PathVariable("tenant_id") String tenantId,
-                                                       @PathVariable("appstore_ip") String appStoreIp) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> deleteAppStoreRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip") String appStoreIp) {
+        String status = service.deleteRecord(appStoreIp + "_" + tenantId, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

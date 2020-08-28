@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.service.model;
+package org.edgegallery.mecm.inventory.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -35,7 +35,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "appstoreinventory")
-public final class AppStore {
+public final class AppStore implements BaseModel {
 
     @Id
     @Column(name = "appstore_id")
@@ -44,7 +44,7 @@ public final class AppStore {
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "create_time")
+    @Column(name = "created_time")
     private LocalDateTime createTime;
 
     @Column(name = "appstore_ip")
@@ -67,4 +67,9 @@ public final class AppStore {
 
     @Column(name = "producer")
     private String producer;
+
+    @Override
+    public String getIdentifier() {
+        return appstoreId;
+    }
 }

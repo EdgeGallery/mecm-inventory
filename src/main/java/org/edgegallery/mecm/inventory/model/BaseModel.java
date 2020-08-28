@@ -14,11 +14,17 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.service;
+package org.edgegallery.mecm.inventory.model;
 
-import org.springframework.stereotype.Service;
+/**
+ * Base inventory model.
+ */
+public interface BaseModel {
 
-@Service("AppLcmInventoryService")
-public final class AppLcmInventoryService {
-    // TODO implementation
+    /**
+     * Returns identifier.
+     *
+     * @return identifier
+     */
+    String getIdentifier();
 }
