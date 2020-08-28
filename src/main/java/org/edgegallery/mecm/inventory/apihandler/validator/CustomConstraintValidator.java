@@ -16,18 +16,11 @@
 
 package org.edgegallery.mecm.inventory.apihandler.validator;
 
-import static org.edgegallery.mecm.inventory.utils.Constants.LOWER_CASE_REGEX;
-import static org.edgegallery.mecm.inventory.utils.Constants.MAX_PWD_COUNT;
-import static org.edgegallery.mecm.inventory.utils.Constants.MAX_PWD_SIZE;
-import static org.edgegallery.mecm.inventory.utils.Constants.MIN_PWD_SIZE;
-import static org.edgegallery.mecm.inventory.utils.Constants.SINGLE_DIGIT_REGEX;
-import static org.edgegallery.mecm.inventory.utils.Constants.SPECIAL_CHAR_REGEX;
-import static org.edgegallery.mecm.inventory.utils.Constants.UPPER_CASE_REGEX;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import org.edgegallery.mecm.inventory.utils.Constants;
 
 /**
  * Implementation of custom constraint validator.
@@ -59,22 +52,22 @@ public final class CustomConstraintValidator implements ConstraintValidator<Cust
     }
 
     private boolean isPasswordValid(String pwd) {
-        if ((pwd.length() >= MIN_PWD_SIZE) && (pwd.length() <= MAX_PWD_SIZE)) {
+        if (pwd.length() >= Constants.MIN_PWD_SIZE && pwd.length() <= Constants.MAX_PWD_SIZE) {
             // password must satisfy any two conditions
             int pwdValidCount = 0;
-            if (isRegexMatched(SINGLE_DIGIT_REGEX, pwd)) {
+            if (isRegexMatched(Constants.SINGLE_DIGIT_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            if (isRegexMatched(LOWER_CASE_REGEX, pwd)) {
+            if (isRegexMatched(Constants.LOWER_CASE_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            if (isRegexMatched(UPPER_CASE_REGEX, pwd)) {
+            if (isRegexMatched(Constants.UPPER_CASE_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            if (isRegexMatched(SPECIAL_CHAR_REGEX, pwd)) {
+            if (isRegexMatched(Constants.SPECIAL_CHAR_REGEX, pwd)) {
                 pwdValidCount++;
             }
-            return pwdValidCount >= MAX_PWD_COUNT;
+            return pwdValidCount >= Constants.MAX_PWD_COUNT;
         } else {
             return false;
         }
