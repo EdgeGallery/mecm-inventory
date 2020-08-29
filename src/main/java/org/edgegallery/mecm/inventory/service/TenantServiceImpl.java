@@ -43,28 +43,34 @@ class TenantServiceImpl implements TenantService {
             nt.setTenantId(id);
             addCount(nt, type);
             repository.save(nt);
+            LOGGER.info("Tenant record with identifier {} added", id);
             return;
         }
         if (repository.count() == Constants.MAX_TENANTS) {
+            LOGGER.error("Max tenant limit {} reached", Constants.MAX_TENANTS);
             throw new InventoryException(Constants.MAX_LIMIT_REACHED_ERROR);
         }
         Tenant ot = record.get();
         addCount(ot, type);
         repository.save(ot);
+        LOGGER.info("Tenant record with identifier {} updated with new count for type {}", id, type);
     }
 
     @Override
     public void reduceCount(String id, ModelType type) {
         Optional<Tenant> record = repository.findById(id);
         if (!record.isPresent()) {
+            LOGGER.error("Tenant record for tenant identifier {} not found", id);
             throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
         }
         Tenant ot = record.get();
         subtractCount(ot, type);
         if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0) {
             repository.deleteById(id);
+            LOGGER.info("Tenant record with tenant identifier {} deleted", id);
         } else {
             repository.save(ot);
+            LOGGER.info("Tenant record for tenant identifier {} updated with new count for type {}", id, type);
         }
     }
 
@@ -77,14 +83,17 @@ class TenantServiceImpl implements TenantService {
     public void clearCount(String id, ModelType type) {
         Optional<Tenant> record = repository.findById(id);
         if (!record.isPresent()) {
+            LOGGER.error("Tenant record for tenant identifier {} not found", id);
             throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
         }
         Tenant ot = record.get();
         clearCountNumber(ot, type);
         if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0) {
             repository.deleteById(id);
+            LOGGER.info("Tenant record with tenant identifier {} deleted", id);
         } else {
             repository.save(ot);
+            LOGGER.info("Tenant record for tenant identifier {} updated with new count for type {}", id, type);
         }
     }
 

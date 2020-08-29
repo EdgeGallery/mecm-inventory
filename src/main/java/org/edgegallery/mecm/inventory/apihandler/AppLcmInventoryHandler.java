@@ -31,6 +31,8 @@ import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,9 +56,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppLcmInventoryHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppLcmInventoryHandler.class);
     @Autowired
     private InventoryServiceImpl service;
-
     @Autowired
     private AppLcmRepository repository;
 
@@ -97,6 +99,8 @@ public class AppLcmInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
         if (!appLcmIp.equals(appLcmDto.getApplcmIp())) {
+            LOGGER.error("Input validation failed for applcm IP, value in body {}, value in url {}",
+                    appLcmDto.getApplcmIp(), appLcmIp);
             throw new IllegalArgumentException("applcm IP in body and url is different");
         }
         AppLcm lcm = InventoryUtilities.getModelMapper().map(appLcmDto, AppLcm.class);

@@ -32,6 +32,8 @@ import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,12 +59,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class MecHostInventoryHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MecHostInventoryHandler.class);
     @Autowired
     private InventoryServiceImpl service;
-
     @Autowired
     private MecHostRepository repository;
-
     @Autowired
     private ConfigServiceImpl configService;
 
@@ -103,6 +104,8 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDto mecHostDto) {
         if (!mecHostIp.equals(mecHostDto.getMechostIp())) {
+            LOGGER.error("Input validation failed for mechost IP, value in body {}, value in url {}",
+                    mecHostDto.getMechostIp(), mecHostIp);
             throw new IllegalArgumentException("mechost IP in body and url is different");
         }
         MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);

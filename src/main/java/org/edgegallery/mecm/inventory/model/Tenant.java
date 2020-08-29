@@ -51,12 +51,13 @@ public final class Tenant implements BaseModel {
 
     @Override
     public String getIdentifier() {
+        // Return identifier
         return tenantId;
     }
 
     @Override
     public String getTenantId() {
-        return tenantId;
+        return getIdentifier();
     }
 
     @Override

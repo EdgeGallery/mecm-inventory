@@ -32,6 +32,8 @@ import org.edgegallery.mecm.inventory.service.repository.AppStoreRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -55,9 +57,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppStoreInventoryHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppStoreInventoryHandler.class);
     @Autowired
     private InventoryServiceImpl service;
-
     @Autowired
     private AppStoreRepository repository;
 
@@ -99,6 +101,8 @@ public class AppStoreInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
         if (!appStoreIp.equals(appStoreDto.getAppstoreIp())) {
+            LOGGER.error("Input validation failed for appstore IP, value in body {}, value in url {}",
+                    appStoreDto.getAppstoreIp(), appStoreIp);
             throw new IllegalArgumentException("appstore IP in body and url is different");
         }
         AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
