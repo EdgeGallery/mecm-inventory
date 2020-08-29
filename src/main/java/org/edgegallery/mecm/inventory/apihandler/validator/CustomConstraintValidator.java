@@ -73,7 +73,7 @@ public final class CustomConstraintValidator implements ConstraintValidator<Cust
         }
     }
 
-    private boolean isRegexMatched(String param, String pattern) {
+    private boolean isRegexMatched(String pattern, String param) {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(param);
         return m.matches();

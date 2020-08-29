@@ -21,6 +21,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.edgegallery.mecm.inventory.model.BaseModel;
 import org.edgegallery.mecm.inventory.service.repository.BaseRepository;
+import org.edgegallery.mecm.inventory.utils.Constants;
+import org.edgegallery.mecm.inventory.utils.Status;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,42 +33,57 @@ import org.springframework.stereotype.Service;
 public final class InventoryServiceImpl implements InventoryService {
 
     @Override
-    public <T extends BaseModel> String addRecord(T model, CrudRepository<T, String> repository) {
+    public <T extends BaseModel> Status addRecord(T model, CrudRepository<T, String> repository) {
         if (repository.existsById(model.getIdentifier())) {
             throw new IllegalArgumentException("Record already exist");
         }
         repository.save(model);
-        return "Saved";
+        return (new Status("Saved"));
     }
 
     @Override
-    public <T extends BaseModel> String updateRecord(T model, CrudRepository<T, String> repository) {
+    public <T extends BaseModel> Status updateRecord(T model, CrudRepository<T, String> repository) {
         if (!repository.existsById(model.getIdentifier())) {
-            throw new NoSuchElementException("Record not found");
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND);
         }
         repository.save(model);
-        return "Updated";
+        return (new Status("Updated"));
     }
 
     @Override
     public <T extends BaseModel> List<T> getTenantRecords(String tenantId, CrudRepository<T, String> repository) {
-        return ((BaseRepository) repository).findByTenantId(tenantId);
+        List<T> record = ((BaseRepository) repository).findByTenantId(tenantId);
+        if (record == null || record.isEmpty()) {
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND);
+        }
+        return record;
     }
 
     @Override
-    public <T extends BaseModel> Optional<T> getRecord(String id, CrudRepository<T, String> repository) {
-        return repository.findById(id);
+    public <T extends BaseModel> T getRecord(String id, CrudRepository<T, String> repository) {
+        Optional<T> record = repository.findById(id);
+        if (!record.isPresent()) {
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND);
+        }
+        return record.get();
     }
 
     @Override
-    public <T extends BaseModel> String deleteTenantRecords(String tenantId, CrudRepository<T, String> repository) {
+    public <T extends BaseModel> Status deleteTenantRecords(String tenantId, CrudRepository<T, String> repository) {
+        List<T> record = ((BaseRepository) repository).findByTenantId(tenantId);
+        if (record == null || record.isEmpty()) {
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND);
+        }
         ((BaseRepository) repository).deleteByTenantId(tenantId);
-        return "Deleted";
+        return (new Status("Deleted"));
     }
 
     @Override
-    public <T extends BaseModel> String deleteRecord(String id, CrudRepository<T, String> repository) {
+    public <T extends BaseModel> Status deleteRecord(String id, CrudRepository<T, String> repository) {
+        if (!repository.existsById(id)) {
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND);
+        }
         repository.deleteById(id);
-        return "Deleted";
+        return (new Status("Deleted"));
     }
 }

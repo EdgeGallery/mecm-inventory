@@ -21,13 +21,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppLcmDto;
 import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
-import org.modelmapper.ModelMapper;
+import org.edgegallery.mecm.inventory.utils.Constants;
+import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
+import org.edgegallery.mecm.inventory.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,9 +43,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Application LCM Inventory API handler.
@@ -67,16 +68,15 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/applcms",
-            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> addAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+    @PostMapping(path = "/tenants/{tenant_id}/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Status> addAppLcmRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
-        ModelMapper mapper = new ModelMapper();
-        AppLcm lcm = mapper.map(appLcmDto, AppLcm.class);
+        AppLcm lcm = InventoryUtilities.getModelMapper().map(appLcmDto, AppLcm.class);
         lcm.setTenantId(tenantId);
         lcm.setApplcmId(appLcmDto.getApplcmIp() + "_" + tenantId);
-        String status = service.addRecord(lcm, repository);
+        Status status = service.addRecord(lcm, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -89,17 +89,20 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)
-    @PutMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}",
-            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> updateAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp,
+    @PutMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Status> updateAppLcmRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
-        ModelMapper mapper = new ModelMapper();
-        AppLcm lcm = mapper.map(appLcmDto, AppLcm.class);
+        if (!appLcmIp.equals(appLcmDto.getApplcmIp())) {
+            throw new IllegalArgumentException("applcm IP in body and url is different");
+        }
+        AppLcm lcm = InventoryUtilities.getModelMapper().map(appLcmDto, AppLcm.class);
         lcm.setTenantId(tenantId);
         lcm.setApplcmId(appLcmIp + "_" + tenantId);
-        String status = service.updateRecord(lcm, repository);
+        Status status = service.updateRecord(lcm, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -112,12 +115,12 @@ public class AppLcmInventoryHandler {
     @ApiOperation(value = "Retrieves all application LCM records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
         List<AppLcm> appLcms = service.getTenantRecords(tenantId, repository);
         List<AppLcmDto> appLcmDtos = new LinkedList<>();
         for (AppLcm lcm : appLcms) {
-            ModelMapper mapper = new ModelMapper();
-            AppLcmDto appLcmDto = mapper.map(lcm, AppLcmDto.class);
+            AppLcmDto appLcmDto = InventoryUtilities.getModelMapper().map(lcm, AppLcmDto.class);
             appLcmDtos.add(appLcmDto);
         }
         return new ResponseEntity<>(appLcmDtos, HttpStatus.OK);
@@ -133,16 +136,13 @@ public class AppLcmInventoryHandler {
     @ApiOperation(value = "Retrieves application LCM record", response = AppLcmDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppLcmDto> getAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp) {
-        Optional<AppLcm> record = service.getRecord(appLcmIp + "_" + tenantId, repository);
-        if (record.isPresent()) {
-            AppLcm lcm = record.get();
-            ModelMapper mapper = new ModelMapper();
-            AppLcmDto appLcmDto = mapper.map(lcm, AppLcmDto.class);
-            return new ResponseEntity<>(appLcmDto, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp) {
+        AppLcm lcm = service.getRecord(appLcmIp + "_" + tenantId, repository);
+        AppLcmDto appLcmDto = InventoryUtilities.getModelMapper().map(lcm, AppLcmDto.class);
+        return new ResponseEntity<>(appLcmDto, HttpStatus.OK);
     }
 
     /**
@@ -152,11 +152,11 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all application LCM records", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/applcms",
-            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> deleteAllAppLcmRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
-        String status = service.deleteTenantRecords(tenantId, repository);
+    @DeleteMapping(path = "/tenants/{tenant_id}/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Status> deleteAllAppLcmRecords(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
+        Status status = service.deleteTenantRecords(tenantId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -168,50 +168,13 @@ public class AppLcmInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes application LCM record", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}",
-            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> deleteAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp) {
-        String status = service.deleteRecord(appLcmIp + "_" + tenantId, repository);
+    @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Status> deleteAppLcmRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp) {
+        Status status = service.deleteRecord(appLcmIp + "_" + tenantId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
-    }
-
-    /**
-     * Uploads K8s configuration file to applcm.
-     *
-     * @param tenantId tenant ID
-     * @param appLcmIp applcm IP
-     * @param hostIp   edge host IP
-     * @param file     configuration file
-     * @return status code 200 on success, error code on failure
-     */
-    @ApiOperation(value = "Upload K8s configuration file to applcm", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}/host/{hostIp}/k8sconfig",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadConfigFile(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp,
-            @ApiParam(value = "host IP") @PathVariable("hostIp") String hostIp,
-            @ApiParam(value = "config file") @RequestParam("file") MultipartFile file) {
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
-     * Deletes K8s configuration file from applcm.
-     *
-     * @param tenantId tenant ID
-     * @param appLcmIp applcm IP
-     * @param hostIp   edge host IP
-     * @return status code 200 on success, error code on failure
-     */
-    @ApiOperation(value = "Deletes K8s configuration file from applcm", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}/host/{hostIp}/k8sconfig",
-            produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> deleteConfigFile(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "applcm IP") @PathVariable("applcm_ip") String appLcmIp,
-            @ApiParam(value = "host IP") @PathVariable("hostIp") String hostIp) {
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

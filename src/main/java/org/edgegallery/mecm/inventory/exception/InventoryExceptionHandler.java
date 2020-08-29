@@ -18,8 +18,10 @@ package org.edgegallery.mecm.inventory.exception;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -72,8 +74,12 @@ public class InventoryExceptionHandler {
      * @return response entity with error code and message
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgException(IllegalArgumentException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<InventoryExceptionResponse> handleIllegalArgException(IllegalArgumentException ex) {
+
+        InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
+                "Illegal argument", Collections.singletonList(ex.getMessage()));
+        LOGGER.info("Illegal argument error: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -83,7 +89,24 @@ public class InventoryExceptionHandler {
      * @return response entity with error code and message
      */
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<InventoryExceptionResponse> handleNoSuchElementException(NoSuchElementException ex) {
+        InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
+                "No such element", Collections.singletonList(ex.getMessage()));
+        LOGGER.info("No such element error: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Returns response entity with error details when input validation is failed.
+     *
+     * @param ex exception while validating input
+     * @return response entity with error details
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<InventoryExceptionResponse> handleConstraintViolationException(
+            ConstraintViolationException ex) {
+        InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
+                "input validation failed", Collections.singletonList("URL parameter validation failed"));
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
