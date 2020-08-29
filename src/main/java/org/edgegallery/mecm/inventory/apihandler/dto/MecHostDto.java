@@ -46,11 +46,11 @@ public final class MecHostDto {
     @NotEmpty(message = "mechost IP is empty")
     @Size(max = 15, message = "mechost IP length exceeds max size")
     @Pattern(regexp = IP_REGEX, message = "mechost IP allowed pattern mismatch")
-    private String mecHostIp;
+    private String mechostIp;
 
     @Size(max = 128, message = "mechost name length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "mechost name allowed pattern mismatch")
-    private String mecHostName;
+    private String mechostName;
 
     @Size(max = 128, message = "mechost zipcode length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "mechost zipcode allowed pattern mismatch")
@@ -81,7 +81,7 @@ public final class MecHostDto {
     @NotEmpty(message = "edgerepo IP is empty")
     @Size(max = 15, message = "edgerepo IP length exceeds max size")
     @Pattern(regexp = IP_REGEX, message = "edgerepo IP allowed pattern mismatch")
-    private String edgeRepoIp;
+    private String edgerepoIp;
 
     @NotEmpty(message = "edgerepo port is empty")
     @Size(max = 5, message = "edgerepo port length exceeds max size")
@@ -90,10 +90,10 @@ public final class MecHostDto {
 
     @Size(max = 128, message = "edgerepo username length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "edgerepo username allowed pattern mismatch")
-    private String edgeRepoUsername;
+    private String edgerepoUsername;
 
     @CustomConstraint(ConstraintType.PASSWORD)
-    private String edgeRepoPassword;
+    private String edgerepoPassword;
 
     @NotEmpty(message = "applcm IP is empty")
     @Size(max = 15, message = "applcm IP length exceeds max size")

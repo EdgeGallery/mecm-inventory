@@ -1,0 +1,112 @@
+/*
+ *  Copyright 2020 Huawei Technologies Co., Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package org.edgegallery.mecm.inventory.service;
+
+import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.edgegallery.mecm.inventory.model.AppLcm;
+import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
+import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * Implementation of configuration service.
+ */
+@Service("ConfigServiceImpl")
+public class ConfigServiceImpl implements ConfigService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigServiceImpl.class);
+
+    @Autowired
+    private InventoryServiceImpl service;
+
+    @Autowired
+    private MecHostRepository hostRepository;
+
+    @Autowired
+    private AppLcmRepository lcmRepository;
+
+    @Override
+    public String uploadConfig(String tenantId, String hostIp, MultipartFile file) {
+        Resource resource = file.getResource();
+        LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+        parts.add("configFile", resource);
+        parts.add("hostIp", hostIp);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+        try {
+            httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
+
+        final RestTemplate restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setBufferRequestBody(false);
+        restTemplate.setRequestFactory(requestFactory);
+
+        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        String lcmIp = host.getApplcmIp();
+        AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
+        String lcmPort = lcm.getApplcmPort();
+        String url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+
+        LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
+        return response.getBody();
+    }
+
+    @Override
+    public String deleteConfig(String tenantId, String hostIp) {
+        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        String lcmIp = host.getApplcmIp();
+        AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
+
+        String lcmPort = lcm.getApplcmPort();
+
+        String url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+
+        final RestTemplate restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        restTemplate.setRequestFactory(requestFactory);
+
+        ResponseEntity<String> response =
+                restTemplate.postForEntity(url, HttpMethod.DELETE, String.class);
+
+        LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
+        return response.getBody();
+    }
+}

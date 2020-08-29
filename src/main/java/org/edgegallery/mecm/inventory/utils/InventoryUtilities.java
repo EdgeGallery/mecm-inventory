@@ -14,31 +14,25 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.utils;
 
-/**
- * Base inventory model.
- */
-public interface BaseModel {
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 
-    /**
-     * Returns identifier.
-     *
-     * @return identifier
-     */
-    String getIdentifier();
+public final class InventoryUtilities {
+
+    private InventoryUtilities() {
+    }
 
     /**
-     * Returns tenant identifier.
+     * Returns model mapper.
      *
-     * @return tenant identifier
+     * @return model mapper
      */
-    String getTenantId();
-
-    /**
-     * Returns type of model.
-     *
-     * @return model type
-     */
-    ModelType getType();
+    public static ModelMapper getModelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setFieldMatchingEnabled(true);
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        return mapper;
+    }
 }

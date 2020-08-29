@@ -21,14 +21,19 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppStoreDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
 import org.edgegallery.mecm.inventory.model.AppStore;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppStoreRepository;
-import org.modelmapper.ModelMapper;
+import org.edgegallery.mecm.inventory.utils.Constants;
+import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
+import org.edgegallery.mecm.inventory.utils.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,9 +57,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppStoreInventoryHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppStoreInventoryHandler.class);
     @Autowired
     private InventoryServiceImpl service;
-
     @Autowired
     private AppStoreRepository repository;
 
@@ -66,15 +71,15 @@ public class AppStoreInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application store record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> addAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
+    @PostMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Status> addAppStoreRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
-        ModelMapper mapper = new ModelMapper();
-        AppStore store = mapper.map(appStoreDto, AppStore.class);
+        AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
         store.setTenantId(tenantId);
         store.setAppstoreId(appStoreDto.getAppstoreIp() + "_" + tenantId);
-        String status = service.addRecord(store, repository);
+        Status status = service.addRecord(store, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -88,16 +93,22 @@ public class AppStoreInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application store record", response = String.class)
-    @PutMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> updateAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip") String appStoreIp,
+    @PutMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Status> updateAppStoreRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
-        ModelMapper mapper = new ModelMapper();
-        AppStore store = mapper.map(appStoreDto, AppStore.class);
+        if (!appStoreIp.equals(appStoreDto.getAppstoreIp())) {
+            LOGGER.error("Input validation failed for appstore IP, value in body {}, value in url {}",
+                    appStoreDto.getAppstoreIp(), appStoreIp);
+            throw new IllegalArgumentException("appstore IP in body and url is different");
+        }
+        AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
         store.setTenantId(tenantId);
         store.setAppstoreId(appStoreDto + "_" + tenantId);
-        String status = service.updateRecord(store, repository);
+        Status status = service.updateRecord(store, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -110,12 +121,12 @@ public class AppStoreInventoryHandler {
     @ApiOperation(value = "Retrieves all application store records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
         List<AppStore> appStores = service.getTenantRecords(tenantId, repository);
         List<AppStoreDto> appStoreDtos = new LinkedList<>();
         for (AppStore store : appStores) {
-            ModelMapper mapper = new ModelMapper();
-            AppStoreDto appStoreDto = mapper.map(store, AppStoreDto.class);
+            AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
             appStoreDtos.add(appStoreDto);
         }
         return new ResponseEntity<>(appStoreDtos, HttpStatus.OK);
@@ -132,16 +143,13 @@ public class AppStoreInventoryHandler {
     @ApiOperation(value = "Retrieves application store record", response = MecHostDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppStoreDto> getAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip") String appStoreIp) {
-        Optional<AppStore> record = service.getRecord(appStoreIp + "_" + tenantId, repository);
-        if (record.isPresent()) {
-            AppStore store = record.get();
-            ModelMapper mapper = new ModelMapper();
-            AppStoreDto appStoreDto = mapper.map(store, AppStoreDto.class);
-            return new ResponseEntity<>(appStoreDto, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
+        AppStore store = service.getRecord(appStoreIp + "_" + tenantId, repository);
+        AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
+        return new ResponseEntity<>(appStoreDto, HttpStatus.OK);
     }
 
     /**
@@ -151,10 +159,11 @@ public class AppStoreInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all application store records", response = String.class)
-    @DeleteMapping(path = "/tenant/{tenant_id}/appstores", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteAllAppStoreRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId) {
-        String status = service.deleteTenantRecords(tenantId, repository);
+    @DeleteMapping(path = "/tenant/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Status> deleteAllAppStoreRecords(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
+        Status status = service.deleteTenantRecords(tenantId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -167,11 +176,13 @@ public class AppStoreInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes application store record", response = String.class)
-    @DeleteMapping(path = "/tenant/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id") String tenantId,
-            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip") String appStoreIp) {
-        String status = service.deleteRecord(appStoreIp + "_" + tenantId, repository);
+    @DeleteMapping(path = "/tenant/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Status> deleteAppStoreRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
+        Status status = service.deleteRecord(appStoreIp + "_" + tenantId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

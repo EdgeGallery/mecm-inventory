@@ -37,7 +37,7 @@ public class InventoryApplication {
      * @param args arguments
      */
     public static void main(String[] args) {
-        // TODO: Token & https based support.
+        // TODO: https based support.
         LOGGER.info("Inventory application starting----");
         SpringApplication.run(InventoryApplication.class, args);
     }

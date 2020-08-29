@@ -14,31 +14,14 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.service.repository;
+
+import org.edgegallery.mecm.inventory.model.Tenant;
+import org.springframework.data.repository.CrudRepository;
 
 /**
- * Base inventory model.
+ * Tenant repository.
  */
-public interface BaseModel {
+public interface TenantRepository extends CrudRepository<Tenant, String> {
 
-    /**
-     * Returns identifier.
-     *
-     * @return identifier
-     */
-    String getIdentifier();
-
-    /**
-     * Returns tenant identifier.
-     *
-     * @return tenant identifier
-     */
-    String getTenantId();
-
-    /**
-     * Returns type of model.
-     *
-     * @return model type
-     */
-    ModelType getType();
 }

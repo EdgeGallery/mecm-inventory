@@ -21,11 +21,15 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.edgegallery.mecm.inventory.utils.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of custom constraint validator.
  */
 public final class CustomConstraintValidator implements ConstraintValidator<CustomConstraint, String> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomConstraintValidator.class);
 
     private ConstraintType type;
 
@@ -69,11 +73,12 @@ public final class CustomConstraintValidator implements ConstraintValidator<Cust
             }
             return pwdValidCount >= Constants.MAX_PWD_COUNT;
         } else {
+            LOGGER.error("Input validation for password failed");
             return false;
         }
     }
 
-    private boolean isRegexMatched(String param, String pattern) {
+    private boolean isRegexMatched(String pattern, String param) {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(param);
         return m.matches();

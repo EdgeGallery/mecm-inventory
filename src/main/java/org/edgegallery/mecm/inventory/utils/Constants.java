@@ -21,6 +21,7 @@ package org.edgegallery.mecm.inventory.utils;
  */
 public final class Constants {
 
+    public static final String ID_REGEX = "^[a-zA-Z0-9]*$|^[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9]$";
     public static final String IP_REGEX = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.)"
             + "{3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
     public static final String PORT_REGEX = "^([1-9]|[1-9]\\d{1,3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d"
@@ -29,11 +30,23 @@ public final class Constants {
     public static final String URI_REGEX = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
     public static final int MIN_PWD_SIZE = 8;
     public static final int MAX_PWD_SIZE = 16;
-    public static final String SPECIAL_CHAR_REGEX = "^(?=.*[@#$%^&-+=()]$";
-    public static final String SINGLE_DIGIT_REGEX = "^(?=.*[0-9])$";
-    public static final String LOWER_CASE_REGEX = "^(?=.*[a-z])$";
-    public static final String UPPER_CASE_REGEX = "^(?=.*[A-Z])$";
+    public static final String SPECIAL_CHAR_REGEX = ".*[`~!@#$%^&*()\\-_=+\\\\|\\[{\\]};:'\",<.>/?].*";
+    public static final String SINGLE_DIGIT_REGEX = ".*\\d.*";
+    public static final String LOWER_CASE_REGEX = ".*[a-z].*";
+    public static final String UPPER_CASE_REGEX = ".*[A-Z].*";
     public static final int MAX_PWD_COUNT = 2;
+
+    public static final String APPLCM_URI = "/lcmbroker/v1/configuration";
+    public static final String RECORD_NOT_FOUND_ERROR = "Record not found";
+
+    // Below values can be taken from config file later.
+    public static final int MAX_ENTRY_PER_TENANT_PER_MODEL = 50;
+    public static final int MAX_TENANTS = 10;
+    public static final String MAX_LIMIT_REACHED_ERROR = "Max record limit exceeded";
+
+    public static final String VAR_OVERFLOW_ERROR = "Max count overflow";
+    public static final String VAR_UNDERFLOW_ERROR = "Min count underflow";
+    public static final String INVALID_MODEL_TYPE = "Model type not supported";
 
     private Constants() {
     }

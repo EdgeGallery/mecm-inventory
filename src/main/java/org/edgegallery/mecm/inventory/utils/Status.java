@@ -14,31 +14,27 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.utils;
 
 /**
- * Base inventory model.
+ * Status of REST request.
  */
-public interface BaseModel {
+public final class Status {
 
-    /**
-     * Returns identifier.
-     *
-     * @return identifier
-     */
-    String getIdentifier();
+    String response;
 
-    /**
-     * Returns tenant identifier.
-     *
-     * @return tenant identifier
-     */
-    String getTenantId();
+    public Status(String status) {
+        this.response = status;
+    }
 
-    /**
-     * Returns type of model.
-     *
-     * @return model type
-     */
-    ModelType getType();
+    private Status() {
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
 }

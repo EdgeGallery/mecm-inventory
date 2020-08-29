@@ -14,31 +14,8 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.model;
+package org.edgegallery.mecm.inventory.service;
 
-/**
- * Base inventory model.
- */
-public interface BaseModel {
-
-    /**
-     * Returns identifier.
-     *
-     * @return identifier
-     */
-    String getIdentifier();
-
-    /**
-     * Returns tenant identifier.
-     *
-     * @return tenant identifier
-     */
-    String getTenantId();
-
-    /**
-     * Returns type of model.
-     *
-     * @return model type
-     */
-    ModelType getType();
+public class RestClient {
+    // TODO implementation
 }

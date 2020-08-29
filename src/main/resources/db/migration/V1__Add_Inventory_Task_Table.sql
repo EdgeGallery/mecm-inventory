@@ -47,3 +47,11 @@
         modified_time varchar(200),
         primary key (mechost_id)
     );
+
+    create table tenantinventory (
+        tenant_id  varchar(255) not null,
+        applcm_count int,
+        appstore_count int,
+        mechost_count int,
+        primary key (tenant_id)
+    );

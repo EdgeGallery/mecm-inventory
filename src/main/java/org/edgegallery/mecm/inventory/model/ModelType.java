@@ -17,28 +17,11 @@
 package org.edgegallery.mecm.inventory.model;
 
 /**
- * Base inventory model.
+ * Type of model.
  */
-public interface BaseModel {
-
-    /**
-     * Returns identifier.
-     *
-     * @return identifier
-     */
-    String getIdentifier();
-
-    /**
-     * Returns tenant identifier.
-     *
-     * @return tenant identifier
-     */
-    String getTenantId();
-
-    /**
-     * Returns type of model.
-     *
-     * @return model type
-     */
-    ModelType getType();
+public enum ModelType {
+    APP_LCM,
+    APP_STORE,
+    MEC_HOST,
+    TENANT
 }

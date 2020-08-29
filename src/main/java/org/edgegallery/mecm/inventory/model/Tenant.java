@@ -16,7 +16,6 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,59 +26,44 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * App store Inventory schema.
+ * Application lifecycle management schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "appstoreinventory")
-public final class AppStore implements BaseModel {
+@Table(name = "tenantinventory")
+public final class Tenant implements BaseModel {
 
     @Id
-    @Column(name = "appstore_id")
-    private String appstoreId;
-
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "created_time")
-    private LocalDateTime createTime;
+    @Column(name = "applcm_count")
+    private int appLcms;
 
-    @Column(name = "appstore_ip")
-    private String appstoreIp;
+    @Column(name = "appstore_count")
+    private int appStores;
 
-    @Column(name = "appstore_port")
-    private String appstorePort;
-
-    @Column(name = "uri")
-    private String uri;
-
-    @Column(name = "user_name")
-    private String userName;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "appstore_name")
-    private String appstoreName;
-
-    @Column(name = "producer")
-    private String producer;
+    @Column(name = "mechost_count")
+    private int mecHosts;
 
     @Override
     public String getIdentifier() {
-        return appstoreId;
-    }
-
-    @Override
-    public String getTenantId() {
+        // Return identifier
         return tenantId;
     }
 
     @Override
-    public ModelType getType() {
-        return ModelType.APP_STORE;
+    public String getTenantId() {
+        return getIdentifier();
     }
+
+    @Override
+    public ModelType getType() {
+        return ModelType.TENANT;
+    }
+
+    // models are not embedded in tenant currently as topic is under discussion.
 }
