@@ -19,6 +19,7 @@ package org.edgegallery.mecm.inventory.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.model.BaseModel;
 import org.edgegallery.mecm.inventory.service.repository.BaseRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
@@ -36,6 +37,11 @@ public final class InventoryServiceImpl implements InventoryService {
     public <T extends BaseModel> Status addRecord(T model, CrudRepository<T, String> repository) {
         if (repository.existsById(model.getIdentifier())) {
             throw new IllegalArgumentException("Record already exist");
+        }
+        List<T> record = ((BaseRepository) repository).findByTenantId(model.getTenantId());
+        if (repository.count() > Constants.MAX_ENTRY_PER_MODEL ||
+                record.size() > Constants.MAX_ENTRY_PER_TENANT) {
+            throw new InventoryException(Constants.MAX_LIMIT_REACHED);
         }
         repository.save(model);
         return (new Status("Saved"));

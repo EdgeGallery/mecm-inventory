@@ -93,4 +93,9 @@ public final class MecHost implements BaseModel {
     public String getIdentifier() {
         return mechostId;
     }
+
+    @Override
+    public String getTenantId() {
+        return tenantId;
+    }
 }

@@ -63,4 +63,9 @@ public final class AppLcm implements BaseModel {
     public String getIdentifier() {
         return applcmId;
     }
+
+    @Override
+    public String getTenantId() {
+        return tenantId;
+    }
 }

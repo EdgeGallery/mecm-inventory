@@ -38,6 +38,9 @@ public final class Constants {
 
     public static final String APPLCM_URI = "/lcmbroker/v1/configuration";
     public static final String RECORD_NOT_FOUND = "Record not found";
+    public static final int MAX_ENTRY_PER_TENANT = 50;
+    public static final int MAX_ENTRY_PER_MODEL = 500;
+    public static final String MAX_LIMIT_REACHED = "Max record limit exceeded";
 
     private Constants() {
     }

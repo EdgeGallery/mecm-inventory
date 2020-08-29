@@ -27,4 +27,11 @@ public interface BaseModel {
      * @return identifier
      */
     String getIdentifier();
+
+    /**
+     * Returns tenant identifier.
+     *
+     * @return tenant identifier
+     */
+    String getTenantId();
 }
