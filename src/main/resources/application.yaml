@@ -37,8 +37,8 @@ spring:
       max-request-size: 10MB
 
 #### security config ####
-security:
-  oauth2:
-    resource:
-      jwt:
-        key-uri: ${AUTH_SERVER_ADDRESS:http://user-mgmt-svc:8067}/oauth/token_key
+#security:
+#  oauth2:
+#    resource:
+#      jwt:
+#        key-uri: ${AUTH_SERVER_ADDRESS:http://user-mgmt-svc:8067}/oauth/token_key

@@ -77,4 +77,9 @@ public final class AppStore implements BaseModel {
     public String getTenantId() {
         return tenantId;
     }
+
+    @Override
+    public ModelType getType() {
+        return ModelType.APP_STORE;
+    }
 }
