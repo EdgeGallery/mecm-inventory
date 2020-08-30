@@ -20,6 +20,7 @@ import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
@@ -58,51 +59,64 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public String uploadConfig(String tenantId, String hostIp, MultipartFile file) {
+        // Adding request parts.
         Resource resource = file.getResource();
         LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
         parts.add("configFile", resource);
         parts.add("hostIp", hostIp);
+
+        // Adding HTTP header
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         try {
             httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            throw new InventoryException(e.getLocalizedMessage());
         }
+
+        // Creating HTTP entity with header and parts
         HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
+        // Preparing Rest Template
         final RestTemplate restTemplate = new RestTemplate();
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setBufferRequestBody(false);
         restTemplate.setRequestFactory(requestFactory);
 
+        // Preparing URL
         MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String lcmIp = host.getApplcmIp();
         AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
         String lcmPort = lcm.getApplcmPort();
         String url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
 
+        // Sending request
         ResponseEntity<String> response =
                 restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
 
         LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
+
+        host.setConfigUploaded(response.getStatusCode().toString());
+        service.updateRecord(host, hostRepository);
+
         return response.getBody();
     }
 
     @Override
     public String deleteConfig(String tenantId, String hostIp) {
+        // Preparing URL
         MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String lcmIp = host.getApplcmIp();
         AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
-
         String lcmPort = lcm.getApplcmPort();
-
         String url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
 
+        // Preparing REST template
         final RestTemplate restTemplate = new RestTemplate();
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         restTemplate.setRequestFactory(requestFactory);
 
+        // Sending request
         ResponseEntity<String> response =
                 restTemplate.postForEntity(url, HttpMethod.DELETE, String.class);
 

@@ -20,7 +20,6 @@
                      fileName="${env:LOG_DIR:-/var/log/inventory}/inventory.log"
                      filePattern="${env:LOG_DIR:-/var/log/inventory}/$${date:yyyy-MM}/inventory-%d{yyyy-MM-dd}-%i.log"
                      filePermissions="rw-------">
-            <!-- TODO: Re-check log file permissions as per security WG -->
             <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout
                     pattern="[%d{yyyy-MM-dd} %d{HH:mm:ss:SSS}] %-5p [%t] [%C %M %L]: %m%n"/>
