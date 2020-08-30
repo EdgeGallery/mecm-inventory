@@ -89,6 +89,9 @@ public final class MecHost implements BaseModel {
     @Column(name = "applcm_ip")
     private String applcmIp;
 
+    @Column(name = "config_uploaded")
+    private String configUploaded;
+
     @Override
     public String getIdentifier() {
         return mechostId;

@@ -43,6 +43,7 @@
         edgerepo_port varchar(255),
         edgerepo_username varchar(255),
         edgerepo_password varchar(255),
+        config_uploaded varchar(255),
         created_time varchar(200),
         modified_time varchar(200),
         primary key (mechost_id)

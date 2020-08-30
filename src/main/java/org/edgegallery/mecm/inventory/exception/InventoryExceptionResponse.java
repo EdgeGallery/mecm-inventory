@@ -33,15 +33,15 @@ public class InventoryExceptionResponse {
     /**
      * Constructor to create exception response.
      *
-     * @param timestamp timestamp
-     * @param message   message
-     * @param details   details
+     * @param t timestamp
+     * @param m message
+     * @param d details
      */
-    public InventoryExceptionResponse(LocalDateTime timestamp, String message, List<String> details) {
+    public InventoryExceptionResponse(LocalDateTime t, String m, List<String> d) {
         super();
-        this.timestamp = timestamp;
-        this.message = message;
-        this.details = details;
+        timestamp = t;
+        message = m;
+        details = d;
     }
 
     /**
