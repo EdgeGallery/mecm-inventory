@@ -47,7 +47,6 @@ public class InventoryApplication {
     public static void main(String[] args) {
         LOGGER.info("Inventory application starting----");
         // do not check host name
-<<<<<<< HEAD
         TrustManager[] trustAllCerts = new TrustManager[] {
             new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
@@ -62,22 +61,6 @@ public class InventoryApplication {
                     LOGGER.info("checks server trusted");
                 }
             }
-=======
-        TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                        LOGGER.info("checks client trusted");
-                    }
-
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                        LOGGER.info("checks server trusted");
-                    }
-                }
->>>>>>> 0e1d9c176ff2c7a2e0a2600a5d166b2dcb6c795d
         };
 
         SSLContext sc;
