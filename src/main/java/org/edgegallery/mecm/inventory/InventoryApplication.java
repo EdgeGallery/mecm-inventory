@@ -47,7 +47,7 @@ public class InventoryApplication {
     public static void main(String[] args) {
         LOGGER.info("Inventory application starting----");
         // do not check host name
-        TrustManager[] trustAllCerts = new TrustManager[] {
+        TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
                     return new X509Certificate[0];
