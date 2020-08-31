@@ -89,6 +89,7 @@ public class ConfigServiceImpl implements ConfigService {
         httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         try {
             httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
+            httpHeaders.set("access_token", token);
         } catch (UnknownHostException e) {
             throw new InventoryException(e.getLocalizedMessage());
         }
@@ -143,6 +144,7 @@ public class ConfigServiceImpl implements ConfigService {
         HttpHeaders httpHeaders = new HttpHeaders();
         try {
             httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
+            httpHeaders.set("access_token", token);
         } catch (UnknownHostException e) {
             throw new InventoryException(e.getLocalizedMessage());
         }
