@@ -219,5 +219,6 @@ if [ ! "$valid_inventory_port" -eq "0" ] ; then
 fi
 
 echo "Running Inventory"
+umask 0027
 cd /usr/app || exit
 java -jar inventory-0.0.1-SNAPSHOT.jar
