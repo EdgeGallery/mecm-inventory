@@ -30,6 +30,19 @@ validate_host_name()
  return 0
 }
 
+validate_name()
+{
+ hostname="$1"
+ len="${#hostname}"
+ if [ "${len}" -gt "64" ] ; then
+   return 1
+ fi
+ if ! echo "$hostname" | grep -qE '^[a-zA-Z0-9]*$|^[a-zA-Z0-9][a-zA-Z0-9_\-]*[a-zA-Z0-9]$' ; then
+   return 1
+ fi
+ return 0
+}
+
 # Validating if port is > 1 and < 65535 , not validating reserved port.
 validate_port_num()
 {
@@ -139,7 +152,7 @@ validate_var_not_empty()
 }
 
 # ssl parameters validation
-validate_file_exists "$SSL_KEY_STORE_PATH"
+validate_file_exists "/usr/app/ssl/keystore.p12"
 valid_ssl_key_store_path="$?"
 if [ ! "$valid_ssl_key_store_path" -eq "0" ] ; then
    echo "invalid ssl key store path"
@@ -153,21 +166,25 @@ if [ ! "$valid_ssl_key_store_password" -eq "0" ] ; then
    exit 1
 fi
 
-validate_var_not_empty "$SSL_KEY_STORE_TYPE"
-valid_ssl_key_store_type="$?"
-if [ ! "$valid_ssl_key_store_type" -eq "0" ] ; then
-   echo "ssl key store type is not set"
-   exit 1
+if [ ! -z "$SSL_KEY_STORE_TYPE" ] ; then
+   validate_name "$SSL_KEY_STORE_TYPE"
+   valid_name="$?"
+   if [ ! "$valid_name" -eq "0" ] ; then
+      echo "invalid ssl key store type"
+      exit 1
+   fi
 fi
 
-validate_var_not_empty "$SSL_KEY_ALIAS"
-valid_ssl_key_store_alias="$?"
-if [ ! "$valid_ssl_key_store_alias" -eq "0" ] ; then
-   echo "ssl key store alias is not set"
-   exit 1
+if [ ! -z "$SSL_KEY_ALIAS" ] ; then
+   validate_name "$SSL_KEY_ALIAS"
+   valid_name="$?"
+   if [ ! "$valid_name" -eq "0" ] ; then
+      echo "invalid ssl key alias"
+      exit 1
+   fi
 fi
 
-validate_file_exists "$SSL_TRUST_STORE"
+validate_file_exists "/usr/app/ssl/keystore.jks"
 valid_ssl_trust_store="$?"
 if [ ! "$valid_ssl_trust_store" -eq "0" ] ; then
    echo "ssl trust store does not exist"
@@ -182,39 +199,47 @@ if [ ! "$valid_ssl_trust_password" -eq "0" ] ; then
 fi
 
 # db parameters validation
-validate_var_not_empty "$INVENTORY_DB"
-valid_db_name="$?"
-if [ ! "$valid_db_name" -eq "0" ] ; then
-   echo "db name is not set"
-   exit 1
+if [ ! -z "$INVENTORY_DB" ] ; then
+   validate_name "$INVENTORY_DB"
+   valid_name="$?"
+   if [ ! "$valid_name" -eq "0" ] ; then
+      echo "invalid DB name"
+      exit 1
+   fi
 fi
 
-validate_host_name "$INVENTORY_DB_HOST"
-valid_db_host_name="$?"
-if [ ! "$valid_db_host_name" -eq "0" ] ; then
-   echo "invalid db host name"
-   exit 1
+# db parameters validation
+if [ ! -z "$INVENTORY_DB_USER" ] ; then
+   validate_name "$INVENTORY_DB_USER"
+   valid_name="$?"
+   if [ ! "$valid_name" -eq "0" ] ; then
+      echo "invalid DB user name"
+      exit 1
+   fi
 fi
 
-validate_port_num "$INVENTORY_DB_PORT"
-valid_INVENTORY_db_port="$?"
-if [ ! "$valid_INVENTORY_db_port" -eq "0" ] ; then
-   echo "invalid INVENTORY db port number"
-   exit 1
+if [ ! -z "$INVENTORY_DB_HOST" ] ; then
+   validate_host_name "$INVENTORY_DB_HOST"
+   valid_db_host_name="$?"
+   if [ ! "$valid_db_host_name" -eq "0" ] ; then
+      echo "invalid db host name"
+      exit 1
+   fi
 fi
 
-# app parameters validation
-validate_host_name "$INVENTORY_ENDPOINT"
-valid_inventory_host_name="$?"
-if [ ! "$valid_inventory_host_name" -eq "0" ] ; then
-   echo "invalid inventory end point"
-   exit 1
+if [ ! -z "$INVENTORY_DB_PORT" ] ; then
+   validate_port_num "$INVENTORY_DB_PORT"
+   valid_INVENTORY_db_port="$?"
+   if [ ! "$valid_INVENTORY_db_port" -eq "0" ] ; then
+      echo "invalid INVENTORY db port number"
+      exit 1
+   fi
 fi
 
-validate_port_num "$INVENTORY_PORT"
-valid_inventory_port="$?"
-if [ ! "$valid_inventory_port" -eq "0" ] ; then
-   echo "invalid inventory port number"
+validate_password "$INVENTORY_DB_PASSWORD"
+valid_inventorydb_password="$?"
+if [ ! "$valid_inventorydb_password" -eq "0" ] ; then
+   echo "invalid inventorydb password, complexity validation failed"
    exit 1
 fi
 

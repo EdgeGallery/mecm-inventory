@@ -25,13 +25,13 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class RestClientService {
 
-    @Value("${SSL_ENABLED:false}")
+    @Value("${ssl.enabled:false}")
     private String isSslEnabled;
 
-    @Value("${SSL_TRUST_STORE:}")
+    @Value("${ssl.trust-store:}")
     private String trustStorePath;
 
-    @Value("${SSL_TRUST_PASSWORD:}")
+    @Value("${ssl.trust-store-password:}")
     private String trustStorePasswd;
 
     RestTemplate getRestTemplate() {
