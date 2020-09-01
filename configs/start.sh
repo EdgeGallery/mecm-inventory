@@ -73,7 +73,7 @@ validate_password()
    ((++count))
  fi
 
- if [[ "$password" =~ [@#$%^'&'-+=()] ]] ; then
+ if [[ "$password" =~ [@#$%^'&'-+='('')'] ]] ; then
    ((++count))
  fi
 
