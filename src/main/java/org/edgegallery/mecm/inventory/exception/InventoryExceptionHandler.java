@@ -97,7 +97,7 @@ public class InventoryExceptionHandler {
     }
 
     /**
-     * Returns error code and message when record not found.
+     * Returns error when runtime error happen.
      *
      * @param ex exception while processing request
      * @return response entity with error code and message
