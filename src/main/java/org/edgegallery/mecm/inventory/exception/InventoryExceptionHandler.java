@@ -121,6 +121,7 @@ public class InventoryExceptionHandler {
             ConstraintViolationException ex) {
         InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
                 "input validation failed", Collections.singletonList("URL parameter validation failed"));
+        LOGGER.info("Constraint violation error: {}", response);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
