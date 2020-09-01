@@ -41,7 +41,7 @@ RUN chmod 750 $APP_HOME &&\
     chown -R $USER_NAME:$GROUP_NAME $APP_HOME
 
 # Exposed port
-EXPOSE 8806
+EXPOSE 8093
 
 # Change to the app user.
 USER $USER_NAME
