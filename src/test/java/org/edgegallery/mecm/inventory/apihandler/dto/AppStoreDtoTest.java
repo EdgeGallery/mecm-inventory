@@ -16,7 +16,7 @@ public class AppStoreDtoTest {
 	@Before
 	public void setUp(){
 		appStoreDto.setAppstoreIp("appStoreIp");
-		appStoreDto.setAppstoreName("appStorePort");
+		appStoreDto.setAppstoreName("appStorePortName");
 		appStoreDto.setAppstorePort("appStorePort");
 		appStoreDto.setPassword("password");
 		appStoreDto.setUserName("userName");
@@ -26,6 +26,7 @@ public class AppStoreDtoTest {
 	@Test
 	public void testAppoProcessFlowResponse() {
 		Assert.assertEquals("appStoreIp",appStoreDto.getAppstoreIp());
+		Assert.assertEquals("appStorePortName",appStoreDto.getAppstoreName());
 		Assert.assertEquals("appStorePort",appStoreDto.getAppstorePort());
 		Assert.assertEquals("password",appStoreDto.getPassword());
 		Assert.assertEquals("userName",appStoreDto.getUserName());
