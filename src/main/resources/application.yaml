@@ -16,7 +16,7 @@
 
 ### Server port #########
 server:
-  port: 8806
+  port: 8093
   address: ${LISTEN_IP:0.0.0.0}
   contextPath: /home
 
