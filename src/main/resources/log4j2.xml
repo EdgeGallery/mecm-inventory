@@ -17,8 +17,8 @@
 <Configuration monitorInterval="10">
     <Appenders>
         <RollingFile name="RollingFileInfo"
-                     fileName="${env:LOG_DIR:-/var/log/inventory}/inventory.log"
-                     filePattern="${env:LOG_DIR:-/var/log/inventory}/$${date:yyyy-MM}/inventory-%d{yyyy-MM-dd}-%i.log"
+                     fileName="${env:LOG_DIR:-/usr/app/log/inventory}/inventory.log"
+                     filePattern="${env:LOG_DIR:-/usr/app/log/inventory}/$${date:yyyy-MM}/inventory-%d{yyyy-MM-dd}-%i.log"
                      filePermissions="rw-------">
             <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout

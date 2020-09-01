@@ -36,6 +36,9 @@ RUN chmod 750 $APP_HOME &&\
     chmod 550 $APP_HOME/*.sh &&\
     chmod 550 $APP_HOME/inventory-0.0.1-SNAPSHOT.jar &&\
     chown -R $USER_NAME:$GROUP_NAME /var/log &&\
+    mkdir -p -m 600 $HOME/config &&\
+    mkdir -p -m 750 $HOME/log &&\
+    mkdir -p -m 700 $HOME/ssl &&\
     chown -R $USER_NAME:$GROUP_NAME $APP_HOME
 
 # Exposed port

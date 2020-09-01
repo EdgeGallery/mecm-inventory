@@ -16,6 +16,7 @@
 
 package org.edgegallery.mecm.inventory.service;
 
+import static org.edgegallery.mecm.inventory.service.ConfigServiceHelper.saveInputStreamToFile;
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
 
 import java.net.InetAddress;
@@ -28,17 +29,19 @@ import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
 
 /**
  * Implementation of configuration service.
@@ -57,19 +60,36 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private AppLcmRepository lcmRepository;
 
+    @Autowired
+    private RestClientService restClientService;
+
+    @Value("${SSL_ENABLED:false}")
+    private String isSslEnabled;
+
     @Override
-    public String uploadConfig(String tenantId, String hostIp, MultipartFile file) {
-        // Adding request parts.
+    public String uploadConfig(String tenantId, String hostIp, MultipartFile file, String token) {
+
+        // Save input stream to file
+        String filePath = saveInputStreamToFile(file, hostIp, tenantId);
+
+        // Update MEC host model.
+        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        host.setConfigUploadStatus("Saved");
+        host.setConfigFilePath(filePath);
+        service.updateRecord(host, hostRepository);
+
+        // Preparing request parts.
         Resource resource = file.getResource();
         LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
         parts.add("configFile", resource);
         parts.add("hostIp", hostIp);
 
-        // Adding HTTP header
+        // Preparing HTTP header
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         try {
             httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
+            httpHeaders.set("access_token", token);
         } catch (UnknownHostException e) {
             throw new InventoryException(e.getLocalizedMessage());
         }
@@ -77,50 +97,74 @@ public class ConfigServiceImpl implements ConfigService {
         // Creating HTTP entity with header and parts
         HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
-        // Preparing Rest Template
-        final RestTemplate restTemplate = new RestTemplate();
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setBufferRequestBody(false);
-        restTemplate.setRequestFactory(requestFactory);
+        // Get Rest Template
+        RestTemplate template = restClientService.getRestTemplate();
 
         // Preparing URL
-        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String lcmIp = host.getApplcmIp();
         AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
         String lcmPort = lcm.getApplcmPort();
-        String url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+        String url;
+        if (Boolean.parseBoolean(isSslEnabled)) {
+            url = "https://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+        } else {
+            url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+        }
 
         // Sending request
-        ResponseEntity<String> response =
-                restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        ResponseEntity<String> response = template.postForEntity(url, httpEntity, String.class);
 
-        LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
-
-        host.setConfigUploaded(response.getStatusCode().toString());
+        // Updated status to uploaded
+        host.setConfigUploadStatus("Uploaded");
         service.updateRecord(host, hostRepository);
 
+        LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
         return response.getBody();
     }
 
     @Override
-    public String deleteConfig(String tenantId, String hostIp) {
+    public String deleteConfig(String tenantId, String hostIp, String token) {
         // Preparing URL
         MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String lcmIp = host.getApplcmIp();
         AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
         String lcmPort = lcm.getApplcmPort();
-        String url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+        String url;
+        if (Boolean.parseBoolean(isSslEnabled)) {
+            url = "https://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+        } else {
+            url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+        }
 
-        // Preparing REST template
-        final RestTemplate restTemplate = new RestTemplate();
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        restTemplate.setRequestFactory(requestFactory);
+        // Preparing request parts.
+        MultiValueMap<String, String> parts = new LinkedMultiValueMap<>();
+        parts.add("hostIp", hostIp);
+
+        // Preparing HTTP header
+        HttpHeaders httpHeaders = new HttpHeaders();
+        try {
+            httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
+            httpHeaders.set("access_token", token);
+        } catch (UnknownHostException e) {
+            throw new InventoryException(e.getLocalizedMessage());
+        }
+
+        // Creating HTTP entity with header and parts
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parts, httpHeaders);
+
+        // Get Rest Template
+        RestTemplate template = restClientService.getRestTemplate();
 
         // Sending request
-        ResponseEntity<String> response =
-                restTemplate.postForEntity(url, HttpMethod.DELETE, String.class);
+        ResponseEntity<String> response = template.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
 
-        LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
+        LOGGER.info("Delete status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
+
+        // Update the DB
+        host.setConfigUploadStatus("Deleted");
+        host.setConfigFilePath("");
+        service.updateRecord(host, hostRepository);
+
         return response.getBody();
     }
 }

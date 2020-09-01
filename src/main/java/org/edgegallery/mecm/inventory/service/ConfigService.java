@@ -29,16 +29,18 @@ public interface ConfigService {
      * @param tenantId tenant ID
      * @param hostIp   edge host IP
      * @param file     configuration file
+     * @param token access token
      * @return status
      */
-    String uploadConfig(String tenantId, String hostIp, MultipartFile file);
+    String uploadConfig(String tenantId, String hostIp, MultipartFile file, String token);
 
     /**
      * Deletes K8s configuration file for host's specific infra manager plugin.
      *
      * @param tenantId tenant ID
      * @param hostIp   edge host IP
+     * @param token access token
      * @return status
      */
-    String deleteConfig(String tenantId, String hostIp);
+    String deleteConfig(String tenantId, String hostIp, String token);
 }

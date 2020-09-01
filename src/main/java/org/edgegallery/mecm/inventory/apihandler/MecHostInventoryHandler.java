@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -192,6 +193,7 @@ public class MecHostInventoryHandler {
      *
      * @param tenantId  tenant ID
      * @param mecHostIp edge host IP
+     * @param accessToken access token
      * @param file      configuration file
      * @return status code 200 on success, error code on failure
      */
@@ -203,8 +205,9 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
+            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
             @ApiParam(value = "config file") @RequestParam("file") MultipartFile file) {
-        String status = configService.uploadConfig(tenantId, mecHostIp, file);
+        String status = configService.uploadConfig(tenantId, mecHostIp, file, accessToken);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -213,6 +216,7 @@ public class MecHostInventoryHandler {
      *
      * @param tenantId  tenant ID
      * @param mecHostIp edge host IP
+     * @param accessToken access token
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes K8s configuration file from applcm", response = String.class)
@@ -222,8 +226,9 @@ public class MecHostInventoryHandler {
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
-            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        String status = configService.deleteConfig(tenantId, mecHostIp);
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
+            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken) {
+        String status = configService.deleteConfig(tenantId, mecHostIp, accessToken);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }
