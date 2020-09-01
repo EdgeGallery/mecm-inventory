@@ -97,6 +97,20 @@ public class InventoryExceptionHandler {
     }
 
     /**
+     * Returns error when runtime error happen.
+     *
+     * @param ex exception while processing request
+     * @return response entity with error code and message
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<InventoryExceptionResponse> handleRuntimeException(RuntimeException ex) {
+        InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
+                "Error while processing request", Collections.singletonList("Error while process request"));
+        LOGGER.info("Internal server error: {}", response);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
      * Returns response entity with error details when input validation is failed.
      *
      * @param ex exception while validating input
@@ -107,6 +121,7 @@ public class InventoryExceptionHandler {
             ConstraintViolationException ex) {
         InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
                 "input validation failed", Collections.singletonList("URL parameter validation failed"));
+        LOGGER.info("Constraint violation error: {}", response);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
