@@ -89,8 +89,8 @@ public final class MecHost implements BaseModel {
     @Column(name = "config_upload_status")
     private String configUploadStatus;
 
-    @Column(name = "config_file_path")
-    private String configFilePath;
+    // @Column(name = "config_file_path")
+    // private String configFilePath;
 
     @Override
     public String getIdentifier() {

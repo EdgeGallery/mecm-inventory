@@ -39,6 +39,7 @@ public class RestClientService {
                 new RestClientHelper(Boolean.parseBoolean(isSslEnabled), trustStorePath, trustStorePasswd);
         CloseableHttpClient client = builder.buildHttpClient();
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(client);
+        factory.setBufferRequestBody(false);
         return new RestTemplate(factory);
     }
 }
