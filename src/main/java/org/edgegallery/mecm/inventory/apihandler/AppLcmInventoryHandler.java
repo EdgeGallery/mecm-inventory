@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,6 +72,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> addAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -92,6 +94,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)
     @PutMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> updateAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -118,6 +121,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all application LCM records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
@@ -139,6 +143,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Retrieves application LCM record", response = AppLcmDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<AppLcmDto> getAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -157,6 +162,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Deletes all application LCM records", response = String.class)
     @DeleteMapping(path = "/tenants/{tenant_id}/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAllAppLcmRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
@@ -173,6 +179,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Deletes application LCM record", response = String.class)
     @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
