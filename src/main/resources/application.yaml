@@ -37,7 +37,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://${INVENTORY_DB_HOST:postgres}:${INVENTORY_DB_PORT:5432}/${INVENTORY_DB:inventorydb}
+    url: jdbc:postgresql://${INVENTORY_DB_HOST:postgres}:${INVENTORY_DB_PORT:5432}/${INVENTORY_DB:inventorydb}?sslmode=verify-ca&amp;sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory
     username: ${INVENTORY_DB_USER:inventory}
     password: ${INVENTORY_DB_PASSWORD:}
   jpa:
