@@ -69,14 +69,13 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public String uploadConfig(String tenantId, String hostIp, MultipartFile file, String token) {
 
-        // Save input stream to file
-        String filePath = saveInputStreamToFile(file, hostIp, tenantId);
-
+        // Save input stream to file and status updated is commented for v0.9
+        // String filePath = saveInputStreamToFile(file, hostIp, tenantId);
         // Update MEC host model.
-        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
-        host.setConfigUploadStatus("Saved");
-        host.setConfigFilePath(filePath);
-        service.updateRecord(host, hostRepository);
+        // MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        // host.setConfigUploadStatus("Saved");
+        // host.setConfigFilePath(filePath);
+        // service.updateRecord(host, hostRepository);
 
         // Preparing request parts.
         Resource resource = file.getResource();
@@ -97,10 +96,8 @@ public class ConfigServiceImpl implements ConfigService {
         // Creating HTTP entity with header and parts
         HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
-        // Get Rest Template
-        RestTemplate template = restClientService.getRestTemplate();
-
         // Preparing URL
+        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String lcmIp = host.getApplcmIp();
         AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
         String lcmPort = lcm.getApplcmPort();
@@ -111,8 +108,11 @@ public class ConfigServiceImpl implements ConfigService {
             url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
         }
 
+        // Get Rest Template
+        RestTemplate template = restClientService.getRestTemplate();
+
         // Sending request
-        ResponseEntity<String> response = template.postForEntity(url, httpEntity, String.class);
+        ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, httpEntity, String.class);
 
         // Updated status to uploaded
         host.setConfigUploadStatus("Uploaded");
@@ -162,7 +162,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         // Update the DB
         host.setConfigUploadStatus("Deleted");
-        host.setConfigFilePath("");
+        // host.setConfigFilePath("");
         service.updateRecord(host, hostRepository);
 
         return response.getBody();
