@@ -29,8 +29,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
-import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -63,8 +61,8 @@ public final class AppStoreDto {
     @Pattern(regexp = NAME_REGEX, message = "appstore username allowed pattern mismatch")
     private String userName;
 
-    @CustomConstraint(ConstraintType.PASSWORD)
-    private String password;
+    // @CustomConstraint(ConstraintType.PASSWORD)
+    // private String password;
 
     @NotEmpty(message = "appstore name is empty")
     @Size(max = 128, message = "appstore name length exceeds max size")

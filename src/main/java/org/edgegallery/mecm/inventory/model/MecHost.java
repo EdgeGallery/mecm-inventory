@@ -68,9 +68,6 @@ public final class MecHost implements BaseModel {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "edge_name")
     private String edgeName;
 
@@ -83,8 +80,8 @@ public final class MecHost implements BaseModel {
     @Column(name = "edgerepo_username")
     private String edgerepoUsername;
 
-    @Column(name = "edgerepo_password")
-    private String edgerepoPassword;
+    // @Column(name = "edgerepo_password")
+    // private String edgerepoPassword;
 
     @Column(name = "applcm_ip")
     private String applcmIp;

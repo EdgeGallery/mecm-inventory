@@ -28,8 +28,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
-import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -56,7 +54,4 @@ public final class AppLcmDto {
     @Size(max = 128, message = "username length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "applcm username allowed pattern mismatch")
     private String userName;
-
-    @CustomConstraint(ConstraintType.PASSWORD)
-    private String password;
 }

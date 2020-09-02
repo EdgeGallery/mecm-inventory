@@ -28,8 +28,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
-import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraint;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -71,9 +69,6 @@ public final class MecHostDto {
     @Pattern(regexp = NAME_REGEX, message = "mechost username allowed pattern mismatch")
     private String userName;
 
-    @CustomConstraint(ConstraintType.PASSWORD)
-    private String password;
-
     @Size(max = 128, message = "edgeName length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "edgename allowed pattern mismatch")
     private String edgeName;
@@ -92,8 +87,8 @@ public final class MecHostDto {
     @Pattern(regexp = NAME_REGEX, message = "edgerepo username allowed pattern mismatch")
     private String edgerepoUsername;
 
-    @CustomConstraint(ConstraintType.PASSWORD)
-    private String edgerepoPassword;
+    // @CustomConstraint(ConstraintType.PASSWORD)
+    // private String edgerepoPassword;
 
     @NotEmpty(message = "applcm IP is empty")
     @Size(max = 15, message = "applcm IP length exceeds max size")
