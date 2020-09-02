@@ -59,8 +59,8 @@ public final class AppStore implements BaseModel {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "password")
-    private String password;
+    // @Column(name = "password")
+    // private String password;
 
     @Column(name = "appstore_name")
     private String appstoreName;
