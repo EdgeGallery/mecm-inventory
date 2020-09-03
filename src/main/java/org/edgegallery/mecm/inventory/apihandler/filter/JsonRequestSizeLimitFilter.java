@@ -51,7 +51,10 @@ public class JsonRequestSizeLimitFilter extends OncePerRequestFilter {
     }
 
     private boolean isApplicationJson(HttpServletRequest httpRequest) {
-        return MediaType.APPLICATION_JSON.isCompatibleWith(MediaType
-                .parseMediaType(httpRequest.getHeader(HttpHeaders.CONTENT_TYPE)));
+        if (httpRequest.getHeader(HttpHeaders.CONTENT_TYPE) != null) {
+            return MediaType.APPLICATION_JSON.isCompatibleWith(MediaType
+                    .parseMediaType(httpRequest.getHeader(HttpHeaders.CONTENT_TYPE)));
+        }
+        return false;
     }
 }
