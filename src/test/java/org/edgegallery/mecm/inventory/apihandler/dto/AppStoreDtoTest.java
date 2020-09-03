@@ -26,24 +26,24 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AppStoreDtoTest {
 
-	@InjectMocks
-	AppStoreDto appStoreDto;
+    @InjectMocks
+    AppStoreDto appStoreDto;
 
-	@Before
-	public void setUp(){
-		appStoreDto.setAppstoreIp("appStoreIp");
-		appStoreDto.setAppstoreName("appStorePortName");
-		appStoreDto.setAppstorePort("appStorePort");
-		appStoreDto.setUserName("userName");
-		appStoreDto.setUri("uri");
-	}
+    @Before
+    public void setUp() {
+        appStoreDto.setAppstoreIp("appStoreIp");
+        appStoreDto.setAppstoreName("appStorePortName");
+        appStoreDto.setAppstorePort("appStorePort");
+        appStoreDto.setUserName("userName");
+        appStoreDto.setUri("uri");
+    }
 
-	@Test
-	public void testAppoProcessFlowResponse() {
-		Assert.assertEquals("appStoreIp",appStoreDto.getAppstoreIp());
-		Assert.assertEquals("appStorePortName",appStoreDto.getAppstoreName());
-		Assert.assertEquals("appStorePort",appStoreDto.getAppstorePort());
-		Assert.assertEquals("userName",appStoreDto.getUserName());
-		Assert.assertEquals("uri",appStoreDto.getUri());
-	}
+    @Test
+    public void testAppoProcessFlowResponse() {
+        Assert.assertEquals("appStoreIp", appStoreDto.getAppstoreIp());
+        Assert.assertEquals("appStorePortName", appStoreDto.getAppstoreName());
+        Assert.assertEquals("appStorePort", appStoreDto.getAppstorePort());
+        Assert.assertEquals("userName", appStoreDto.getUserName());
+        Assert.assertEquals("uri", appStoreDto.getUri());
+    }
 }

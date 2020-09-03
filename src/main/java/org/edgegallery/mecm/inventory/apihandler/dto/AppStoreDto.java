@@ -61,9 +61,6 @@ public final class AppStoreDto {
     @Pattern(regexp = NAME_REGEX, message = "appstore username allowed pattern mismatch")
     private String userName;
 
-    // @CustomConstraint(ConstraintType.PASSWORD)
-    // private String password;
-
     @NotEmpty(message = "appstore name is empty")
     @Size(max = 128, message = "appstore name length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "appstore name allowed pattern mismatch")

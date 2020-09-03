@@ -80,17 +80,11 @@ public final class MecHost implements BaseModel {
     @Column(name = "edgerepo_username")
     private String edgerepoUsername;
 
-    // @Column(name = "edgerepo_password")
-    // private String edgerepoPassword;
-
     @Column(name = "applcm_ip")
     private String applcmIp;
 
     @Column(name = "config_upload_status")
     private String configUploadStatus;
-
-    // @Column(name = "config_file_path")
-    // private String configFilePath;
 
     @Override
     public String getIdentifier() {

@@ -26,33 +26,33 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class MecHostDtoTest {
 
-	@InjectMocks
-	MecHostDto mecHostDto;
+    @InjectMocks
+    MecHostDto mecHostDto;
 
-	@Before
-	public void setUp(){
+    @Before
+    public void setUp() {
 
-		mecHostDto.setAddress("address");
-		mecHostDto.setAffinity("affinity");
-		mecHostDto.setApplcmIp("AppLcmIp");
-		mecHostDto.setCity("city");
-		mecHostDto.setEdgeName("edgeName");
-		mecHostDto.setEdgeRepoPort("edgerepoPort");
-		mecHostDto.setUserName("UserName");
-		mecHostDto.setZipCode("ZipCode");
-	}
+        mecHostDto.setAddress("address");
+        mecHostDto.setAffinity("affinity");
+        mecHostDto.setApplcmIp("AppLcmIp");
+        mecHostDto.setCity("city");
+        mecHostDto.setEdgeName("edgeName");
+        mecHostDto.setEdgeRepoPort("edgerepoPort");
+        mecHostDto.setUserName("UserName");
+        mecHostDto.setZipCode("ZipCode");
+    }
 
-	@Test
-	public void testAppoProcessFlowResponse() {
-		Assert.assertEquals("address",mecHostDto.getAddress());
-		Assert.assertEquals("affinity",mecHostDto.getAffinity());
-		Assert.assertEquals("AppLcmIp",mecHostDto.getApplcmIp());
-		Assert.assertEquals("city",mecHostDto.getCity());
-		Assert.assertEquals("edgeName",mecHostDto.getEdgeName());
-		Assert.assertEquals("edgerepoPort",mecHostDto.getEdgeRepoPort());
-		Assert.assertEquals("UserName",mecHostDto.getUserName());
-		Assert.assertEquals("ZipCode",mecHostDto.getZipCode());
-	}
+    @Test
+    public void testAppoProcessFlowResponse() {
+        Assert.assertEquals("address", mecHostDto.getAddress());
+        Assert.assertEquals("affinity", mecHostDto.getAffinity());
+        Assert.assertEquals("AppLcmIp", mecHostDto.getApplcmIp());
+        Assert.assertEquals("city", mecHostDto.getCity());
+        Assert.assertEquals("edgeName", mecHostDto.getEdgeName());
+        Assert.assertEquals("edgerepoPort", mecHostDto.getEdgeRepoPort());
+        Assert.assertEquals("UserName", mecHostDto.getUserName());
+        Assert.assertEquals("ZipCode", mecHostDto.getZipCode());
+    }
 }
 
 

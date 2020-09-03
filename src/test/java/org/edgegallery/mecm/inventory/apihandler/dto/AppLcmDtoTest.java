@@ -26,20 +26,20 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AppLcmDtoTest {
 
-	@InjectMocks
-	AppLcmDto appLcmDto;
+    @InjectMocks
+    AppLcmDto appLcmDto;
 
-	@Before
-	public void setUp(){
-		appLcmDto.setApplcmIp("applcmIp");
-		appLcmDto.setApplcmPort("applcmPort");
-		appLcmDto.setUserName("userName");
-	}
+    @Before
+    public void setUp() {
+        appLcmDto.setApplcmIp("applcmIp");
+        appLcmDto.setApplcmPort("applcmPort");
+        appLcmDto.setUserName("userName");
+    }
 
-	@Test
-	public void testAppoProcessFlowResponse() {
-		Assert.assertEquals("applcmIp",appLcmDto.getApplcmIp());
-		Assert.assertEquals("applcmPort",appLcmDto.getApplcmPort());
-		Assert.assertEquals("userName",appLcmDto.getUserName());
-	}
+    @Test
+    public void testAppoProcessFlowResponse() {
+        Assert.assertEquals("applcmIp", appLcmDto.getApplcmIp());
+        Assert.assertEquals("applcmPort", appLcmDto.getApplcmPort());
+        Assert.assertEquals("userName", appLcmDto.getUserName());
+    }
 }

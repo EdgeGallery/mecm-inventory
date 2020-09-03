@@ -191,10 +191,10 @@ public class MecHostInventoryHandler {
     /**
      * Uploads K8s configuration file to host's infra manager plugin.
      *
-     * @param tenantId  tenant ID
-     * @param mecHostIp edge host IP
+     * @param tenantId    tenant ID
+     * @param mecHostIp   edge host IP
      * @param accessToken access token
-     * @param file      configuration file
+     * @param file        configuration file
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Upload K8s configuration file to applcm", response = String.class)
@@ -214,8 +214,8 @@ public class MecHostInventoryHandler {
     /**
      * Deletes K8s configuration file for host's specific infra manager plugin.
      *
-     * @param tenantId  tenant ID
-     * @param mecHostIp edge host IP
+     * @param tenantId    tenant ID
+     * @param mecHostIp   edge host IP
      * @param accessToken access token
      * @return status code 200 on success, error code on failure
      */

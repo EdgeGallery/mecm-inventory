@@ -23,24 +23,24 @@ import org.mockito.InjectMocks;
 
 public class AppLcmTest {
 
-	@InjectMocks
-	AppLcm appLcm = new AppLcm();
+    @InjectMocks
+    AppLcm appLcm = new AppLcm();
 
-	@Before
-	public void setUp(){
-		appLcm.setApplcmId("applcmId");
-		appLcm.setApplcmIp("applcmIp");
-		appLcm.setApplcmPort("applcmPort");
-		appLcm.setTenantId("tentantId");
-		appLcm.setUserName("userName");
-	}
+    @Before
+    public void setUp() {
+        appLcm.setApplcmId("applcmId");
+        appLcm.setApplcmIp("applcmIp");
+        appLcm.setApplcmPort("applcmPort");
+        appLcm.setTenantId("tentantId");
+        appLcm.setUserName("userName");
+    }
 
-	@Test
-	public void testAppoProcessFlowResponse() {
-		Assert.assertEquals("applcmId",appLcm.getApplcmId());
-		Assert.assertEquals("applcmIp",appLcm.getApplcmIp());
-		Assert.assertEquals("applcmPort",appLcm.getApplcmPort());
-		Assert.assertEquals("tentantId",appLcm.getTenantId());
-		Assert.assertEquals("userName",appLcm.getUserName());
-	}
+    @Test
+    public void testAppoProcessFlowResponse() {
+        Assert.assertEquals("applcmId", appLcm.getApplcmId());
+        Assert.assertEquals("applcmIp", appLcm.getApplcmIp());
+        Assert.assertEquals("applcmPort", appLcm.getApplcmPort());
+        Assert.assertEquals("tentantId", appLcm.getTenantId());
+        Assert.assertEquals("userName", appLcm.getUserName());
+    }
 }

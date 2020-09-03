@@ -15,29 +15,29 @@
   ~  limitations under the License.
   -->
 <Configuration monitorInterval="10">
-    <Appenders>
-        <RollingFile name="RollingFileInfo"
-                     fileName="${env:LOG_DIR:-/usr/app/log/inventory}/inventory.log"
-                     filePattern="${env:LOG_DIR:-/usr/app/log/inventory}/$${date:yyyy-MM}/inventory-%d{yyyy-MM-dd}-%i.log"
-                     filePermissions="rw-------">
-            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout
-                    pattern="[%d{yyyy-MM-dd} %d{HH:mm:ss:SSS}] %-5p [%t] [%C %M %L]: %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="20MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="50"/>
-        </RollingFile>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout
-                    pattern="[%d{yyyy-MM-dd} %d{HH:mm:ss:SSS}] %-5p [%t] [%C %M %L]: %m%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="INFO">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="RollingFileInfo"/>
-        </Root>
-    </Loggers>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="[%d{yyyy-MM-dd} %d{HH:mm:ss:SSS}] %-5p [%t] [%C %M %L]: %m%n"/>
+    </Console>
+    <RollingFile fileName="${env:LOG_DIR:-/usr/app/log/inventory}/inventory.log"
+      filePattern="${env:LOG_DIR:-/usr/app/log/inventory}/$${date:yyyy-MM}/inventory-%d{yyyy-MM-dd}-%i.log"
+      filePermissions="rw-------"
+      name="RollingFileInfo">
+      <DefaultRolloverStrategy max="50"/>
+      <PatternLayout
+        pattern="[%d{yyyy-MM-dd} %d{HH:mm:ss:SSS}] %-5p [%t] [%C %M %L]: %m%n"/>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="20MB"/>
+        <TimeBasedTriggeringPolicy/>
+      </Policies>
+      <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="RollingFileInfo"/>
+    </Root>
+  </Loggers>
 </Configuration>

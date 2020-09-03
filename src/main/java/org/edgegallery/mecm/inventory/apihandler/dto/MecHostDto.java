@@ -87,9 +87,6 @@ public final class MecHostDto {
     @Pattern(regexp = NAME_REGEX, message = "edgerepo username allowed pattern mismatch")
     private String edgerepoUsername;
 
-    // @CustomConstraint(ConstraintType.PASSWORD)
-    // private String edgerepoPassword;
-
     @NotEmpty(message = "applcm IP is empty")
     @Size(max = 15, message = "applcm IP length exceeds max size")
     @Pattern(regexp = IP_REGEX, message = "applcm IP allowed pattern mismatch")
