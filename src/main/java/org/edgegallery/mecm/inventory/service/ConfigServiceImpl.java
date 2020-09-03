@@ -68,14 +68,6 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public String uploadConfig(String tenantId, String hostIp, MultipartFile file, String token) {
 
-        // Save input stream to file and status updated is commented for v0.9
-        // String filePath = saveInputStreamToFile(file, hostIp, tenantId);
-        // Update MEC host model.
-        // MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
-        // host.setConfigUploadStatus("Saved");
-        // host.setConfigFilePath(filePath);
-        // service.updateRecord(host, hostRepository);
-
         // Preparing request parts.
         Resource resource = file.getResource();
         LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
@@ -161,7 +153,6 @@ public class ConfigServiceImpl implements ConfigService {
 
         // Update the DB
         host.setConfigUploadStatus("Deleted");
-        // host.setConfigFilePath("");
         service.updateRecord(host, hostRepository);
 
         return response.getBody();
