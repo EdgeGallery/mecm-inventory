@@ -16,7 +16,6 @@
 
 package org.edgegallery.mecm.inventory.service;
 
-import static org.edgegallery.mecm.inventory.service.ConfigServiceHelper.saveInputStreamToFile;
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
 
 import java.net.InetAddress;
