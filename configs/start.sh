@@ -239,4 +239,4 @@ fi
 echo "Running Inventory"
 umask 0027
 cd /usr/app || exit
-java -jar inventory-0.0.1-SNAPSHOT.jar
+java -jar bin/inventory-0.0.1-SNAPSHOT.jar
