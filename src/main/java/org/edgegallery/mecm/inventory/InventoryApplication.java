@@ -24,12 +24,18 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.edgegallery.mecm.inventory.service.RestClientHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * External system Inventory application.
@@ -38,6 +44,31 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 public class InventoryApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryApplication.class);
+
+    @Value("${ssl.enabled:false}")
+    private String isSslEnabled;
+
+    @Value("${ssl.trust-store:}")
+    private String trustStorePath;
+
+    @Value("${ssl.trust-store-password:}")
+    private String trustStorePasswd;
+
+    /**
+     * Returns new instance of restTemplate with required configuration.
+     *
+     * @return restTemplate with required configuration
+     */
+    @Bean
+    public RestTemplate restTemplate() {
+        RestClientHelper builder =
+                new RestClientHelper(Boolean.parseBoolean(isSslEnabled), trustStorePath, trustStorePasswd);
+        CloseableHttpClient client = builder.buildHttpClient();
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(client);
+        factory.setBufferRequestBody(false);
+        return new RestTemplate(factory);
+    }
+
 
     /**
      * External system Inventory entry function.

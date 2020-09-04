@@ -96,7 +96,12 @@ public class RestClientHelper {
         return keystore;
     }
 
-    CloseableHttpClient buildHttpClient() {
+    /**
+     * Returns closeable http client.
+     *
+     * @return closeable http client
+     */
+    public CloseableHttpClient buildHttpClient() {
         LOGGER.info("Build Http client...");
         CloseableHttpClient httpClient;
         try {
