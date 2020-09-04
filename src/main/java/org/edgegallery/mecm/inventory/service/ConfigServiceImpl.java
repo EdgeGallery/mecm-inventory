@@ -60,7 +60,7 @@ public class ConfigServiceImpl implements ConfigService {
     private AppLcmRepository lcmRepository;
 
     @Autowired
-    private RestClientService restClientService;
+    private RestTemplate restTemplate;
 
     @Value("${ssl.enabled:false}")
     private String isSslEnabled;
@@ -99,11 +99,8 @@ public class ConfigServiceImpl implements ConfigService {
             url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
         }
 
-        // Get Rest Template
-        RestTemplate template = restClientService.getRestTemplate();
-
         // Sending request
-        ResponseEntity<String> response = template.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
 
         // Updated status to uploaded
         host.setConfigUploadStatus("Uploaded");
@@ -143,11 +140,8 @@ public class ConfigServiceImpl implements ConfigService {
         // Creating HTTP entity with header and parts
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
-        // Get Rest Template
-        RestTemplate template = restClientService.getRestTemplate();
-
         // Sending request
-        ResponseEntity<String> response = template.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
 
         LOGGER.info("Delete status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
 
