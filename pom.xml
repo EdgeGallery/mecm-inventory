@@ -266,6 +266,15 @@
           <skip>${maven.test.skip}</skip>
           <testFailureIgnore>${maven.test.failure.ignore}</testFailureIgnore>
         </configuration>
+      </plugin>
+      <plugin><configuration>
+        <configLocation>
+          https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
+        </configLocation>
+        <consoleOutput>true</consoleOutput>
+        <failOnViolation>true</failOnViolation>
+        <violationSeverity>warning</violationSeverity>
+      </configuration>
         <executions>
           <execution>
             <goals>
