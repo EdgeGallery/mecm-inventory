@@ -110,7 +110,7 @@ public class RestClientHelper {
                 SSLContext sslctx = SSLContexts.custom().loadTrustMaterial(ks, new TrustSelfSignedStrategy())
                         .setProtocol("TLSv1.2").build();
                 SSLConnectionSocketFactory sslFactory =
-                        new SSLConnectionSocketFactory(sslctx, (s, sslSession) -> false);
+                        new SSLConnectionSocketFactory(sslctx, (s, sslSession) -> true);
 
                 httpClient = HttpClients.custom().setRetryHandler(retryMechanism(MAX_RETRY))
                         .setServiceUnavailableRetryStrategy(
