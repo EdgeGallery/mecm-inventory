@@ -84,6 +84,12 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <version>4.2.2.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
     <!-- end of spring -->
     <!-- DB -->
     <dependency>
@@ -219,33 +225,39 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.11.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.190</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin><configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
+        <compilerArgument>-Xlint:all</compilerArgument>
+        <showDeprecation>true</showDeprecation>
+        <showWarnings>true</showWarnings>
+        <source>${java.version}</source>
+        <target>${java.version}</target>
+      </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
       </plugin>
       <plugin><executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
+        <execution>
+          <goals>
+            <goal>repackage</goal>
+          </goals>
+        </execution>
+      </executions>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>2.1.2.RELEASE</version>
       </plugin>
-	        <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.20</version>
@@ -253,15 +265,6 @@
           <forkMode>always</forkMode>
           <skip>${maven.test.skip}</skip>
           <testFailureIgnore>${maven.test.failure.ignore}</testFailureIgnore>
-        </configuration>
-      </plugin>
-      <plugin><configuration>
-          <configLocation>
-            https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
-          </configLocation>
-          <consoleOutput>true</consoleOutput>
-          <failOnViolation>true</failOnViolation>
-          <violationSeverity>warning</violationSeverity>
         </configuration>
         <executions>
           <execution>
@@ -275,11 +278,11 @@
         <version>3.1.1</version>
       </plugin>
       <plugin><configuration>
-          <failOnViolation>true</failOnViolation>
-          <failurePriority>2</failurePriority>
-          <maxAllowedViolations>0</maxAllowedViolations>
-          <printFailingErrors>true</printFailingErrors>
-        </configuration>
+        <failOnViolation>true</failOnViolation>
+        <failurePriority>2</failurePriority>
+        <maxAllowedViolations>0</maxAllowedViolations>
+        <printFailingErrors>true</printFailingErrors>
+      </configuration>
         <executions>
           <execution>
             <goals>
@@ -292,8 +295,8 @@
         <version>3.13.0</version>
       </plugin>
       <plugin><configuration>
-          <failOnError>true</failOnError>
-        </configuration>
+        <failOnError>true</failOnError>
+      </configuration>
         <executions>
           <execution>
             <goals>
@@ -306,8 +309,8 @@
         <version>3.0.4</version>
       </plugin>
       <plugin><configuration>
-          <autoUpdate>true</autoUpdate>
-        </configuration>
+        <autoUpdate>true</autoUpdate>
+      </configuration>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
         <!--				<executions>-->
@@ -343,30 +346,30 @@
             </goals>
           </execution>
         </executions>
-      </plugin>  
+      </plugin>
     </plugins>
   </build>
 
   <reporting>
     <plugins>
       <plugin><configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
+        <compilerArgument>-Xlint:all</compilerArgument>
+        <showDeprecation>true</showDeprecation>
+        <showWarnings>true</showWarnings>
+        <source>1.8</source>
+        <target>1.8</target>
+      </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.1</version>
       </plugin>
       <plugin><configuration>
-          <configLocation>
-            https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
-          </configLocation>
-          <failOnViolation>true</failOnViolation>
-          <violationSeverity>warning</violationSeverity>
-        </configuration>
+        <configLocation>
+          https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
+        </configLocation>
+        <failOnViolation>true</failOnViolation>
+        <violationSeverity>warning</violationSeverity>
+      </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.1.1</version>
