@@ -37,7 +37,7 @@ public class MecHostDtoTest {
         mecHostDto.setApplcmIp("AppLcmIp");
         mecHostDto.setCity("city");
         mecHostDto.setEdgeName("edgeName");
-        mecHostDto.setEdgeRepoPort("edgerepoPort");
+        mecHostDto.setEdgerepoPort("edgerepoPort");
         mecHostDto.setUserName("UserName");
         mecHostDto.setZipCode("ZipCode");
     }
@@ -49,7 +49,7 @@ public class MecHostDtoTest {
         Assert.assertEquals("AppLcmIp", mecHostDto.getApplcmIp());
         Assert.assertEquals("city", mecHostDto.getCity());
         Assert.assertEquals("edgeName", mecHostDto.getEdgeName());
-        Assert.assertEquals("edgerepoPort", mecHostDto.getEdgeRepoPort());
+        Assert.assertEquals("edgerepoPort", mecHostDto.getEdgerepoPort());
         Assert.assertEquals("UserName", mecHostDto.getUserName());
         Assert.assertEquals("ZipCode", mecHostDto.getZipCode());
     }

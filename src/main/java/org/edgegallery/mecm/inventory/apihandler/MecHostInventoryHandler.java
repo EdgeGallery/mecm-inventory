@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +78,7 @@ public class MecHostInventoryHandler {
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> addMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -98,6 +100,7 @@ public class MecHostInventoryHandler {
      */
     @ApiOperation(value = "Updates existing MEC host record", response = String.class)
     @PutMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> updateMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -124,6 +127,7 @@ public class MecHostInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<List<MecHostDto>> getAllMecHostRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
@@ -145,6 +149,7 @@ public class MecHostInventoryHandler {
      */
     @ApiOperation(value = "Retrieves MEC host record", response = MecHostDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<MecHostDto> getMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -162,7 +167,8 @@ public class MecHostInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all MEC host records", response = String.class)
-    @DeleteMapping(path = "/tenant/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAllMecHostRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
@@ -178,7 +184,8 @@ public class MecHostInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes MEC host record", response = String.class)
-    @DeleteMapping(path = "/tenant/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -200,6 +207,7 @@ public class MecHostInventoryHandler {
     @ApiOperation(value = "Upload K8s configuration file to applcm", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/k8sconfig",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<String> uploadConfigFile(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -222,6 +230,7 @@ public class MecHostInventoryHandler {
     @ApiOperation(value = "Deletes K8s configuration file from applcm", response = String.class)
     @DeleteMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/k8sconfig",
             produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<String> deleteConfigFile(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,

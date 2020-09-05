@@ -81,7 +81,7 @@ public final class MecHostDto {
     @NotEmpty(message = "edgerepo port is empty")
     @Size(max = 5, message = "edgerepo port length exceeds max size")
     @Pattern(regexp = PORT_REGEX, message = "edgerepo port allowed pattern mismatch")
-    private String edgeRepoPort;
+    private String edgerepoPort;
 
     @Size(max = 128, message = "edgerepo username length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "edgerepo username allowed pattern mismatch")

@@ -35,22 +35,24 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InventoryApplicationTest.class)
 @AutoConfigureMockMvc
-public class AppLcmInventoryHandlerTest {
+public class AppStoreInventoryHandlerTest {
 
     @Autowired
     MockMvc mvc;
 
     @Test
     @WithMockUser(roles = "MECM_TENANT")
-    public void validateAppLcmInventory() throws Exception {
+    public void validateAppStoreInventory() throws Exception {
         String tenantId = "111111";
 
-        // Test APPLCM record post
+        // Test AppStore record post
         ResultActions postResult =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\" }"));
+                        .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstorePort\": \"10000\", \"uri\": "
+                                + "\"/test/resource\", \"appstoreName\": \"TestStore\", \"producer\": "
+                                + "\"TestProducer\" }"));
 
         MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -58,9 +60,10 @@ public class AppLcmInventoryHandlerTest {
         String postResponse = postMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
 
-        // Test APPLCM record get by APPLCM ID
+        // Test AppStore record get by AppStore ID
         ResultActions getByIdResult =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
+                        + "/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -68,12 +71,14 @@ public class AppLcmInventoryHandlerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
-        Assert.assertEquals("{\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10000\",\"userName\":\"Test\"}",
+        Assert.assertEquals(
+                "{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"uri\":\"/test/resource\","
+                        + "\"userName\":null,\"appstoreName\":\"TestStore\",\"producer\":\"TestProducer\"}",
                 getByIdResponse);
 
-        // Test APPLCM record delete by APPLCM ID
+        // Test AppStore record delete by AppStore ID
         ResultActions deleteByIdResult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -82,6 +87,5 @@ public class AppLcmInventoryHandlerTest {
                 .andReturn();
         String deleteByIdResponse = deleteByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponse);
-
     }
 }
