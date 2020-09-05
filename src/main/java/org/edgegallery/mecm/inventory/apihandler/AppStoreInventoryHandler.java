@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +73,7 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Adds new application store record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> addAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -94,6 +96,7 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Updates existing application store record", response = String.class)
     @PutMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> updateAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -120,6 +123,7 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all application store records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
@@ -142,6 +146,7 @@ public class AppStoreInventoryHandler {
      */
     @ApiOperation(value = "Retrieves application store record", response = MecHostDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<AppStoreDto> getAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
@@ -159,7 +164,8 @@ public class AppStoreInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all application store records", response = String.class)
-    @DeleteMapping(path = "/tenant/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAllAppStoreRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
@@ -176,7 +182,8 @@ public class AppStoreInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes application store record", response = String.class)
-    @DeleteMapping(path = "/tenant/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
