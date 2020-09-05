@@ -235,39 +235,46 @@
 
   <build>
     <plugins>
-      <plugin>
-        <configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
+      <plugin><configuration>
+        <compilerArgument>-Xlint:all</compilerArgument>
+        <showDeprecation>true</showDeprecation>
+        <showWarnings>true</showWarnings>
+        <source>${java.version}</source>
+        <target>${java.version}</target>
+      </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
       </plugin>
-      <plugin>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
+      <plugin><executions>
+        <execution>
+          <goals>
+            <goal>repackage</goal>
+          </goals>
+        </execution>
+      </executions>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>2.1.2.RELEASE</version>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.20</version>
         <configuration>
-          <configLocation>
-            https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
-          </configLocation>
-          <consoleOutput>true</consoleOutput>
-          <failOnViolation>true</failOnViolation>
-          <violationSeverity>warning</violationSeverity>
+          <forkMode>always</forkMode>
+          <skip>${maven.test.skip}</skip>
+          <testFailureIgnore>${maven.test.failure.ignore}</testFailureIgnore>
         </configuration>
+      </plugin>
+      <plugin><configuration>
+        <configLocation>
+          https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
+        </configLocation>
+        <consoleOutput>true</consoleOutput>
+        <failOnViolation>true</failOnViolation>
+        <violationSeverity>warning</violationSeverity>
+      </configuration>
         <executions>
           <execution>
             <goals>
@@ -279,13 +286,12 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.1.1</version>
       </plugin>
-      <plugin>
-        <configuration>
-          <failOnViolation>true</failOnViolation>
-          <failurePriority>2</failurePriority>
-          <maxAllowedViolations>0</maxAllowedViolations>
-          <printFailingErrors>true</printFailingErrors>
-        </configuration>
+      <plugin><configuration>
+        <failOnViolation>true</failOnViolation>
+        <failurePriority>2</failurePriority>
+        <maxAllowedViolations>0</maxAllowedViolations>
+        <printFailingErrors>true</printFailingErrors>
+      </configuration>
         <executions>
           <execution>
             <goals>
@@ -297,10 +303,9 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.13.0</version>
       </plugin>
-      <plugin>
-        <configuration>
-          <failOnError>true</failOnError>
-        </configuration>
+      <plugin><configuration>
+        <failOnError>true</failOnError>
+      </configuration>
         <executions>
           <execution>
             <goals>
@@ -312,10 +317,9 @@
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>3.0.4</version>
       </plugin>
-      <plugin>
-        <configuration>
-          <autoUpdate>true</autoUpdate>
-        </configuration>
+      <plugin><configuration>
+        <autoUpdate>true</autoUpdate>
+      </configuration>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
         <!--				<executions>-->
@@ -328,58 +332,53 @@
         <version>${owasp.version}</version>
       </plugin>
       <!-- jacoco plugin for coverage report -->
-		<plugin>
-  <groupId>org.jacoco</groupId>
-  <artifactId>jacoco-maven-plugin</artifactId>
-  <version>0.8.1</version>
-  <configuration>
-		        <skip>false</skip>
-		        <destFile>${basedir}/target/coverage-reports/jacoco.exec</destFile>
-		    </configuration>
-		    <executions>
-		        <execution>
-		            <goals>
-		                <goal>prepare-agent</goal>
-		            </goals>
-		        </execution>
-		        <execution>
-		            <configuration>
-		                <dataFile>${basedir}/target/coverage-reports/jacoco.exec</dataFile>
-		                <outputDirectory>${basedir}/target/coverage-reports</outputDirectory>
-		            </configuration>
-		            <id>report</id>
-		            <phase>test</phase>
-		            <goals>
-		                <goal>report</goal>
-		            </goals>
-		        </execution>
-		    </executions>
-		</plugin>  
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.7.201606060606</version>
+        <configuration>
+          <destFile>target/coverage-reports/jacoco-unit.exec</destFile>
+          <dataFile>target/coverage-reports/jacoco-unit.exec</dataFile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>jacoco-initialize</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-site</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <reporting>
     <plugins>
-      <plugin>
-        <configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
+      <plugin><configuration>
+        <compilerArgument>-Xlint:all</compilerArgument>
+        <showDeprecation>true</showDeprecation>
+        <showWarnings>true</showWarnings>
+        <source>1.8</source>
+        <target>1.8</target>
+      </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.1</version>
       </plugin>
-      <plugin>
-        <configuration>
-          <configLocation>
-            https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
-          </configLocation>
-          <failOnViolation>true</failOnViolation>
-          <violationSeverity>warning</violationSeverity>
-        </configuration>
+      <plugin><configuration>
+        <configLocation>
+          https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
+        </configLocation>
+        <failOnViolation>true</failOnViolation>
+        <violationSeverity>warning</violationSeverity>
+      </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.1.1</version>
