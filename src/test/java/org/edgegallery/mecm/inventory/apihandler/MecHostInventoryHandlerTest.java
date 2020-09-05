@@ -88,4 +88,24 @@ public class MecHostInventoryHandlerTest {
         String deleteByIdResponse = deleteByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponse);
     }
+
+    @Test
+    @WithMockUser(roles = "MECM_TENANT")
+    public void validateConfigOperation() throws Exception {
+        String tenantId = "111111";
+
+        // Test MecHost record post
+        ResultActions postResult =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", \"edgerepoPort\": "
+                                + "\"10000\", \"applcmIp\": \"1.1.1.1\"}"));
+
+        MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String postResponse = postMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
+    }
 }
