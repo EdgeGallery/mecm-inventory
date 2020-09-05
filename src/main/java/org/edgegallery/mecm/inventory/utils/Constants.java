@@ -36,7 +36,7 @@ public final class Constants {
     public static final String UPPER_CASE_REGEX = ".*[A-Z].*";
     public static final int MAX_PWD_COUNT = 2;
 
-    public static final String APPLCM_URI = "/lcmbroker/v1/configuration";
+    public static final String APPLCM_URI = "/lcmcontroller/v1/configuration";
     public static final String RECORD_NOT_FOUND_ERROR = "Record not found";
 
     // Below values can be taken from config file later.

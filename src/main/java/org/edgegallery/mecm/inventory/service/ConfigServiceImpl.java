@@ -62,7 +62,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${ssl.enabled:false}")
+    @Value("${server.ssl.enabled:false}")
     private String isSslEnabled;
 
     @Override
