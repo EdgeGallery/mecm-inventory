@@ -84,6 +84,12 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <version>4.2.2.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
     <!-- end of spring -->
     <!-- DB -->
     <dependency>
@@ -219,11 +225,18 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.11.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.190</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin><configuration>
+      <plugin>
+        <configuration>
           <compilerArgument>-Xlint:all</compilerArgument>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
@@ -234,7 +247,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
       </plugin>
-      <plugin><executions>
+      <plugin>
+        <executions>
           <execution>
             <goals>
               <goal>repackage</goal>
@@ -245,7 +259,8 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>2.1.2.RELEASE</version>
       </plugin>
-      <plugin><configuration>
+      <plugin>
+        <configuration>
           <configLocation>
             https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
           </configLocation>
@@ -264,7 +279,8 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.1.1</version>
       </plugin>
-      <plugin><configuration>
+      <plugin>
+        <configuration>
           <failOnViolation>true</failOnViolation>
           <failurePriority>2</failurePriority>
           <maxAllowedViolations>0</maxAllowedViolations>
@@ -281,7 +297,8 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.13.0</version>
       </plugin>
-      <plugin><configuration>
+      <plugin>
+        <configuration>
           <failOnError>true</failOnError>
         </configuration>
         <executions>
@@ -295,7 +312,8 @@
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>3.0.4</version>
       </plugin>
-      <plugin><configuration>
+      <plugin>
+        <configuration>
           <autoUpdate>true</autoUpdate>
         </configuration>
         <groupId>org.owasp</groupId>
@@ -311,10 +329,10 @@
       </plugin>
       <!-- jacoco plugin for coverage report -->
 		<plugin>
-		    <groupId>org.jacoco</groupId>
-		    <artifactId>jacoco-maven-plugin</artifactId>
-		    <version>0.8.1</version>
-		    <configuration>
+  <groupId>org.jacoco</groupId>
+  <artifactId>jacoco-maven-plugin</artifactId>
+  <version>0.8.1</version>
+  <configuration>
 		        <skip>false</skip>
 		        <destFile>${basedir}/target/coverage-reports/jacoco.exec</destFile>
 		    </configuration>
@@ -342,7 +360,8 @@
 
   <reporting>
     <plugins>
-      <plugin><configuration>
+      <plugin>
+        <configuration>
           <compilerArgument>-Xlint:all</compilerArgument>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
@@ -353,7 +372,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.1</version>
       </plugin>
-      <plugin><configuration>
+      <plugin>
+        <configuration>
           <configLocation>
             https://raw.githubusercontent.com/EdgeGallery/infra/master/configs/edgegallery_checks.xml
           </configLocation>
