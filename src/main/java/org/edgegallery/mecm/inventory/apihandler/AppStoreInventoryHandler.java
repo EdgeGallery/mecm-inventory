@@ -110,7 +110,7 @@ public class AppStoreInventoryHandler {
         }
         AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
         store.setTenantId(tenantId);
-        store.setAppstoreId(appStoreDto + "_" + tenantId);
+        store.setAppstoreId(appStoreIp + "_" + tenantId);
         Status status = service.updateRecord(store, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
