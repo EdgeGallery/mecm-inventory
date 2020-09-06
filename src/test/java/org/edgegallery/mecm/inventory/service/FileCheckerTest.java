@@ -27,7 +27,7 @@ class FileCheckerTest {
 
     @Test
     void testValidFile() throws FileNotFoundException {
-        File file = ResourceUtils.getFile("TestFile");
+        File file = ResourceUtils.getFile("classpath:TestFile");
         assertDoesNotThrow(() -> FileChecker.check(file));
     }
 }
