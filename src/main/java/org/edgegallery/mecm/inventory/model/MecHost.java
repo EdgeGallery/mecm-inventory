@@ -69,7 +69,7 @@ public final class MecHost implements BaseModel {
     private String userName;
 
     @Column(name = "edge_name")
-    private String edgeName;
+    private String edgeRepoName;
 
     @Column(name = "edgerepo_ip")
     private String edgerepoIp;
