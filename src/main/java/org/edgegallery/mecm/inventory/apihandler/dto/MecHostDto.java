@@ -52,7 +52,7 @@ public final class MecHostDto {
     @Pattern(regexp = Constants.NAME_REGEX, message = "mechost zipcode allowed pattern mismatch")
     private String zipCode;
 
-    @NotEmpty(message = "mechost name is empty")
+    @NotEmpty(message = "mechost city is empty")
     @Size(max = 128, message = "mechost city length exceeds max size")
     @Pattern(regexp = Constants.CITY_REGEX, message = "mechost city allowed pattern mismatch")
     private String city;
@@ -69,9 +69,9 @@ public final class MecHostDto {
     @Pattern(regexp = Constants.NAME_REGEX, message = "mechost username allowed pattern mismatch")
     private String userName;
 
-    @Size(max = 128, message = "edgeRepoName length exceeds max size")
-    @Pattern(regexp = Constants.NAME_REGEX, message = "edgeRepoName allowed pattern mismatch")
-    private String edgeRepoName;
+    @Size(max = 128, message = "edgerepoName length exceeds max size")
+    @Pattern(regexp = Constants.NAME_REGEX, message = "edgerepoName allowed pattern mismatch")
+    private String edgerepoName;
 
     @NotEmpty(message = "edgerepo IP is empty")
     @Size(max = 15, message = "edgerepo IP length exceeds max size")

@@ -74,7 +74,7 @@ public class MecHostInventoryHandlerTest {
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"edgeRepoName\":null,"
+                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.1\",\"edgerepoPort\":\"10000\",\"edgerepoUsername\":null,"
                         + "\"applcmIp\":\"1.1.1.1\"}", getByIdResponse);
 
@@ -130,7 +130,7 @@ public class MecHostInventoryHandlerTest {
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"edgeRepoName\":null,"
+                        + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.2\",\"edgerepoPort\":\"10001\",\"edgerepoUsername\":null,"
                         + "\"applcmIp\":\"1.1.1.1\"}]", getAllResponse);
 
