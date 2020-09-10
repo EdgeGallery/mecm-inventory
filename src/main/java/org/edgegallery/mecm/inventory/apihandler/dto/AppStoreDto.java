@@ -61,12 +61,10 @@ public final class AppStoreDto {
     @Pattern(regexp = NAME_REGEX, message = "appstore username allowed pattern mismatch")
     private String userName;
 
-    @NotEmpty(message = "appstore name is empty")
     @Size(max = 128, message = "appstore name length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "appstore name allowed pattern mismatch")
     private String appstoreName;
 
-    @NotEmpty(message = "producer is empty")
     @Size(max = 128, message = "appstore producer length exceeds max size")
     @Pattern(regexp = NAME_REGEX, message = "appstore producer allowed pattern mismatch")
     private String producer;
