@@ -45,7 +45,7 @@ public class InventoryApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryApplication.class);
 
-    @Value("${server.ssl.enabled:false}")
+    @Value("${server.ssl.enabled:}")
     private String isSslEnabled;
 
     @Value("${server.ssl.trust-store:}")
