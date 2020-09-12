@@ -24,14 +24,19 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CorsFilter implements Filter {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CorsFilter.class);
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
+        LOGGER.info("create response for cors");
         HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
@@ -39,6 +44,7 @@ public class CorsFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) req;
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            LOGGER.info("set accept status for OPTIONS request");
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
         } else {
             chain.doFilter(req, res);
