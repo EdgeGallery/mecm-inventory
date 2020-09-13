@@ -215,8 +215,7 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
             @ApiParam(value = "config file") @RequestParam("file") MultipartFile file) {
-        String status = configService.uploadConfig(tenantId, mecHostIp, file, accessToken);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        return configService.uploadConfig(tenantId, mecHostIp, file, accessToken);
     }
 
     /**
@@ -237,7 +236,6 @@ public class MecHostInventoryHandler {
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken) {
-        String status = configService.deleteConfig(tenantId, mecHostIp, accessToken);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        return configService.deleteConfig(tenantId, mecHostIp, accessToken);
     }
 }

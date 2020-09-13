@@ -16,6 +16,7 @@
 
 package org.edgegallery.mecm.inventory.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -32,7 +33,7 @@ public interface ConfigService {
      * @param token    access token
      * @return status
      */
-    String uploadConfig(String tenantId, String hostIp, MultipartFile file, String token);
+    ResponseEntity<String> uploadConfig(String tenantId, String hostIp, MultipartFile file, String token);
 
     /**
      * Deletes K8s configuration file for host's specific infra manager plugin.
@@ -42,5 +43,5 @@ public interface ConfigService {
      * @param token    access token
      * @return status
      */
-    String deleteConfig(String tenantId, String hostIp, String token);
+    ResponseEntity<String> deleteConfig(String tenantId, String hostIp, String token);
 }
