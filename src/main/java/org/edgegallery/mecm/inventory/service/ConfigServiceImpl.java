@@ -33,11 +33,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,7 +68,7 @@ public class ConfigServiceImpl implements ConfigService {
     private String isSslEnabled;
 
     @Override
-    public String uploadConfig(String tenantId, String hostIp, MultipartFile file, String token) {
+    public ResponseEntity<String> uploadConfig(String tenantId, String hostIp, MultipartFile file, String token) {
 
         // Preparing request parts.
         Resource resource = file.getResource();
@@ -99,19 +101,25 @@ public class ConfigServiceImpl implements ConfigService {
             url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
         }
 
+        ResponseEntity<String> response;
         // Sending request
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        try {
+            response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        } catch (RestClientException e) {
+            throw new InventoryException("Failure while uploading file to APPLCM with error message: "
+                    + e.getLocalizedMessage());
+        }
 
         // Updated status to uploaded
         host.setConfigUploadStatus("Uploaded");
         service.updateRecord(host, hostRepository);
 
         LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
-        return response.getBody();
+        return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(response.getStatusCodeValue()));
     }
 
     @Override
-    public String deleteConfig(String tenantId, String hostIp, String token) {
+    public ResponseEntity<String> deleteConfig(String tenantId, String hostIp, String token) {
         // Preparing URL
         MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String lcmIp = host.getApplcmIp();
@@ -140,15 +148,20 @@ public class ConfigServiceImpl implements ConfigService {
         // Creating HTTP entity with header and parts
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
+        ResponseEntity<String> response;
         // Sending request
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+        try {
+            response = restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
+        } catch (RestClientException e) {
+            throw new InventoryException("Failure while removing file from APPLCM with error message: "
+                    + e.getLocalizedMessage());
+        }
 
         LOGGER.info("Delete status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
 
         // Update the DB
         host.setConfigUploadStatus("Deleted");
         service.updateRecord(host, hostRepository);
-
-        return response.getBody();
+        return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(response.getStatusCodeValue()));
     }
 }
