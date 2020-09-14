@@ -12,4 +12,4 @@ Inventory is a Java program written based on jdk1.8 and maven. To compile, you o
 #### Build image
 The Inventory project provides a dockerfile file for mirroring. You can use the following commands when making a mirror
 
-docker build -t mecm-inventory:latest -f docker/Dockerfile. 
+docker build -t edgegallery/mecm-inventory:latest -f docker/Dockerfile .
