@@ -44,28 +44,31 @@ public final class AppStoreDto {
 
     @NotEmpty(message = "appstore IP is empty")
     @Size(max = 15, message = "appstore IP length exceeds max size")
-    @Pattern(regexp = IP_REGEX, message = "appstore IP allowed pattern mismatch")
+    @Pattern(regexp = IP_REGEX, message = "appstore IP is invalid")
     private String appstoreIp;
 
     @NotEmpty(message = "appstore port is empty")
     @Size(max = 5, message = "appstore port length exceeds max size")
-    @Pattern(regexp = PORT_REGEX, message = "appstore port allowed pattern mismatch")
+    @Pattern(regexp = PORT_REGEX, message = "appstore port is invalid")
     private String appstorePort;
 
     @NotEmpty(message = "appstore URI is empty")
     @Size(max = 128, message = "appstore URI length exceeds max size")
-    @Pattern(regexp = URI_REGEX, message = "appstore URI allowed pattern mismatch")
+    @Pattern(regexp = URI_REGEX, message = "appstore URI is invalid")
     private String uri;
 
     @Size(max = 128, message = "appstore username length exceeds max size")
-    @Pattern(regexp = NAME_REGEX, message = "appstore username allowed pattern mismatch")
+    @Pattern(regexp = NAME_REGEX, message = "appstore username is invalid. It must start and end with "
+            + "alpha numeric character and special characters allowed are hyphen and underscore")
     private String userName;
 
     @Size(max = 128, message = "appstore name length exceeds max size")
-    @Pattern(regexp = NAME_REGEX, message = "appstore name allowed pattern mismatch")
+    @Pattern(regexp = NAME_REGEX, message = "appstore name is invalid. It must start and end with alpha "
+            + "numeric character and special characters allowed are hyphen and underscore")
     private String appstoreName;
 
     @Size(max = 128, message = "appstore producer length exceeds max size")
-    @Pattern(regexp = NAME_REGEX, message = "appstore producer allowed pattern mismatch")
+    @Pattern(regexp = NAME_REGEX, message = "appstore producer is invalid. It must start and end with "
+            + "alpha numeric character and special characters allowed are hyphen and underscore")
     private String producer;
 }
