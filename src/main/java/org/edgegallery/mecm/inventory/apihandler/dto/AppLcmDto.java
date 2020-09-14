@@ -43,15 +43,16 @@ public final class AppLcmDto {
 
     @NotEmpty(message = "applcm IP is empty")
     @Size(max = 15, message = "applcm IP length exceeds max size")
-    @Pattern(regexp = IP_REGEX, message = "applcm IP allowed pattern mismatch")
+    @Pattern(regexp = IP_REGEX, message = "applcm IP is invalid")
     private String applcmIp;
 
     @NotEmpty(message = "applcm port is empty")
     @Size(max = 5, message = "applcm port length exceeds max size")
-    @Pattern(regexp = PORT_REGEX, message = "applcm port allowed pattern mismatch")
+    @Pattern(regexp = PORT_REGEX, message = "applcm port is invalid")
     private String applcmPort;
 
     @Size(max = 128, message = "username length exceeds max size")
-    @Pattern(regexp = NAME_REGEX, message = "applcm username allowed pattern mismatch")
+    @Pattern(regexp = NAME_REGEX, message = "applcm username is invalid. It must start and end with alpha numeric"
+            + " characters and special characters allowed are hyphen and underscore")
     private String userName;
 }
