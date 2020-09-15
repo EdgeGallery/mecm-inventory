@@ -43,7 +43,7 @@ public class MecHostInventoryHandlerTest {
     @Test
     @WithMockUser(roles = "MECM_TENANT")
     public void validateMecHostInventory() throws Exception {
-        String tenantId = "111111";
+        String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Test MecHost record post
         ResultActions postResult =
@@ -94,7 +94,7 @@ public class MecHostInventoryHandlerTest {
     @Test
     @WithMockUser(roles = "MECM_TENANT")
     public void validateMecHostInventoryUpdate() throws Exception {
-        String tenantId = "111111";
+        String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")

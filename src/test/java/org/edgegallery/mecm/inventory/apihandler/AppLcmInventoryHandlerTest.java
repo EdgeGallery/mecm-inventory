@@ -43,7 +43,7 @@ public class AppLcmInventoryHandlerTest {
     @Test
     @WithMockUser(roles = "MECM_TENANT")
     public void validateAppLcmInventory() throws Exception {
-        String tenantId = "111111";
+        String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Test APPLCM record post
         ResultActions postResult =
@@ -87,7 +87,7 @@ public class AppLcmInventoryHandlerTest {
     @Test
     @WithMockUser(roles = "MECM_TENANT")
     public void validateAppLcmInventoryUpdate() throws Exception {
-        String tenantId = "111111";
+        String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")

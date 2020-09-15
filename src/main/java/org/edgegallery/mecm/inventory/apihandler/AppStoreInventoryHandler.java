@@ -76,7 +76,7 @@ public class AppStoreInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> addAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
         AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
         store.setTenantId(tenantId);
@@ -99,7 +99,7 @@ public class AppStoreInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> updateAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
@@ -126,7 +126,7 @@ public class AppStoreInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         List<AppStore> appStores = service.getTenantRecords(tenantId, repository);
         List<AppStoreDto> appStoreDtos = new LinkedList<>();
         for (AppStore store : appStores) {
@@ -149,7 +149,7 @@ public class AppStoreInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<AppStoreDto> getAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
         AppStore store = service.getRecord(appStoreIp + "_" + tenantId, repository);
@@ -168,7 +168,7 @@ public class AppStoreInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAllAppStoreRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId) {
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         Status status = service.deleteTenantRecords(tenantId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -186,7 +186,7 @@ public class AppStoreInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAppStoreRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
         Status status = service.deleteRecord(appStoreIp + "_" + tenantId, repository);
