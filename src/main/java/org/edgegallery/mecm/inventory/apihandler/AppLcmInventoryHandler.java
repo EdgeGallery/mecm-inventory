@@ -75,7 +75,7 @@ public class AppLcmInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> addAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
         AppLcm lcm = InventoryUtilities.getModelMapper().map(appLcmDto, AppLcm.class);
         lcm.setTenantId(tenantId);
@@ -97,7 +97,7 @@ public class AppLcmInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> updateAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
@@ -124,7 +124,7 @@ public class AppLcmInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId) {
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         List<AppLcm> appLcms = service.getTenantRecords(tenantId, repository);
         List<AppLcmDto> appLcmDtos = new LinkedList<>();
         for (AppLcm lcm : appLcms) {
@@ -146,7 +146,7 @@ public class AppLcmInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<AppLcmDto> getAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp) {
         AppLcm lcm = service.getRecord(appLcmIp + "_" + tenantId, repository);
@@ -165,7 +165,7 @@ public class AppLcmInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAllAppLcmRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId) {
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         Status status = service.deleteTenantRecords(tenantId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -182,7 +182,7 @@ public class AppLcmInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp) {
         Status status = service.deleteRecord(appLcmIp + "_" + tenantId, repository);

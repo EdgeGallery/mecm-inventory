@@ -81,7 +81,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> addMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDto mecHostDto) {
         MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
         host.setTenantId(tenantId);
@@ -103,7 +103,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> updateMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDto mecHostDto) {
@@ -130,7 +130,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<List<MecHostDto>> getAllMecHostRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId) {
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         List<MecHost> mecHosts = service.getTenantRecords(tenantId, repository);
         List<MecHostDto> mecHostDtos = new LinkedList<>();
         for (MecHost host : mecHosts) {
@@ -152,7 +152,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<MecHostDto> getMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
         MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
@@ -171,7 +171,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteAllMecHostRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId) {
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         Status status = service.deleteTenantRecords(tenantId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -188,7 +188,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<Status> deleteMecHostRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
         Status status = service.deleteRecord(mecHostIp + "_" + tenantId, repository);
@@ -210,7 +210,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<String> uploadConfigFile(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
@@ -232,7 +232,7 @@ public class MecHostInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT')")
     public ResponseEntity<String> deleteConfigFile(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENENT_ID_REGEX) @Size(max = 64) String tenantId,
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken) {
