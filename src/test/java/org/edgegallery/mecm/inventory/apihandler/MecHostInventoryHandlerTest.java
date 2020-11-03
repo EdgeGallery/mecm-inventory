@@ -76,7 +76,7 @@ public class MecHostInventoryHandlerTest {
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.1\",\"edgerepoPort\":\"10000\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\"}", getByIdResponse);
+                        + "\"applcmIp\":\"1.1.1.1\",\"hwcapabilities\":[]}", getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
         ResultActions deleteByIdResult =
@@ -132,7 +132,7 @@ public class MecHostInventoryHandlerTest {
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.2\",\"edgerepoPort\":\"10001\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\"}]", getAllResponse);
+                        + "\"applcmIp\":\"1.1.1.1\",\"hwcapabilities\":[]}]", getAllResponse);
 
         // Test Delete all records
         ResultActions deleteAllresult =

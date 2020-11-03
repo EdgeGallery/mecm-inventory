@@ -17,9 +17,13 @@
 package org.edgegallery.mecm.inventory.model;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -85,6 +89,9 @@ public final class MecHost implements BaseModel {
 
     @Column(name = "config_upload_status")
     private String configUploadStatus;
+
+    @OneToMany(mappedBy = "mecHost", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<MecHwCapability> hwcapabilities;
 
     @Override
     public String getIdentifier() {

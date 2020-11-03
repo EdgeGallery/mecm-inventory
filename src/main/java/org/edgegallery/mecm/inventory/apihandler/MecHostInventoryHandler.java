@@ -19,16 +19,22 @@ package org.edgegallery.mecm.inventory.apihandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.security.SecureRandom;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.MecHwCapabilityDto;
 import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.model.MecHwCapability;
 import org.edgegallery.mecm.inventory.service.ConfigServiceImpl;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
+import org.edgegallery.mecm.inventory.service.repository.MecHwCapabilityRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
@@ -67,6 +73,8 @@ public class MecHostInventoryHandler {
     @Autowired
     private MecHostRepository repository;
     @Autowired
+    private MecHwCapabilityRepository hwCapRepository;
+    @Autowired
     private ConfigServiceImpl configService;
 
     /**
@@ -86,6 +94,17 @@ public class MecHostInventoryHandler {
         MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
         host.setTenantId(tenantId);
         host.setMechostId(mecHostDto.getMechostIp() + "_" + tenantId);
+
+        Set<MecHwCapability> capabilities = new HashSet<>();
+        for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
+            MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
+            capability.setMecCapabilityId(String.valueOf(new SecureRandom().nextInt(Integer.MAX_VALUE)));
+            capability.setMecHost(host);
+            capability.setTenantId(tenantId);
+
+            capabilities.add(capability);
+        }
+        host.setHwcapabilities(capabilities);
         Status status = service.addRecord(host, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -115,6 +134,23 @@ public class MecHostInventoryHandler {
         MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
         host.setTenantId(tenantId);
         host.setMechostId(mecHostIp + "_" + tenantId);
+
+        Set<MecHwCapability> capabilities = new HashSet<>();
+        for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
+            MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
+            capability.setMecCapabilityId(String.valueOf(new SecureRandom().nextInt(Integer.MAX_VALUE)));
+            capability.setMecHost(host);
+            capability.setTenantId(tenantId);
+
+            capabilities.add(capability);
+        }
+        host.setHwcapabilities(capabilities);
+
+        MecHost hostDb = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        for (MecHwCapability v : hostDb.getHwcapabilities()) {
+            Status status = service.deleteRecord(v.getMecCapabilityId(), hwCapRepository);
+        }
+
         Status status = service.updateRecord(host, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }

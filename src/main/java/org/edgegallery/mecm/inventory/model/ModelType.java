@@ -23,5 +23,6 @@ public enum ModelType {
     APP_LCM,
     APP_STORE,
     MEC_HOST,
-    TENANT
+    TENANT,
+    MEC_HW_CAPABILITY
 }
