@@ -16,6 +16,9 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
+import java.util.LinkedList;
+import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -98,4 +101,7 @@ public final class MecHostDto {
     @Size(max = 15, message = "applcm IP length exceeds max size")
     @Pattern(regexp = Constants.IP_REGEX, message = "applcm IP is invalid")
     private String applcmIp;
+
+    @Size(max = 10)
+    private List<@Valid MecHwCapabilityDto> hwcapabilities = new LinkedList<>();
 }
