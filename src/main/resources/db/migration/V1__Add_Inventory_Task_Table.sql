@@ -46,10 +46,26 @@
         primary key (mechost_id)
     );
 
+    create table mechwcapabilityinventory (
+        capability_id varchar(255) not null,
+        mechost_id varchar(255) not null,
+        tenant_id varchar(255) not null,
+        hw_type varchar(200),
+        hw_vendor varchar(255),
+        hw_model varchar(255),
+        created_time varchar(200),
+        modified_time varchar(200),
+        primary key (capability_id),
+        constraint fk_mechost
+          foreign key(mechost_id)
+        	  references mechostinventory(mechost_id)
+    );
+
     create table tenantinventory (
         tenant_id  varchar(255) not null,
         applcm_count int,
         appstore_count int,
         mechost_count int,
+        mechwcapability_count int,
         primary key (tenant_id)
     );
