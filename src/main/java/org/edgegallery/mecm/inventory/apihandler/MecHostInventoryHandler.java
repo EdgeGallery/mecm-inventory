@@ -395,6 +395,34 @@ public class MecHostInventoryHandler {
     }
 
     /**
+     * Retrieves application record entry from the Inventory.
+     *
+     * @param tenantId  tenant ID
+     * @param mecHostIp MEC host IP
+     * @param appId     mec application ID
+     * @return status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Deletes Application record", response = String.class)
+    @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps/{app_id}", produces =
+            MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
+    public ResponseEntity<MecApplicationDto> getApplicationRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
+            @ApiParam(value = "application id")
+            @PathVariable("app_id") @Pattern(regexp = Constants.APPLICATION_ID_REGEX)
+            @Size(max = 64) String appId) {
+
+        MecApplication application = service.getRecord(appId, appRepository);
+        MecApplicationDto mecAppDto = InventoryUtilities.getModelMapper().map(application, MecApplicationDto.class);
+        List<String> capList = Arrays.asList(application.getCapabilities().split(",", -1));
+        mecAppDto.setCapabilities(capList);
+        return new ResponseEntity<>(mecAppDto, HttpStatus.OK);
+    }
+
+    /**
      * Deletes application record entry into the Inventory.
      *
      * @param tenantId  tenant ID
