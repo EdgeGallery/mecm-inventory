@@ -18,7 +18,10 @@ package org.edgegallery.mecm.inventory.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,50 +29,51 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Application lifecycle management schema.
+ * MEC Application hardware capability Inventory schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tenantinventory")
-public final class Tenant implements BaseModel {
+@Table(name = "mecapplicationinventory")
+public final class MecApplication implements BaseModel {
 
     @Id
+    @Column(name = "appinstance_id")
+    private String appInstanceId;
+
+    @Column(name = "capabilities")
+    public String capabilities;
+
+    @Column(name = "app_name")
+    private String appName;
+
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "applcm_count")
-    private int appLcms;
+    @Column(name = "package_id")
+    private String packageId;
 
-    @Column(name = "appstore_count")
-    private int appStores;
+    @Column(name = "status")
+    private String status;
 
-    @Column(name = "mechost_count")
-    private int mecHosts;
-
-    @Column(name = "mechwcapability_count")
-    private int mecHwCapabilities;
-
-    @Column(name = "mecapplication_count")
-    private int mecApplications;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "mechost_id", nullable = false)
+    private MecHost mecAppHost;
 
     @Override
     public String getIdentifier() {
-        // Return identifier
-        return tenantId;
+        return appInstanceId;
     }
 
     @Override
     public String getTenantId() {
-        return getIdentifier();
+        return tenantId;
     }
 
     @Override
     public ModelType getType() {
-        return ModelType.TENANT;
+        return ModelType.MEC_APPLICATION;
     }
-
-    // models are not embedded in tenant currently as topic is under discussion.
 }
