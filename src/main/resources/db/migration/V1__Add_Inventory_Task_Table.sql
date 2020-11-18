@@ -61,11 +61,26 @@
         	  references mechostinventory(mechost_id)
     );
 
+    create table mecapplicationinventory (
+        appinstance_id varchar(255) not null,
+        mechost_id varchar(255) not null,
+        tenant_id varchar(255) not null,
+        app_name varchar(255) not null,
+        package_id varchar(255) not null,
+        capabilities varchar(255) not null,
+        status varchar(255) not null,
+        primary key (appinstance_id),
+        constraint fk_mechost_app
+          foreign key(mechost_id)
+        	  references mechostinventory(mechost_id)
+    );
+
     create table tenantinventory (
         tenant_id  varchar(255) not null,
         applcm_count int,
         appstore_count int,
         mechost_count int,
         mechwcapability_count int,
+        mecapplication_count int,
         primary key (tenant_id)
     );
