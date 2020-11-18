@@ -19,20 +19,27 @@ package org.edgegallery.mecm.inventory.apihandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.edgegallery.mecm.inventory.apihandler.dto.MecApplicationDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHwCapabilityDto;
+import org.edgegallery.mecm.inventory.model.MecApplication;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.model.MecHwCapability;
 import org.edgegallery.mecm.inventory.service.ConfigServiceImpl;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
+import org.edgegallery.mecm.inventory.service.repository.MecApplicationRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecHwCapabilityRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
@@ -73,6 +80,8 @@ public class MecHostInventoryHandler {
     @Autowired
     private MecHostRepository repository;
     @Autowired
+    private MecApplicationRepository appRepository;
+    @Autowired
     private MecHwCapabilityRepository hwCapRepository;
     @Autowired
     private ConfigServiceImpl configService;
@@ -98,13 +107,16 @@ public class MecHostInventoryHandler {
         Set<MecHwCapability> capabilities = new HashSet<>();
         for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
             MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
-            capability.setMecCapabilityId(String.valueOf(new SecureRandom().nextInt(Integer.MAX_VALUE)));
+            
+            capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
             capability.setMecHost(host);
             capability.setTenantId(tenantId);
 
             capabilities.add(capability);
         }
         host.setHwcapabilities(capabilities);
+        host.setApplications(new HashSet<>());
+
         Status status = service.addRecord(host, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -138,7 +150,7 @@ public class MecHostInventoryHandler {
         Set<MecHwCapability> capabilities = new HashSet<>();
         for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
             MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
-            capability.setMecCapabilityId(String.valueOf(new SecureRandom().nextInt(Integer.MAX_VALUE)));
+            capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
             capability.setMecHost(host);
             capability.setTenantId(tenantId);
 
@@ -147,10 +159,7 @@ public class MecHostInventoryHandler {
         host.setHwcapabilities(capabilities);
 
         MecHost hostDb = service.getRecord(mecHostIp + "_" + tenantId, repository);
-        for (MecHwCapability v : hostDb.getHwcapabilities()) {
-            Status status = service.deleteRecord(v.getMecCapabilityId(), hwCapRepository);
-        }
-
+        host.setApplications(hostDb.getApplications());
         Status status = service.updateRecord(host, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -196,6 +205,87 @@ public class MecHostInventoryHandler {
         return new ResponseEntity<>(mecHostDto, HttpStatus.OK);
     }
 
+
+    /**
+     * Retrieves MEC host specific capabilities records in the Inventory matching the given tenant ID & mec host IP.
+     *
+     * @param tenantId  tenant ID
+     * @param mecHostIp MEC host IP
+     * @return capabilities record & status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Retrieves MEC host record", response = Map.class)
+    @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
+    public ResponseEntity<Map<String, List<MecHwCapabilityDto>>> getMecHostCapabilities(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
+        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        List<MecHwCapabilityDto> mecCapabilityDtos = new LinkedList<>();
+        for (MecHwCapability hostCap : host.getHwcapabilities()) {
+            MecHwCapabilityDto cap = InventoryUtilities.getModelMapper().map(hostCap, MecHwCapabilityDto.class);
+            mecCapabilityDtos.add(cap);
+        }
+
+        if (mecCapabilityDtos.isEmpty()) {
+            LOGGER.error("capabilities does not exist");
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+        }
+
+        Map<String, List<MecHwCapabilityDto>> hwCap = new HashMap<>();
+        hwCap.put("hwcapabilities", mecCapabilityDtos);
+        return new ResponseEntity<>(hwCap, HttpStatus.OK);
+    }
+
+    /**
+     * Retrieves applications matching specific capability in MEC host record in the Inventory.
+     *
+     * @param tenantId       tenant ID
+     * @param mecHostIp      MEC host IP
+     * @param capabilityType MEC host capability type
+     * @return application record & status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Retrieves MEC application records", response = Map.class)
+    @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities/{capability_type}/applications",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
+    public ResponseEntity<Map<String, List<MecApplicationDto>>> getMecApplications(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
+            @ApiParam(value = "capability type") @PathVariable("capability_type")
+            @Pattern(regexp = Constants.NAME_REGEX) @Size(max = 128) String capabilityType) {
+        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        List<MecApplicationDto> applications = new LinkedList<>();
+
+        for (MecHwCapability hostCap : host.getHwcapabilities()) {
+            if (!hostCap.getHwType().equals(capabilityType)) {
+                continue;
+            }
+            Set<MecApplication> apps = host.getApplications();
+            for (MecApplication app : apps) {
+                if (app.getCapabilities().contains(capabilityType)) {
+                    MecApplicationDto cap = InventoryUtilities.getModelMapper().map(app, MecApplicationDto.class);
+                    List<String> capList = Arrays.asList(app.getCapabilities().split(",", -1));
+                    cap.setCapabilities(capList);
+                    applications.add(cap);
+                }
+            }
+        }
+
+        if (applications.isEmpty()) {
+            LOGGER.error("Application with capability type: {}, not found", capabilityType);
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+        }
+
+        Map<String, List<MecApplicationDto>> hwCap = new HashMap<>();
+        hwCap.put("apps", applications);
+        return new ResponseEntity<>(hwCap, HttpStatus.OK);
+    }
+
     /**
      * Deletes all records for a given tenant.
      *
@@ -228,6 +318,116 @@ public class MecHostInventoryHandler {
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
         Status status = service.deleteRecord(mecHostIp + "_" + tenantId, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    /**
+     * Adds a new application record entry into the Inventory.
+     *
+     * @param tenantId  tenant ID
+     * @param mecHostIp MEC host IP
+     * @param mecAppDto mec application record details
+     * @return status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Adds new Application record", response = String.class)
+    @PostMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
+    public ResponseEntity<Status> addApplicationRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
+            @Valid @ApiParam(value = "application inventory information") @RequestBody MecApplicationDto mecAppDto) {
+
+        MecApplication app = InventoryUtilities.getModelMapper().map(mecAppDto, MecApplication.class);
+        app.setTenantId(tenantId);
+
+        String capabilities = mecAppDto.getCapabilities().stream().map(Object::toString)
+                .collect(Collectors.joining(","));
+        app.setCapabilities(capabilities);
+
+        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        app.setMecAppHost(host);
+
+        Status status = service.addRecord(app, appRepository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    /**
+     * Updates application record entry into the Inventory.
+     *
+     * @param tenantId  tenant ID
+     * @param mecHostIp MEC host IP
+     * @param mecAppDto mec application record details
+     * @return status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Updates Application record", response = String.class)
+    @PutMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps/{app_id}", produces =
+            MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
+    public ResponseEntity<Status> updateApplicationRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
+            @ApiParam(value = "application id")
+            @PathVariable("app_id") @Pattern(regexp = Constants.APPLICATION_ID_REGEX)
+            @Size(max = 64) String appId,
+            @Valid @ApiParam(value = "application inventory information") @RequestBody MecApplicationDto mecAppDto) {
+
+        MecApplication appdb = service.getRecord(appId, appRepository);
+
+        MecApplication app = InventoryUtilities.getModelMapper().map(mecAppDto, MecApplication.class);
+
+        if (!mecAppDto.getCapabilities().isEmpty()) {
+            String capabilities = mecAppDto.getCapabilities().stream().map(Object::toString)
+                    .collect(Collectors.joining(","));
+            appdb.setCapabilities(capabilities);
+        }
+
+        appdb.setAppName(app.getAppName());
+        appdb.setPackageId(app.getPackageId());
+        appdb.setStatus(app.getStatus());
+
+        Status status = service.updateRecord(appdb, appRepository);
+
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    /**
+     * Deletes application record entry into the Inventory.
+     *
+     * @param tenantId  tenant ID
+     * @param mecHostIp MEC host IP
+     * @param appId     mec application ID
+     * @return status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Deletes Application record", response = String.class)
+    @DeleteMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps/{app_id}", produces =
+            MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT')")
+    public ResponseEntity<Status> deleteApplicationRecord(
+            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
+            @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
+            @ApiParam(value = "application id")
+            @PathVariable("app_id") @Pattern(regexp = Constants.APPLICATION_ID_REGEX)
+            @Size(max = 64) String appId) {
+
+        Status status = new Status("Deleted");
+
+        MecHost hostDb = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        Set<MecApplication> apps = hostDb.getApplications();
+        for (MecApplication app : apps) {
+            if (app.getAppInstanceId().equals(appId)) {
+                apps.remove(app);
+                hostDb.setApplications(apps);
+                Status updateStatus = service.updateRecord(hostDb, repository);
+                LOGGER.info("Record update status {}", updateStatus);
+                break;
+            }
+        }
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
