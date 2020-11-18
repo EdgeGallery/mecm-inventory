@@ -52,6 +52,9 @@ public final class Tenant implements BaseModel {
     @Column(name = "mechwcapability_count")
     private int mecHwCapabilities;
 
+    @Column(name = "mecapplication_count")
+    private int mecApplications;
+
     @Override
     public String getIdentifier() {
         // Return identifier

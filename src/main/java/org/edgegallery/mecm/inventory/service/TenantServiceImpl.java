@@ -66,7 +66,7 @@ class TenantServiceImpl implements TenantService {
         Tenant ot = record.get();
         subtractCount(ot, type);
         if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
-                && ot.getMecHwCapabilities() == 0) {
+                && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0) {
             repository.deleteById(id);
             LOGGER.info("Tenant record with tenant identifier {} deleted", id);
         } else {
@@ -90,7 +90,7 @@ class TenantServiceImpl implements TenantService {
         Tenant ot = record.get();
         clearCountNumber(ot, type);
         if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
-                && ot.getMecHwCapabilities() == 0) {
+                && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0) {
             repository.deleteById(id);
             LOGGER.info("Tenant record with tenant identifier {} deleted", id);
         } else {
@@ -112,6 +112,9 @@ class TenantServiceImpl implements TenantService {
                 break;
             case MEC_HW_CAPABILITY:
                 ot.setMecHwCapabilities(0);
+                break;
+            case MEC_APPLICATION:
+                ot.setMecApplications(0);
                 break;
             default:
                 LOGGER.error(Constants.INVALID_MODEL_TYPE);
@@ -145,6 +148,13 @@ class TenantServiceImpl implements TenantService {
             case MEC_HW_CAPABILITY:
                 if (isNotOverflow(t.getMecHwCapabilities(), 1)) {
                     t.setMecHwCapabilities(t.getMecHwCapabilities() + 1);
+                } else {
+                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                }
+                break;
+            case MEC_APPLICATION:
+                if (isNotOverflow(t.getMecApplications(), 1)) {
+                    t.setMecApplications(t.getMecApplications() + 1);
                 } else {
                     LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 }
@@ -185,6 +195,13 @@ class TenantServiceImpl implements TenantService {
             case MEC_HW_CAPABILITY:
                 if (isNotUnderflow(t.getMecHwCapabilities(), 1)) {
                     t.setMecHwCapabilities(t.getMecHwCapabilities() - 1);
+                } else {
+                    LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
+                }
+                break;
+            case MEC_APPLICATION:
+                if (isNotUnderflow(t.getMecApplications(), 1)) {
+                    t.setMecApplications(t.getMecApplications() - 1);
                 } else {
                     LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
                 }
