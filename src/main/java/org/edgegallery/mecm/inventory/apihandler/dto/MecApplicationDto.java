@@ -63,7 +63,6 @@ public final class MecApplicationDto {
 
     @NotEmpty(message = "status is empty")
     @Size(max = 128, message = "status length exceeds max size")
-    @Pattern(regexp = Constants.NAME_REGEX, message = "status is invalid. It must start and end with alpha "
-            + "numeric characters and special characters allowed are hyphen and underscore")
+    @Pattern(regexp = Constants.APP_STATUS_REGEX, message = "status is invalid. special characters not allowed")
     private String status;
 }

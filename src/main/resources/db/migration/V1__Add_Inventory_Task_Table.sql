@@ -67,7 +67,7 @@
         tenant_id varchar(255) not null,
         app_name varchar(255) not null,
         package_id varchar(255) not null,
-        capabilities varchar(255) not null,
+        capabilities varchar(255),
         status varchar(255) not null,
         primary key (appinstance_id),
         constraint fk_mechost_app

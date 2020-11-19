@@ -32,7 +32,7 @@ public final class Constants {
     public static final String NAME_REGEX = "^[\\d\\p{L}]*$|^[\\d\\p{L}][\\d\\p{L}_\\-]*[\\d\\p{L}]$";
     public static final String CITY_REGEX = "^[\\d\\p{L}]*$|^[\\d\\p{L}][\\d\\p{L}\\/\\s]*[\\d\\p{L}]$";
     public static final String AFFINITY_REGEX = "^[\\d\\p{L}]*$|^[\\d\\p{L}][\\d\\p{L}_\\-\\,]*[\\d\\p{L}]$";
-
+    public static final String APP_STATUS_REGEX = "^[a-zA-Z0-9_ ]*$";
     public static final String URI_REGEX = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
     public static final int MIN_PWD_SIZE = 8;
     public static final int MAX_PWD_SIZE = 16;
