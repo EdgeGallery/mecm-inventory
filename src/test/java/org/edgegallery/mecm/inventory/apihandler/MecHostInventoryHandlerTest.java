@@ -258,4 +258,71 @@ public class MecHostInventoryHandlerTest {
         String deleteAllResponse = deleteAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteAllResponse);
     }
+
+    @Test
+    @WithMockUser(roles = "MECM_TENANT")
+    public void validateMecApplicationInventory() throws Exception {
+        String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b31";
+        String hostIp = "1.1.1.1";
+
+        //Mec application record post
+        ResultActions postMecResult =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
+                                + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
+                                + "\"affinity\":\"part1,part2\",\"hwcapabilities\":[{\"hwType\": \"GPU1\",\"hwVendor\": \"testvendor1\",\"hwModel\": \"testmodel1\"}]}"));
+
+        MvcResult postMecMvcResult = postMecResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String postMecResponse = postMecMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postMecResponse);
+
+        //MecApplication record post
+        ResultActions postResult =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId
+                        + "/mechosts/" + hostIp + "/apps")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content("{\"appInstanceId\":\"4c6fb452-640d-4e73-9016-6ccec856080d\",\"appName\":\"app-name\","
+                                + "\"packageId\":\"ea339be5f1044dcf9f76b05db46f0a56\","
+                                + "\"capabilities\":[\"GPU1\",\"GPU2\"],\"status\":\"Created\"}"));
+
+        MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String postResponse = postMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
+
+        // Test Mechost to get all records
+        ResultActions getAllResults =
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
+                        + "/mechosts/" + hostIp + "/capabilities/GPU1/applications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+        MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals(
+                "{\"apps\":[{\"appInstanceId\":\"4c6fb452-640d-4e73-9016-6ccec856080d\",\"appName\":\"app-name\","
+                        + "\"packageId\":\"ea339be5f1044dcf9f76b05db46f0a56\","
+                        + "\"capabilities\":[\"GPU1\",\"GPU2\"],\"status\":\"Created\"}]}", getAllResponse);
+
+        // Test MecApplication record delete by  application ID
+        ResultActions deleteByIdResult =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts/"
+                        + hostIp + "/apps/4c6fb452-640d-4e73-9016-6ccec856080d")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        MvcResult deleteByIdMvcResult = deleteByIdResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String deleteByIdResponse = deleteByIdMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponse);
+    }
 }

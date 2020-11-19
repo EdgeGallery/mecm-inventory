@@ -93,6 +93,9 @@ public final class MecHost implements BaseModel {
     @OneToMany(mappedBy = "mecHost", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<MecHwCapability> hwcapabilities;
 
+    @OneToMany(mappedBy = "mecAppHost", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<MecApplication> applications;
+
     @Override
     public String getIdentifier() {
         return mechostId;
