@@ -107,7 +107,7 @@ public class MecHostInventoryHandler {
         Set<MecHwCapability> capabilities = new HashSet<>();
         for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
             MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
-            
+
             capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
             capability.setMecHost(host);
             capability.setTenantId(tenantId);
@@ -267,7 +267,7 @@ public class MecHostInventoryHandler {
             }
             Set<MecApplication> apps = host.getApplications();
             for (MecApplication app : apps) {
-                if (app.getCapabilities().contains(capabilityType)) {
+                if ((app.getCapabilities() != null) && app.getCapabilities().contains(capabilityType)) {
                     MecApplicationDto cap = InventoryUtilities.getModelMapper().map(app, MecApplicationDto.class);
                     List<String> capList = Arrays.asList(app.getCapabilities().split(",", -1));
                     cap.setCapabilities(capList);
@@ -341,10 +341,13 @@ public class MecHostInventoryHandler {
 
         MecApplication app = InventoryUtilities.getModelMapper().map(mecAppDto, MecApplication.class);
         app.setTenantId(tenantId);
+        app.setCapabilities(null);
 
         String capabilities = mecAppDto.getCapabilities().stream().map(Object::toString)
                 .collect(Collectors.joining(","));
-        app.setCapabilities(capabilities);
+        if (!capabilities.isEmpty()) {
+            app.setCapabilities(capabilities);
+        }
 
         MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
         app.setMecAppHost(host);
@@ -378,11 +381,14 @@ public class MecHostInventoryHandler {
         MecApplication appdb = service.getRecord(appId, appRepository);
 
         MecApplication app = InventoryUtilities.getModelMapper().map(mecAppDto, MecApplication.class);
+        app.setCapabilities(null);
 
-        if (!mecAppDto.getCapabilities().isEmpty()) {
+        if (mecAppDto.getCapabilities().size() > 0) {
             String capabilities = mecAppDto.getCapabilities().stream().map(Object::toString)
                     .collect(Collectors.joining(","));
-            appdb.setCapabilities(capabilities);
+            if (!capabilities.isEmpty()) {
+                appdb.setCapabilities(capabilities);
+            }
         }
 
         appdb.setAppName(app.getAppName());
@@ -402,7 +408,7 @@ public class MecHostInventoryHandler {
      * @param appId     mec application ID
      * @return status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Deletes Application record", response = String.class)
+    @ApiOperation(value = "Retrieves Application record", response = String.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps/{app_id}", produces =
             MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT')")
@@ -417,8 +423,10 @@ public class MecHostInventoryHandler {
 
         MecApplication application = service.getRecord(appId, appRepository);
         MecApplicationDto mecAppDto = InventoryUtilities.getModelMapper().map(application, MecApplicationDto.class);
-        List<String> capList = Arrays.asList(application.getCapabilities().split(",", -1));
-        mecAppDto.setCapabilities(capList);
+        if (application.getCapabilities() != null) {
+            List<String> capList = Arrays.asList(application.getCapabilities().split(",", -1));
+            mecAppDto.setCapabilities(capList);
+        }
         return new ResponseEntity<>(mecAppDto, HttpStatus.OK);
     }
 
