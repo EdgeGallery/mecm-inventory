@@ -41,7 +41,6 @@ import org.edgegallery.mecm.inventory.service.ConfigServiceImpl;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.MecApplicationRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
-import org.edgegallery.mecm.inventory.service.repository.MecHwCapabilityRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
@@ -81,8 +80,6 @@ public class MecHostInventoryHandler {
     private MecHostRepository repository;
     @Autowired
     private MecApplicationRepository appRepository;
-    @Autowired
-    private MecHwCapabilityRepository hwCapRepository;
     @Autowired
     private ConfigServiceImpl configService;
 
@@ -267,7 +264,7 @@ public class MecHostInventoryHandler {
             }
             Set<MecApplication> apps = host.getApplications();
             for (MecApplication app : apps) {
-                if ((app.getCapabilities() != null) && app.getCapabilities().contains(capabilityType)) {
+                if (app.getCapabilities() != null && app.getCapabilities().contains(capabilityType)) {
                     MecApplicationDto cap = InventoryUtilities.getModelMapper().map(app, MecApplicationDto.class);
                     List<String> capList = Arrays.asList(app.getCapabilities().split(",", -1));
                     cap.setCapabilities(capList);
