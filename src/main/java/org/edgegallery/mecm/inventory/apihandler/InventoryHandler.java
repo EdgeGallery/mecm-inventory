@@ -18,7 +18,6 @@ package org.edgegallery.mecm.inventory.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.edgegallery.mecm.inventory.utils.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +41,8 @@ public class InventoryHandler {
      * @return status code 200 when ready
      */
     @ApiOperation(value = "Queries liveness and readiness", response = String.class)
-    @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Status> healthCheck() {
-        return new ResponseEntity<>(new Status("Ready"), HttpStatus.OK);
+    @GetMapping(path = "/health", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> healthCheck() {
+        return new ResponseEntity<>("ok", HttpStatus.OK);
     }
 }
