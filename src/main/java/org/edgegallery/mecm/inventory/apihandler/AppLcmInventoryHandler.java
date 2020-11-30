@@ -121,7 +121,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all application LCM records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
     public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
@@ -143,7 +143,7 @@ public class AppLcmInventoryHandler {
      */
     @ApiOperation(value = "Retrieves application LCM record", response = AppLcmDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppLcmDto> getAppLcmRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
