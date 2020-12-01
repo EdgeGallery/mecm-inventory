@@ -33,7 +33,7 @@ public class FilterConfig {
     public FilterRegistrationBean<OncePerRequestFilter> authFilterRegistrationBean() {
         FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new TraceLogFilter());
-        registration.addUrlPatterns("/inventory/v1/*");
+        registration.addUrlPatterns("/inventory/v1/tenants/*");
         registration.setName("HttpTraceLogFilter");
         return registration;
     }
