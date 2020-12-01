@@ -53,9 +53,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         // Skip token check for health check URI
-        if (request.getRequestURI().equals(HEALTH_URI)) {
-            filterChain.doFilter(request, response);
-        } else {
+        if (request.getRequestURI() == null || !request.getRequestURI().equals(HEALTH_URI)) {
             String accessTokenStr = request.getHeader("access_token");
             if (StringUtils.isEmpty(accessTokenStr)) {
                 LOGGER.error("Access token is empty.");
@@ -79,7 +77,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             }
 
             SecurityContextHolder.getContext().setAuthentication(auth);
-            filterChain.doFilter(request, response);
         }
+        filterChain.doFilter(request, response);
     }
 }
