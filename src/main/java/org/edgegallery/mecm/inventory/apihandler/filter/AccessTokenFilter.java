@@ -44,37 +44,42 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenFilter.class);
     private static final String INVALID_TOKEN_MESSAGE = "Invalid access token";
+    public static final String HEALTH_URI = "/inventory/v1/health";
+
     @Autowired
     TokenStore jwtTokenStore;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        LOGGER.info("Validate access token");
-        String accessTokenStr = request.getHeader("access_token");
-        if (StringUtils.isEmpty(accessTokenStr)) {
-            LOGGER.error("Access token is empty.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Access token is empty");
-            return;
+        // Skip token check for health check URI
+        if (request.getRequestURI().equals(HEALTH_URI)) {
+            filterChain.doFilter(request, response);
+        } else {
+            String accessTokenStr = request.getHeader("access_token");
+            if (StringUtils.isEmpty(accessTokenStr)) {
+                LOGGER.error("Access token is empty.");
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Access token is empty");
+                return;
+            }
+
+            OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(accessTokenStr);
+            if (accessToken == null || accessToken.isExpired()) {
+                LOGGER.error("Access token has expired.");
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
+                return;
+            }
+
+            Map<String, Object> additionalInfoMap = accessToken.getAdditionalInformation();
+            OAuth2Authentication auth = jwtTokenStore.readAuthentication(accessToken);
+            if (additionalInfoMap == null || auth == null) {
+                LOGGER.error("Access token is invalid.");
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
+                return;
+            }
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            filterChain.doFilter(request, response);
         }
-
-        OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(accessTokenStr);
-        if (accessToken == null || accessToken.isExpired()) {
-            LOGGER.error("Access token has expired.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
-            return;
-        }
-
-        Map<String, Object> additionalInfoMap = accessToken.getAdditionalInformation();
-        OAuth2Authentication auth = jwtTokenStore.readAuthentication(accessToken);
-        if (additionalInfoMap == null || auth == null) {
-            LOGGER.error("Access token is invalid.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
-            return;
-        }
-
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        filterChain.doFilter(request, response);
     }
 }
