@@ -25,6 +25,9 @@ public enum ModelType {
     MEC_HOST,
     TENANT,
     MEC_HW_CAPABILITY,
-    MEC_APPLICATION
-
+    MEC_APPLICATION,
+    DNS_RULE,
+    TRAFFIC_RULE,
+    TRAFFIC_FILTER,
+    APPD_RULE
 }
