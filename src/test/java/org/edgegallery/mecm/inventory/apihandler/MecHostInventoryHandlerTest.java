@@ -41,7 +41,7 @@ public class MecHostInventoryHandlerTest {
     MockMvc mvc;
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
     public void validateMecHostInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -92,7 +92,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
     public void validateMecHostInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -148,7 +148,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
     public void validateMecHostHardwareCapabilityInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -201,7 +201,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
     public void validateMecHostHardwareCapabilityInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -260,7 +260,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
     public void validateMecApplicationInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b31";
         String hostIp = "1.1.1.1";
@@ -296,6 +296,20 @@ public class MecHostInventoryHandlerTest {
                 .andReturn();
         String postResponse = postMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
+
+        // Retrieves MEC host specific record
+        ResultActions getResult =
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
+                        + "/mechosts/" + hostIp + "/capabilities")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+        MvcResult getMvcResult = getResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String getResponse = getMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals(
+                "{\"hwcapabilities\":[{\"hwType\":\"GPU1\",\"hwVendor\":\"testvendor1\","
+                        + "\"hwModel\":\"testmodel1\"}]}", getResponse);
 
         // Test Mechost to get all records
         ResultActions getAllResults =
