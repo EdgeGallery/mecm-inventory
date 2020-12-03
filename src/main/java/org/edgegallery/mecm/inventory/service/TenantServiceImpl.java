@@ -66,7 +66,9 @@ class TenantServiceImpl implements TenantService {
         Tenant ot = record.get();
         subtractCount(ot, type);
         if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
-                && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0) {
+                && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0
+                && ot.getAppdRules() == 0 && ot.getAppDnsRules() == 0
+                && ot.getAppTrafficRules() == 0 && ot.getAppTrafficFilterRules() == 0) {
             repository.deleteById(id);
             LOGGER.info("Tenant record with tenant identifier {} deleted", id);
         } else {
@@ -90,7 +92,9 @@ class TenantServiceImpl implements TenantService {
         Tenant ot = record.get();
         clearCountNumber(ot, type);
         if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
-                && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0) {
+                && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0
+                && ot.getAppdRules() == 0 && ot.getAppDnsRules() == 0
+                && ot.getAppTrafficRules() == 0 && ot.getAppTrafficFilterRules() == 0) {
             repository.deleteById(id);
             LOGGER.info("Tenant record with tenant identifier {} deleted", id);
         } else {
@@ -115,6 +119,18 @@ class TenantServiceImpl implements TenantService {
                 break;
             case MEC_APPLICATION:
                 ot.setMecApplications(0);
+                break;
+            case APPD_RULE:
+                ot.setAppdRules(0);
+                break;
+            case DNS_RULE:
+                ot.setAppDnsRules(0);
+                break;
+            case TRAFFIC_RULE:
+                ot.setAppTrafficRules(0);
+                break;
+            case TRAFFIC_FILTER:
+                ot.setAppTrafficFilterRules(0);
                 break;
             default:
                 LOGGER.error(Constants.INVALID_MODEL_TYPE);
@@ -155,6 +171,34 @@ class TenantServiceImpl implements TenantService {
             case MEC_APPLICATION:
                 if (isNotOverflow(t.getMecApplications(), 1)) {
                     t.setMecApplications(t.getMecApplications() + 1);
+                } else {
+                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                }
+                break;
+            case DNS_RULE:
+                if (isNotOverflow(t.getAppDnsRules(), 1)) {
+                    t.setMecApplications(t.getAppDnsRules() + 1);
+                } else {
+                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                }
+                break;
+            case TRAFFIC_RULE:
+                if (isNotOverflow(t.getAppTrafficRules(), 1)) {
+                    t.setMecApplications(t.getAppTrafficRules() + 1);
+                } else {
+                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                }
+                break;
+            case APPD_RULE:
+                if (isNotOverflow(t.getAppdRules(), 1)) {
+                    t.setMecApplications(t.getAppdRules() + 1);
+                } else {
+                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                }
+                break;
+            case TRAFFIC_FILTER:
+                if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
+                    t.setMecApplications(t.getAppTrafficFilterRules() + 1);
                 } else {
                     LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 }
@@ -204,6 +248,34 @@ class TenantServiceImpl implements TenantService {
                     t.setMecApplications(t.getMecApplications() - 1);
                 } else {
                     LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
+                }
+                break;
+            case DNS_RULE:
+                if (isNotOverflow(t.getAppDnsRules(), 1)) {
+                    t.setMecApplications(t.getAppDnsRules() - 1);
+                } else {
+                    LOGGER.error("{} for dns rule count", Constants.VAR_UNDERFLOW_ERROR);
+                }
+                break;
+            case TRAFFIC_RULE:
+                if (isNotOverflow(t.getAppTrafficRules(), 1)) {
+                    t.setMecApplications(t.getAppTrafficRules() - 1);
+                } else {
+                    LOGGER.error("{} for traffic rule count", Constants.VAR_UNDERFLOW_ERROR);
+                }
+                break;
+            case APPD_RULE:
+                if (isNotOverflow(t.getAppdRules(), 1)) {
+                    t.setMecApplications(t.getAppdRules() - 1);
+                } else {
+                    LOGGER.error("{} for appd rule count", Constants.VAR_UNDERFLOW_ERROR);
+                }
+                break;
+            case TRAFFIC_FILTER:
+                if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
+                    t.setMecApplications(t.getAppTrafficFilterRules() - 1);
+                } else {
+                    LOGGER.error("{} for traffic filter count", Constants.VAR_UNDERFLOW_ERROR);
                 }
                 break;
             default:
