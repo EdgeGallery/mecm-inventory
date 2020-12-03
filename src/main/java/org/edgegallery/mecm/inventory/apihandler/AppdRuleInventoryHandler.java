@@ -20,14 +20,26 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleDto;
+import org.edgegallery.mecm.inventory.model.AppDnsRule;
+import org.edgegallery.mecm.inventory.model.AppTrafficRule;
+import org.edgegallery.mecm.inventory.model.AppdRule;
+import org.edgegallery.mecm.inventory.model.TrafficFilter;
+import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
+import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
+import org.edgegallery.mecm.inventory.service.repository.AppDnsRuleRepository;
+import org.edgegallery.mecm.inventory.service.repository.AppTrafficRuleRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
+import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +65,18 @@ public class AppdRuleInventoryHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppdRuleInventoryHandler.class);
 
+    @Autowired
+    private InventoryServiceImpl service;
+
+    @Autowired
+    private AppDRuleRepository repository;
+
+    @Autowired
+    private AppDnsRuleRepository dnsRuleRepository;
+
+    @Autowired
+    private AppTrafficRuleRepository trafficRuleRepository;
+
     /**
      * Adds a new APPDRule record entry into the Inventory.
      *
@@ -71,8 +95,34 @@ public class AppdRuleInventoryHandler {
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
             @Valid @ApiParam(value = "appD rule inventory information") @RequestBody AppdRuleDto appDRuleDto) {
-        // TODO: to be implemented
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleDto, AppdRule.class);
+        appDRule.setTenantId(tenantId);
+        appDRule.setAppInstanceId(appInstanceId);
+        appDRule.setAppdRuleId(tenantId + appInstanceId);
+
+        Set<AppDnsRule> dnsRuleList = appDRule.getAppDnsRule();
+        for (AppDnsRule dnsRule : dnsRuleList) {
+            dnsRule.setAppDRule(appDRule);
+            dnsRule.setTenantId(tenantId);
+            dnsRule.setAppInstanceId(appInstanceId);
+        }
+
+        Set<AppTrafficRule> trafficRuleList = appDRule.getAppTrafficRule();
+        for (AppTrafficRule trafficRule : trafficRuleList) {
+            trafficRule.setAppDRule(appDRule);
+            trafficRule.setTenantId(tenantId);
+            trafficRule.setAppInstanceId(appInstanceId);
+            Set<TrafficFilter> trafficFilterList = trafficRule.getTrafficFilter();
+            for (TrafficFilter trafficFilter : trafficFilterList) {
+                trafficFilter.setTrafficFilterId(UUID.randomUUID().toString());
+                trafficFilter.setTenantId(tenantId);
+                trafficFilter.setTrafficRule(trafficRule);
+            }
+        }
+
+        Status status = service.addRecord(appDRule, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -93,8 +143,33 @@ public class AppdRuleInventoryHandler {
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
             @Valid @ApiParam(value = "appD rule inventory information") @RequestBody AppdRuleDto appDRuleDto) {
-        // TODO: to be implemented
-        return new ResponseEntity<>(HttpStatus.OK);
+        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleDto, AppdRule.class);
+        appDRule.setTenantId(tenantId);
+        appDRule.setAppInstanceId(appInstanceId);
+        appDRule.setAppdRuleId(tenantId + appInstanceId);
+
+        Set<AppDnsRule> dnsRuleList = appDRule.getAppDnsRule();
+        for (AppDnsRule dnsRule : dnsRuleList) {
+            dnsRule.setAppDRule(appDRule);
+            dnsRule.setTenantId(tenantId);
+            dnsRule.setAppInstanceId(appInstanceId);
+        }
+
+        Set<AppTrafficRule> trafficRuleList = appDRule.getAppTrafficRule();
+        for (AppTrafficRule trafficRule : trafficRuleList) {
+            trafficRule.setAppDRule(appDRule);
+            trafficRule.setTenantId(tenantId);
+            trafficRule.setAppInstanceId(appInstanceId);
+            Set<TrafficFilter> trafficFilterList = trafficRule.getTrafficFilter();
+            for (TrafficFilter trafficFilter : trafficFilterList) {
+                trafficFilter.setTrafficFilterId(UUID.randomUUID().toString());
+                trafficFilter.setTenantId(tenantId);
+                trafficFilter.setTrafficRule(trafficRule);
+            }
+        }
+
+        Status status = service.updateRecord(appDRule, repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
@@ -114,8 +189,8 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId) {
-        // TODO: to be implemented
-        AppdRuleDto appDRuleDto = new AppdRuleDto();
+        AppdRule appDRule = service.getRecord(tenantId + appInstanceId, repository);
+        AppdRuleDto appDRuleDto = InventoryUtilities.getModelMapper().map(appDRule, AppdRuleDto.class);
         return new ResponseEntity<>(appDRuleDto, HttpStatus.OK);
     }
 
@@ -135,7 +210,7 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId) {
-        // TODO: to be implemented
-        return new ResponseEntity<>(HttpStatus.OK);
+        Status status = service.deleteRecord(tenantId + appInstanceId, repository);
+        return new ResponseEntity<>(status,HttpStatus.OK);
     }
 }
