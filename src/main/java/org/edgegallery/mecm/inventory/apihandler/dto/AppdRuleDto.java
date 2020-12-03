@@ -16,8 +16,10 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -39,8 +41,8 @@ import org.springframework.validation.annotation.Validated;
 public final class AppdRuleDto {
 
     @Size(max = 16)
-    private List<@Valid TrafficRuleDto> appTrafficRule = new LinkedList<>();
+    private Set<@Valid TrafficRuleDto> appTrafficRule = new LinkedHashSet<>();
 
     @Size(max = 32)
-    private List<@Valid DnsRuleDto> appDnsRule = new LinkedList<>();
+    private Set<@Valid DnsRuleDto> appDnsRule = new LinkedHashSet<>();
 }

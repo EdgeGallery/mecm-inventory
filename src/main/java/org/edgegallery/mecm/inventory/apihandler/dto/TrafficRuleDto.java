@@ -16,8 +16,10 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,5 +48,5 @@ public class TrafficRuleDto {
 
     private String action;
 
-    private List<@Valid TrafficFilterDto> trafficFilter = new LinkedList<>();
+    private Set<@Valid TrafficFilterDto> trafficFilter = new LinkedHashSet<>();
 }

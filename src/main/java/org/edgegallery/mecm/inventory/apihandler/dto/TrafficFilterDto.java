@@ -16,7 +16,9 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,15 +38,15 @@ import org.springframework.validation.annotation.Validated;
 public class TrafficFilterDto {
 
     // TODO: input validations
-    private List<String> srcAddress;
+    private Set<String> srcAddress = new LinkedHashSet<>();
 
-    private List<String> srcPort;
+    private Set<String> srcPort = new LinkedHashSet<>();
 
-    private List<String> dstAddress;
+    private Set<String> dstAddress = new LinkedHashSet<>();
 
-    private List<String> dstPort;
+    private Set<String> dstPort = new LinkedHashSet<>();
 
-    private List<String> protocol;
+    private Set<String> protocol = new LinkedHashSet<>();
 
     private int qci;
 

@@ -22,8 +22,6 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -45,33 +43,32 @@ import lombok.Setter;
 public final class TrafficFilter implements BaseModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "traffic_filter_id")
     private String trafficFilterId;
 
     @Column(name = "src_address")
     @CollectionTable(name = "trafficfiltersrcaddressinventory", joinColumns = @JoinColumn(name = "traffic_filter_id"))
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> srcAddress;
 
     @Column(name = "src_port")
     @CollectionTable(name = "trafficfiltersrcportinventory", joinColumns = @JoinColumn(name = "traffic_filter_id"))
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> srcPort;
 
     @Column(name = "dst_address")
     @CollectionTable(name = "trafficfilterdstaddressinventory", joinColumns = @JoinColumn(name = "traffic_filter_id"))
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> dstAddress;
 
     @Column(name = "dst_port")
     @CollectionTable(name = "trafficfilterdstportinventory", joinColumns = @JoinColumn(name = "traffic_filter_id"))
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> dstPort;
 
     @Column(name = "protocol")
     @CollectionTable(name = "trafficfilterprotocolinventory", joinColumns = @JoinColumn(name = "traffic_filter_id"))
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> protocol;
 
     @Column(name = "qci")
