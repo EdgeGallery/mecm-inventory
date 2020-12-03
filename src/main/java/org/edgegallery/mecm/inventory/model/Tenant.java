@@ -55,6 +55,18 @@ public final class Tenant implements BaseModel {
     @Column(name = "mecapplication_count")
     private int mecApplications;
 
+    @Column(name = "appdrule_count")
+    private int appdRules;
+
+    @Column(name = "appdnsrule_count")
+    private int appDnsRules;
+
+    @Column(name = "apptrafficrule_count")
+    private int appTrafficRules;
+
+    @Column(name = "trafficfilter_count")
+    private int appTrafficFilterRules;
+
     @Override
     public String getIdentifier() {
         // Return identifier
