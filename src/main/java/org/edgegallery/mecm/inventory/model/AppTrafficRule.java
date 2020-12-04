@@ -68,6 +68,9 @@ public final class AppTrafficRule implements BaseModel {
     @OneToMany(mappedBy = "trafficRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<TrafficFilter> trafficFilter;
 
+    @OneToMany(mappedBy = "trafficRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<DstInterface> dstInterface;
+
     @Override
     public String getIdentifier() {
         return trafficRuleId;

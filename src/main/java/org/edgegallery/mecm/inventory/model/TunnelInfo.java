@@ -16,54 +16,48 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
- * APPD rule schema.
+ * Tunnel info.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString
-@Table(name = "appdruleinventory")
-public final class AppdRule implements BaseModel {
+@Table(name = "tunnelinfoinventory")
+public final class TunnelInfo implements BaseModel {
 
     @Id
-    @Column(name = "appd_rule_id")
-    private String appdRuleId;
+    @Column(name = "tunnel_info_id")
+    private String tunnelInfoId;
 
-    @Column(name = "app_instance_id")
-    private String appInstanceId;
+    @Column(name = "tunnel_type")
+    private String tunnelType;
+
+    @Column(name = "tunnel_dst_address")
+    private String tunnelDstAddress;
+
+    @Column(name = "tunnel_src_address")
+    private String tunnelSrcAddress;
+
+    @Column(name = "tunnel_specific_data")
+    private String tunnelSpecificData;
 
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "status")
-    private String status;
-
-    @OneToMany(mappedBy = "appDRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<AppDnsRule> appDnsRule;
-
-    @OneToMany(mappedBy = "appDRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<AppTrafficRule> appTrafficRule;
-
     @Override
     public String getIdentifier() {
-        return appdRuleId;
+        return tunnelInfoId;
     }
 
     @Override
@@ -73,6 +67,6 @@ public final class AppdRule implements BaseModel {
 
     @Override
     public ModelType getType() {
-        return ModelType.APPD_RULE;
+        return ModelType.TUNNEL_INFO;
     }
 }

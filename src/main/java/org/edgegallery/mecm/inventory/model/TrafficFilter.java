@@ -71,6 +71,35 @@ public final class TrafficFilter implements BaseModel {
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> protocol;
 
+    @Column(name = "tag")
+    @CollectionTable(name = "trafficfiltertaginventory", joinColumns = @JoinColumn(name = "traffic_filter_id"))
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> tag;
+
+    @Column(name = "src_tunnel_address")
+    @CollectionTable(name = "trafficfiltersrctunneladdressinventory",
+            joinColumns = @JoinColumn(name = "traffic_filter_id"))
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> srcTunnelAddress;
+
+    @Column(name = "dst_tunnel_address")
+    @CollectionTable(name = "trafficfilterdsttunneladdressinventory",
+            joinColumns = @JoinColumn(name = "traffic_filter_id"))
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> dstTunnelAddress;
+
+    @Column(name = "src_tunnel_port")
+    @CollectionTable(name = "trafficfiltersrctunnelportinventory",
+            joinColumns = @JoinColumn(name = "traffic_filter_id"))
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> srcTunnelPort;
+
+    @Column(name = "dst_tunnel_port")
+    @CollectionTable(name = "trafficfilterdsttunnelportinventory",
+            joinColumns = @JoinColumn(name = "traffic_filter_id"))
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> dstTunnelPort;
+
     @Column(name = "qci")
     private int qci;
 
