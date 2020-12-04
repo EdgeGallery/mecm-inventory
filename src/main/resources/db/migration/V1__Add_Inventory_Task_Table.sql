@@ -89,10 +89,21 @@
         primary key (tenant_id)
     );
 
+    create table tunnelinfoinventory (
+        tunnel_info_id varchar(255) not null,
+        tunnel_type varchar(255) not null,
+        tunnel_dst_address varchar(255) not null,
+        tunnel_src_address varchar(255) not null,
+        tunnel_specific_data varchar(255) not null,
+        tenant_id  varchar(255) not null,
+        primary key (tunnel_info_id)
+    );
+
     create table appdruleinventory (
         tenant_id varchar(255) not null,
         app_instance_id varchar(255) not null,
         appd_rule_id varchar(255) not null,
+        status varchar(255),
         primary key (appd_rule_id)
     );
 
@@ -135,6 +146,11 @@
         dst_address varchar(255) array,
         dst_port varchar(255) array,
         protocol varchar(255) array,
+        tag varchar(255) array,
+        src_tunnel_address varchar(255) array,
+        dst_tunnel_address varchar(255) array,
+        src_tunnel_port varchar(255) array,
+        dst_tunnel_port varchar(255) array,
         qci int,
         dscp int,
         tc int,
@@ -190,3 +206,69 @@
             references trafficfilterinventory(traffic_filter_id)
             on delete cascade
     );
+
+    create table trafficfiltertaginventory (
+        traffic_filter_id varchar(255) not null,
+        tag varchar(255) not null,
+        constraint fk_appd_trafficfilter_tag
+          foreign key(traffic_filter_id)
+            references trafficfilterinventory(traffic_filter_id)
+            on delete cascade
+    );
+
+    create table trafficfiltersrctunneladdressinventory (
+        traffic_filter_id varchar(255) not null,
+        src_tunnel_address varchar(255) not null,
+        constraint fk_appd_trafficfilter_srctunneladdress
+          foreign key(traffic_filter_id)
+            references trafficfilterinventory(traffic_filter_id)
+            on delete cascade
+    );
+
+    create table trafficfilterdsttunneladdressinventory (
+        traffic_filter_id varchar(255) not null,
+        dst_tunnel_address varchar(255) not null,
+        constraint fk_appd_trafficfilter_dsttunneladdress
+          foreign key(traffic_filter_id)
+            references trafficfilterinventory(traffic_filter_id)
+            on delete cascade
+    );
+
+    create table trafficfiltersrctunnelportinventory (
+        traffic_filter_id varchar(255) not null,
+        src_tunnel_port varchar(255) not null,
+        constraint fk_appd_trafficfilter_srctunnelport
+          foreign key(traffic_filter_id)
+            references trafficfilterinventory(traffic_filter_id)
+            on delete cascade
+    );
+
+    create table trafficfilterdsttunnelportinventory (
+        traffic_filter_id varchar(255) not null,
+        dst_tunnel_port varchar(255) not null,
+        constraint fk_appd_trafficfilter_dsttunnelport
+          foreign key(traffic_filter_id)
+            references trafficfilterinventory(traffic_filter_id)
+            on delete cascade
+    );
+
+    create table dstinterfaceinventory (
+        dst_interface_id varchar(255) not null,
+        traffic_rule_id varchar(255) not null,
+        interface_type varchar(255) not null,
+        src_mac_address varchar(255),
+        dst_mac_address varchar(255),
+        dst_ip_address varchar(255),
+        tunnel_info_id varchar(255),
+        tenant_id  varchar(255) not null,
+        primary key (dst_interface_id),
+        constraint fk_appd_dstinterface
+          foreign key(traffic_rule_id)
+            references apptrafficruleinventory(traffic_rule_id)
+            on delete cascade,
+        constraint fk_appd_tunnelinfo
+          foreign key(tunnel_info_id)
+            references tunnelinfoinventory(tunnel_info_id)
+            on delete cascade
+    );
+

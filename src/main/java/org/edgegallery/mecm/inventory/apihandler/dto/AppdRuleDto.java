@@ -45,4 +45,6 @@ public final class AppdRuleDto {
 
     @Size(max = 32)
     private Set<@Valid DnsRuleDto> appDnsRule = new LinkedHashSet<>();
+
+    private String status;
 }

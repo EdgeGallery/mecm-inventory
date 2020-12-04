@@ -29,5 +29,7 @@ public enum ModelType {
     DNS_RULE,
     TRAFFIC_RULE,
     TRAFFIC_FILTER,
-    APPD_RULE
+    APPD_RULE,
+    DST_INTERFACE,
+    TUNNEL_INFO
 }

@@ -16,54 +16,61 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
- * APPD rule schema.
+ * Dst interface schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString
-@Table(name = "appdruleinventory")
-public final class AppdRule implements BaseModel {
+@Table(name = "dstinterfaceinventory")
+public final class DstInterface implements BaseModel {
 
     @Id
-    @Column(name = "appd_rule_id")
-    private String appdRuleId;
+    @Column(name = "dst_interface_id")
+    private String dstInterfaceId;
 
-    @Column(name = "app_instance_id")
-    private String appInstanceId;
+    @Column(name = "interface_type")
+    private String interfaceType;
+
+    @Column(name = "src_mac_address")
+    private String srcMacAddress;
+
+    @Column(name = "dst_mac_address")
+    private String dstMacAddress;
+
+    @Column(name = "dst_ip_address")
+    private String dstIpAddress;
 
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "status")
-    private String status;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "tunnel_info_id", nullable = false)
+    private TunnelInfo tunnelInfo;
 
-    @OneToMany(mappedBy = "appDRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<AppDnsRule> appDnsRule;
-
-    @OneToMany(mappedBy = "appDRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<AppTrafficRule> appTrafficRule;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "traffic_rule_id", nullable = false)
+    private AppTrafficRule trafficRule;
 
     @Override
     public String getIdentifier() {
-        return appdRuleId;
+        return dstInterfaceId;
     }
 
     @Override
@@ -73,6 +80,6 @@ public final class AppdRule implements BaseModel {
 
     @Override
     public ModelType getType() {
-        return ModelType.APPD_RULE;
+        return ModelType.DST_INTERFACE;
     }
 }
