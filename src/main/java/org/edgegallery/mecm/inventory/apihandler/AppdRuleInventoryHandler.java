@@ -29,7 +29,9 @@ import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleDto;
 import org.edgegallery.mecm.inventory.model.AppDnsRule;
 import org.edgegallery.mecm.inventory.model.AppTrafficRule;
 import org.edgegallery.mecm.inventory.model.AppdRule;
+import org.edgegallery.mecm.inventory.model.DstInterface;
 import org.edgegallery.mecm.inventory.model.TrafficFilter;
+import org.edgegallery.mecm.inventory.model.TunnelInfo;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
 import org.edgegallery.mecm.inventory.service.repository.AppDnsRuleRepository;
@@ -101,23 +103,33 @@ public class AppdRuleInventoryHandler {
         appDRule.setAppInstanceId(appInstanceId);
         appDRule.setAppdRuleId(tenantId + appInstanceId);
 
-        Set<AppDnsRule> dnsRuleList = appDRule.getAppDnsRule();
-        for (AppDnsRule dnsRule : dnsRuleList) {
+        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDnsRule();
+        for (AppDnsRule dnsRule : dnsRuleSet) {
             dnsRule.setAppDRule(appDRule);
             dnsRule.setTenantId(tenantId);
             dnsRule.setAppInstanceId(appInstanceId);
         }
 
-        Set<AppTrafficRule> trafficRuleList = appDRule.getAppTrafficRule();
-        for (AppTrafficRule trafficRule : trafficRuleList) {
+        Set<AppTrafficRule> trafficRuleSet = appDRule.getAppTrafficRule();
+        for (AppTrafficRule trafficRule : trafficRuleSet) {
             trafficRule.setAppDRule(appDRule);
             trafficRule.setTenantId(tenantId);
             trafficRule.setAppInstanceId(appInstanceId);
-            Set<TrafficFilter> trafficFilterList = trafficRule.getTrafficFilter();
-            for (TrafficFilter trafficFilter : trafficFilterList) {
+            Set<TrafficFilter> trafficFilterSet = trafficRule.getTrafficFilter();
+            for (TrafficFilter trafficFilter : trafficFilterSet) {
                 trafficFilter.setTrafficFilterId(UUID.randomUUID().toString());
                 trafficFilter.setTenantId(tenantId);
                 trafficFilter.setTrafficRule(trafficRule);
+            }
+
+            Set<DstInterface> dstInterfaceSet = trafficRule.getDstInterface();
+            for (DstInterface dstInterface : dstInterfaceSet) {
+                dstInterface.setDstInterfaceId(UUID.randomUUID().toString());
+                dstInterface.setTenantId(tenantId);
+                dstInterface.setTrafficRule(trafficRule);
+                TunnelInfo tunnelInfo = dstInterface.getTunnelInfo();
+                tunnelInfo.setTenantId(tenantId);
+                tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
             }
         }
 
@@ -148,23 +160,33 @@ public class AppdRuleInventoryHandler {
         appDRule.setAppInstanceId(appInstanceId);
         appDRule.setAppdRuleId(tenantId + appInstanceId);
 
-        Set<AppDnsRule> dnsRuleList = appDRule.getAppDnsRule();
-        for (AppDnsRule dnsRule : dnsRuleList) {
+        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDnsRule();
+        for (AppDnsRule dnsRule : dnsRuleSet) {
             dnsRule.setAppDRule(appDRule);
             dnsRule.setTenantId(tenantId);
             dnsRule.setAppInstanceId(appInstanceId);
         }
 
-        Set<AppTrafficRule> trafficRuleList = appDRule.getAppTrafficRule();
-        for (AppTrafficRule trafficRule : trafficRuleList) {
+        Set<AppTrafficRule> trafficRuleSet = appDRule.getAppTrafficRule();
+        for (AppTrafficRule trafficRule : trafficRuleSet) {
             trafficRule.setAppDRule(appDRule);
             trafficRule.setTenantId(tenantId);
             trafficRule.setAppInstanceId(appInstanceId);
-            Set<TrafficFilter> trafficFilterList = trafficRule.getTrafficFilter();
-            for (TrafficFilter trafficFilter : trafficFilterList) {
+            Set<TrafficFilter> trafficFilterSet = trafficRule.getTrafficFilter();
+            for (TrafficFilter trafficFilter : trafficFilterSet) {
                 trafficFilter.setTrafficFilterId(UUID.randomUUID().toString());
                 trafficFilter.setTenantId(tenantId);
                 trafficFilter.setTrafficRule(trafficRule);
+            }
+
+            Set<DstInterface> dstInterfaceSet = trafficRule.getDstInterface();
+            for (DstInterface dstInterface : dstInterfaceSet) {
+                dstInterface.setDstInterfaceId(UUID.randomUUID().toString());
+                dstInterface.setTenantId(tenantId);
+                dstInterface.setTrafficRule(trafficRule);
+                TunnelInfo tunnelInfo = dstInterface.getTunnelInfo();
+                tunnelInfo.setTenantId(tenantId);
+                tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
             }
         }
 
