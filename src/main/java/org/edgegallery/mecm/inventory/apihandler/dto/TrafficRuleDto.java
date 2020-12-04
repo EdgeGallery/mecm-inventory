@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,4 +50,7 @@ public class TrafficRuleDto {
     private String action;
 
     private Set<@Valid TrafficFilterDto> trafficFilter = new LinkedHashSet<>();
+
+    @Size(max = 2)
+    private Set<@Valid DstInterfaceDto> dstInterface = new LinkedHashSet<>();
 }

@@ -16,8 +16,6 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +24,7 @@ import lombok.ToString;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Traffic Rule Inventory input request schema.
+ * Dst interface Inventory input request schema.
  */
 @Validated
 @Getter
@@ -34,32 +32,15 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class TrafficFilterDto {
+public class DstInterfaceDto {
 
-    // TODO: input validations
-    private Set<String> srcAddress = new LinkedHashSet<>();
+    private String interfaceType;
 
-    private Set<String> srcPort = new LinkedHashSet<>();
+    private TunnelInfoDto tunnelInfo;
 
-    private Set<String> dstAddress = new LinkedHashSet<>();
+    private String srcMacAddress;
 
-    private Set<String> dstPort = new LinkedHashSet<>();
+    private String dstMacAddress;
 
-    private Set<String> protocol = new LinkedHashSet<>();
-
-    private Set<String> tag = new LinkedHashSet<>();
-
-    private Set<String> srcTunnelAddress = new LinkedHashSet<>();
-
-    private Set<String> dstTunnelAddress = new LinkedHashSet<>();
-
-    private Set<String> srcTunnelPort = new LinkedHashSet<>();
-
-    private Set<String> dstTunnelPort = new LinkedHashSet<>();
-
-    private int qci;
-
-    private int dscp;
-
-    private int tc;
+    private String dstIpAddress;
 }
