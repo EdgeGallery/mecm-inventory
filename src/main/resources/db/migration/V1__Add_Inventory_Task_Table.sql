@@ -10,6 +10,17 @@
         primary key (applcm_id)
     );
 
+    create table apprulemanagerinventory (
+        app_rule_manager_id varchar(255) not null,
+        tenant_id  varchar(255) not null,
+        app_rule_manager_ip varchar(255) not null,
+        app_rule_manager_port varchar(255) not null,
+        user_name varchar(255),
+        created_time varchar(200),
+        modified_time varchar(200),
+        primary key (app_rule_manager_id)
+    );
+
     create table appstoreinventory (
         appstore_id varchar(255) not null,
         appstore_ip varchar(255) not null,
@@ -29,6 +40,7 @@
         tenant_id varchar(255) not null,
         mechost_ip varchar(255) not null,
         applcm_ip varchar(255) not null,
+        apprule_ip varchar(255),
         mechost_name varchar(255) not null,
         zip_code varchar(200),
         city varchar(255) not null,
@@ -78,6 +90,7 @@
     create table tenantinventory (
         tenant_id  varchar(255) not null,
         applcm_count int,
+        app_rule_manager_count int,
         appstore_count int,
         mechost_count int,
         mechwcapability_count int,
