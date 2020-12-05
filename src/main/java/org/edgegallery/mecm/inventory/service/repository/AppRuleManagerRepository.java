@@ -32,7 +32,7 @@ public interface AppRuleManagerRepository extends CrudRepository<AppRuleManager,
 
     @Transactional
     @Modifying
-    @Query("delete from AppLcm m where m.tenantId=:tenantId")
+    @Query("delete from AppRuleManager m where m.tenantId=:tenantId")
     void deleteByTenantId(@Param("tenantId") String tenantId);
 
     @Query(value = "SELECT * FROM apprulemanagerinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
