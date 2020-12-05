@@ -87,6 +87,9 @@ public final class MecHost implements BaseModel {
     @Column(name = "applcm_ip")
     private String applcmIp;
 
+    @Column(name = "apprule_ip")
+    private String appRuleIp;
+
     @Column(name = "config_upload_status")
     private String configUploadStatus;
 

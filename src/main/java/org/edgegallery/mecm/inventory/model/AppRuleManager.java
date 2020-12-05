@@ -16,6 +16,7 @@
 
 package org.edgegallery.mecm.inventory.model;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -26,65 +27,47 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Application lifecycle management schema.
+ * Application rule manager schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tenantinventory")
-public final class Tenant implements BaseModel {
+@Table(name = "apprulemanagerinventory")
+public final class AppRuleManager implements BaseModel {
 
     @Id
+    @Column(name = "app_rule_manager_id")
+    private String appRuleManagerId;
+
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "applcm_count")
-    private int appLcms;
+    @Column(name = "created_time")
+    private LocalDateTime createTime;
 
-    @Column(name = "app_rule_manager_count")
-    private int appRuleManagers;
+    @Column(name = "app_rule_manager_ip")
+    private String appRuleIp;
 
-    @Column(name = "appstore_count")
-    private int appStores;
+    @Column(name = "app_rule_manager_port")
+    private String appRulePort;
 
-    @Column(name = "mechost_count")
-    private int mecHosts;
-
-    @Column(name = "mechwcapability_count")
-    private int mecHwCapabilities;
-
-    @Column(name = "mecapplication_count")
-    private int mecApplications;
-
-    @Column(name = "appdrule_count")
-    private int appdRules;
-
-    @Column(name = "appdnsrule_count")
-    private int appDnsRules;
-
-    @Column(name = "apptrafficrule_count")
-    private int appTrafficRules;
-
-    @Column(name = "trafficfilter_count")
-    private int appTrafficFilterRules;
+    @Column(name = "user_name")
+    private String userName;
 
     @Override
     public String getIdentifier() {
-        // Return identifier
-        return tenantId;
+        return appRuleManagerId;
     }
 
     @Override
     public String getTenantId() {
-        return getIdentifier();
+        return tenantId;
     }
 
     @Override
     public ModelType getType() {
-        return ModelType.TENANT;
+        return ModelType.APP_RULE_MANAGER;
     }
-
-    // models are not embedded in tenant currently as topic is under discussion.
 }
