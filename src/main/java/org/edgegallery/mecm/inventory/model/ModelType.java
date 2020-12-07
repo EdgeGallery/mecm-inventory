@@ -21,6 +21,7 @@ package org.edgegallery.mecm.inventory.model;
  */
 public enum ModelType {
     APP_LCM,
+    APP_RULE_MANAGER,
     APP_STORE,
     MEC_HOST,
     TENANT,

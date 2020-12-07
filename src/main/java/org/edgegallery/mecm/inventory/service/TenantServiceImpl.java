@@ -108,6 +108,9 @@ class TenantServiceImpl implements TenantService {
             case APP_LCM:
                 ot.setAppLcms(0);
                 break;
+            case APP_RULE_MANAGER:
+                ot.setAppRuleManagers(0);
+                break;
             case APP_STORE:
                 ot.setAppStores(0);
                 break;
@@ -147,6 +150,13 @@ class TenantServiceImpl implements TenantService {
                     LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 }
                 break;
+            case APP_RULE_MANAGER:
+                if (isNotOverflow(t.getAppRuleManagers(), 1)) {
+                    t.setAppRuleManagers(t.getAppRuleManagers() + 1);
+                } else {
+                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                }
+                break;
             case APP_STORE:
                 if (isNotOverflow(t.getAppStores(), 1)) {
                     t.setAppStores(t.getAppStores() + 1);
@@ -177,28 +187,28 @@ class TenantServiceImpl implements TenantService {
                 break;
             case DNS_RULE:
                 if (isNotOverflow(t.getAppDnsRules(), 1)) {
-                    t.setMecApplications(t.getAppDnsRules() + 1);
+                    t.setAppDnsRules(t.getAppDnsRules() + 1);
                 } else {
                     LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 }
                 break;
             case TRAFFIC_RULE:
                 if (isNotOverflow(t.getAppTrafficRules(), 1)) {
-                    t.setMecApplications(t.getAppTrafficRules() + 1);
+                    t.setAppTrafficRules(t.getAppTrafficRules() + 1);
                 } else {
                     LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 }
                 break;
             case APPD_RULE:
                 if (isNotOverflow(t.getAppdRules(), 1)) {
-                    t.setMecApplications(t.getAppdRules() + 1);
+                    t.setAppdRules(t.getAppdRules() + 1);
                 } else {
                     LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 }
                 break;
             case TRAFFIC_FILTER:
                 if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
-                    t.setMecApplications(t.getAppTrafficFilterRules() + 1);
+                    t.setAppTrafficFilterRules(t.getAppTrafficFilterRules() + 1);
                 } else {
                     LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 }
@@ -218,6 +228,13 @@ class TenantServiceImpl implements TenantService {
             case APP_LCM:
                 if (isNotUnderflow(t.getAppLcms(), 1)) {
                     t.setAppLcms(t.getAppLcms() - 1);
+                } else {
+                    LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
+                }
+                break;
+            case APP_RULE_MANAGER:
+                if (isNotUnderflow(t.getAppRuleManagers(), 1)) {
+                    t.setAppRuleManagers(t.getAppRuleManagers() - 1);
                 } else {
                     LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
                 }
@@ -252,28 +269,28 @@ class TenantServiceImpl implements TenantService {
                 break;
             case DNS_RULE:
                 if (isNotOverflow(t.getAppDnsRules(), 1)) {
-                    t.setMecApplications(t.getAppDnsRules() - 1);
+                    t.setAppDnsRules(t.getAppDnsRules() - 1);
                 } else {
                     LOGGER.error("{} for dns rule count", Constants.VAR_UNDERFLOW_ERROR);
                 }
                 break;
             case TRAFFIC_RULE:
                 if (isNotOverflow(t.getAppTrafficRules(), 1)) {
-                    t.setMecApplications(t.getAppTrafficRules() - 1);
+                    t.setAppTrafficRules(t.getAppTrafficRules() - 1);
                 } else {
                     LOGGER.error("{} for traffic rule count", Constants.VAR_UNDERFLOW_ERROR);
                 }
                 break;
             case APPD_RULE:
                 if (isNotOverflow(t.getAppdRules(), 1)) {
-                    t.setMecApplications(t.getAppdRules() - 1);
+                    t.setAppdRules(t.getAppdRules() - 1);
                 } else {
                     LOGGER.error("{} for appd rule count", Constants.VAR_UNDERFLOW_ERROR);
                 }
                 break;
             case TRAFFIC_FILTER:
                 if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
-                    t.setMecApplications(t.getAppTrafficFilterRules() - 1);
+                    t.setAppTrafficFilterRules(t.getAppTrafficFilterRules() - 1);
                 } else {
                     LOGGER.error("{} for traffic filter count", Constants.VAR_UNDERFLOW_ERROR);
                 }

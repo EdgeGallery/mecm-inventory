@@ -25,7 +25,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleConfigDto;
 import org.edgegallery.mecm.inventory.model.AppDnsRule;
 import org.edgegallery.mecm.inventory.model.AppTrafficRule;
 import org.edgegallery.mecm.inventory.model.AppdRule;
@@ -84,7 +84,7 @@ public class AppdRuleInventoryHandler {
      *
      * @param tenantId   tenant ID
      * @param appInstanceId  appInstance ID
-     * @param appDRuleDto appDRule record details
+     * @param appDRuleConfigDto appDRule record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds AppD rule record", response = String.class)
@@ -96,9 +96,10 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
-            @Valid @ApiParam(value = "appD rule inventory information") @RequestBody AppdRuleDto appDRuleDto) {
+            @Valid @ApiParam(value = "appD rule inventory information")
+            @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
 
-        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleDto, AppdRule.class);
+        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleConfigDto, AppdRule.class);
         appDRule.setTenantId(tenantId);
         appDRule.setAppInstanceId(appInstanceId);
         appDRule.setAppdRuleId(tenantId + appInstanceId);
@@ -142,7 +143,7 @@ public class AppdRuleInventoryHandler {
      *
      * @param tenantId   tenant ID
      * @param appInstanceId  app instance Id
-     * @param appDRuleDto appDRule record details
+     * @param appDRuleConfigDto appDRule record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing appDRule record", response = String.class)
@@ -154,8 +155,9 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
-            @Valid @ApiParam(value = "appD rule inventory information") @RequestBody AppdRuleDto appDRuleDto) {
-        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleDto, AppdRule.class);
+            @Valid @ApiParam(value = "appD rule inventory information")
+            @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
+        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleConfigDto, AppdRule.class);
         appDRule.setTenantId(tenantId);
         appDRule.setAppInstanceId(appInstanceId);
         appDRule.setAppdRuleId(tenantId + appInstanceId);
@@ -206,14 +208,15 @@ public class AppdRuleInventoryHandler {
     @GetMapping(path = "/tenants/{tenant_id}/app_instances/{app_instance_id}/appd_configuration",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT')")
-    public ResponseEntity<AppdRuleDto> getAppdRuleRecord(
+    public ResponseEntity<AppdRuleConfigDto> getAppdRuleRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId) {
         AppdRule appDRule = service.getRecord(tenantId + appInstanceId, repository);
-        AppdRuleDto appDRuleDto = InventoryUtilities.getModelMapper().map(appDRule, AppdRuleDto.class);
-        return new ResponseEntity<>(appDRuleDto, HttpStatus.OK);
+        AppdRuleConfigDto appDRuleConfigDto = InventoryUtilities.getModelMapper()
+                .map(appDRule, AppdRuleConfigDto.class);
+        return new ResponseEntity<>(appDRuleConfigDto, HttpStatus.OK);
     }
 
     /**

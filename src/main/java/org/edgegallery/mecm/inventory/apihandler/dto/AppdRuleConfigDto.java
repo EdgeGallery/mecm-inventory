@@ -38,7 +38,7 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public final class AppdRuleDto {
+public final class AppdRuleConfigDto {
 
     @Size(max = 16)
     private Set<@Valid TrafficRuleDto> appTrafficRule = new LinkedHashSet<>();

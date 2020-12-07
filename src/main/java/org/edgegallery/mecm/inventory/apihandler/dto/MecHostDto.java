@@ -102,6 +102,10 @@ public final class MecHostDto {
     @Pattern(regexp = Constants.IP_REGEX, message = "applcm IP is invalid")
     private String applcmIp;
 
+    @Size(max = 15, message = "app rule manager IP length exceeds max size")
+    @Pattern(regexp = Constants.IP_REGEX, message = "app rule manage IP is invalid")
+    private String appRuleIp;
+
     @Size(max = 10)
     private List<@Valid MecHwCapabilityDto> hwcapabilities = new LinkedList<>();
 }
