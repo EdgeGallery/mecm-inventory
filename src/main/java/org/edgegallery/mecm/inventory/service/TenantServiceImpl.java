@@ -46,10 +46,6 @@ class TenantServiceImpl implements TenantService {
             LOGGER.info("Tenant record with identifier {} added", id);
             return;
         }
-        if (repository.count() == Constants.MAX_TENANTS) {
-            LOGGER.error("Max tenant limit {} reached", Constants.MAX_TENANTS);
-            throw new InventoryException(Constants.MAX_LIMIT_REACHED_ERROR);
-        }
         Tenant ot = record.get();
         addCount(ot, type);
         repository.save(ot);
@@ -80,6 +76,11 @@ class TenantServiceImpl implements TenantService {
     @Override
     public boolean isMaxTenantCountReached() {
         return repository.count() == Constants.MAX_TENANTS;
+    }
+
+    @Override
+    public boolean isTenantExist(String tenantId) {
+        return repository.existsById(tenantId);
     }
 
     @Override
