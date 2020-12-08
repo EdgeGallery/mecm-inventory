@@ -56,7 +56,7 @@ public final class AppdRule implements BaseModel {
     private String status;
 
     @OneToMany(mappedBy = "appDRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<AppDnsRule> appDnsRule;
+    private Set<AppDnsRule> appDNSRule;
 
     @OneToMany(mappedBy = "appDRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<AppTrafficRule> appTrafficRule;

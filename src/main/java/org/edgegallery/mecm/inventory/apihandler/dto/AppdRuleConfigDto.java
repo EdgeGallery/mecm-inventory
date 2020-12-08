@@ -44,7 +44,7 @@ public final class AppdRuleConfigDto {
     private Set<@Valid TrafficRuleDto> appTrafficRule = new LinkedHashSet<>();
 
     @Size(max = 32)
-    private Set<@Valid DnsRuleDto> appDnsRule = new LinkedHashSet<>();
+    private Set<@Valid DnsRuleDto> appDNSRule = new LinkedHashSet<>();
 
     private String status;
 }
