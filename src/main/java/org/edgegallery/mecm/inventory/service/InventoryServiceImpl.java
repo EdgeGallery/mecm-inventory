@@ -51,7 +51,9 @@ public final class InventoryServiceImpl implements InventoryService {
         }
         String tenantId = model.getTenantId();
         List<T> record = ((BaseRepository) repository).findByTenantId(tenantId);
-        if (tenantService.isMaxTenantCountReached() || record.size() == Constants.MAX_ENTRY_PER_TENANT_PER_MODEL) {
+
+        if ((tenantService.isMaxTenantCountReached() && !tenantService.isTenantExist(
+                tenantId)) || record.size() == Constants.MAX_ENTRY_PER_TENANT_PER_MODEL) {
             LOGGER.error("Max tenant count {} or max entry per tenant per model {} reached", Constants.MAX_TENANTS,
                     Constants.MAX_ENTRY_PER_TENANT_PER_MODEL);
             throw new InventoryException(Constants.MAX_LIMIT_REACHED_ERROR);

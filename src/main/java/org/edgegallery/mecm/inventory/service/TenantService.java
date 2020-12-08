@@ -53,4 +53,12 @@ interface TenantService {
      * @param type     model type
      */
     void clearCount(String tenantId, ModelType type);
+
+
+    /**
+     * Checks if tenant exist.
+     *
+     * @return true if exist, false otherwise
+     */
+    boolean isTenantExist(String tenantId);
 }
