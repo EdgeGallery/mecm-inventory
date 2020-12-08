@@ -57,9 +57,9 @@ public class TrafficFilterDto {
 
     private Set<String> dstTunnelPort = new LinkedHashSet<>();
 
-    private int qci;
+    private int qCI;
 
-    private int dscp;
+    private int dSCP;
 
-    private int tc;
+    private int tC;
 }

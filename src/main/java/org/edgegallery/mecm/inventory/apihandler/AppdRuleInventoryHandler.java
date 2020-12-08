@@ -104,7 +104,7 @@ public class AppdRuleInventoryHandler {
         appDRule.setAppInstanceId(appInstanceId);
         appDRule.setAppdRuleId(tenantId + appInstanceId);
 
-        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDnsRule();
+        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDNSRule();
         for (AppDnsRule dnsRule : dnsRuleSet) {
             dnsRule.setAppDRule(appDRule);
             dnsRule.setTenantId(tenantId);
@@ -162,7 +162,7 @@ public class AppdRuleInventoryHandler {
         appDRule.setAppInstanceId(appInstanceId);
         appDRule.setAppdRuleId(tenantId + appInstanceId);
 
-        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDnsRule();
+        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDNSRule();
         for (AppDnsRule dnsRule : dnsRuleSet) {
             dnsRule.setAppDRule(appDRule);
             dnsRule.setTenantId(tenantId);

@@ -101,13 +101,13 @@ public final class TrafficFilter implements BaseModel {
     private Set<String> dstTunnelPort;
 
     @Column(name = "qci")
-    private int qci;
+    private int qCI;
 
     @Column(name = "dscp")
-    private int dscp;
+    private int dSCP;
 
     @Column(name = "tc")
-    private int tc;
+    private int tC;
 
     @Column(name = "tenant_id")
     private String tenantId;
