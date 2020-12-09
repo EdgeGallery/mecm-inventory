@@ -47,4 +47,8 @@ public final class AppdRuleConfigDto {
     private Set<@Valid DnsRuleDto> appDNSRule = new LinkedHashSet<>();
 
     private String status;
+
+    private String appName;
+
+    private boolean appSupportMp1;
 }

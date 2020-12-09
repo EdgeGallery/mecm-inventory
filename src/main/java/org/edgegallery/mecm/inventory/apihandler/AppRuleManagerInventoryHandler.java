@@ -127,7 +127,7 @@ public class AppRuleManagerInventoryHandler {
     @ApiOperation(value = "Retrieves all application rule manager records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/apprulemanagers", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
-    public ResponseEntity<List<AppRuleDto>> getAllAppLcmRecords(
+    public ResponseEntity<List<AppRuleDto>> getAllAppRuleManagerRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         List<AppRuleManager> appRuleManagers = service.getTenantRecords(tenantId, repository);

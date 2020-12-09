@@ -102,7 +102,9 @@ public class AppdRuleInventoryHandlerTest {
                 + "      \"ipAddress\": \"1.1.1.1\",\n"
                 + "      \"ttl\": 86400\n"
                 + "    }\n"
-                + "  ]\n"
+                + "  ],\n"
+                + "  \"appSupportMp1\": false,\n"
+                + "  \"appName\": \"application name\"\n"
                 + "}";
 
         // Test appdRule record post
