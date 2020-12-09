@@ -117,6 +117,8 @@
         app_instance_id varchar(255) not null,
         appd_rule_id varchar(255) not null,
         status varchar(255),
+        app_name varchar(255) not null,
+        app_support_mp1 boolean,
         primary key (appd_rule_id)
     );
 
