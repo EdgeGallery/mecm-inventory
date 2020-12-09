@@ -126,7 +126,7 @@ public class AppRuleManagerInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all application rule manager records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/apprulemanagers", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
     public ResponseEntity<List<AppRuleDto>> getAllAppLcmRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
@@ -150,7 +150,7 @@ public class AppRuleManagerInventoryHandler {
     @ApiOperation(value = "Retrieves application rule manager record", response = AppRuleDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/apprulemanagers/{app_rule_manager_ip}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppRuleDto> getAppRuleManagerRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
