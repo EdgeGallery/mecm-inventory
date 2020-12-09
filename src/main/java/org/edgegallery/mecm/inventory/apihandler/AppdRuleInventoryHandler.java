@@ -129,8 +129,10 @@ public class AppdRuleInventoryHandler {
                 dstInterface.setTenantId(tenantId);
                 dstInterface.setTrafficRule(trafficRule);
                 TunnelInfo tunnelInfo = dstInterface.getTunnelInfo();
-                tunnelInfo.setTenantId(tenantId);
-                tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
+                if (tunnelInfo != null) {
+                    tunnelInfo.setTenantId(tenantId);
+                    tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
+                }
             }
         }
 
@@ -187,8 +189,10 @@ public class AppdRuleInventoryHandler {
                 dstInterface.setTenantId(tenantId);
                 dstInterface.setTrafficRule(trafficRule);
                 TunnelInfo tunnelInfo = dstInterface.getTunnelInfo();
-                tunnelInfo.setTenantId(tenantId);
-                tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
+                if (tunnelInfo != null) {
+                    tunnelInfo.setTenantId(tenantId);
+                    tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
+                }
             }
         }
 
@@ -207,7 +211,7 @@ public class AppdRuleInventoryHandler {
             List.class)
     @GetMapping(path = "/tenants/{tenant_id}/app_instances/{app_instance_id}/appd_configuration",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppdRuleConfigDto> getAppdRuleRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
