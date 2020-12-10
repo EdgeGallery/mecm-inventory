@@ -50,7 +50,8 @@ public class AppLcmInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\" }"));
+                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
+                                + "\"applcmName\": \"applcm123\" }"));
 
         MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -68,7 +69,8 @@ public class AppLcmInventoryHandlerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
-        Assert.assertEquals("{\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10000\",\"userName\":\"Test\"}",
+        Assert.assertEquals("{\"applcmName\":\"applcm123\",\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10000\","
+                        + "\"userName\":\"Test\"}",
                 getByIdResponse);
 
         // Test APPLCM record delete by APPLCM ID
@@ -93,14 +95,16 @@ public class AppLcmInventoryHandlerTest {
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\" }"));
+                .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
+                        + "\"applcmName\": \"applcm123\"  }"));
 
         // Update record
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10001\", \"userName\": \"Test\" }"));
+                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10001\", \"userName\": \"Test\", "
+                                + "\"applcmName\": \"applcm123\" }"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -116,7 +120,7 @@ public class AppLcmInventoryHandlerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
-        Assert.assertEquals("[{\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10001\",\"userName\":\"Test\"}]",
+        Assert.assertEquals("[{\"applcmName\":\"applcm123\",\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10001\",\"userName\":\"Test\"}]",
                 getAllResponse);
 
         // Test Delete all records

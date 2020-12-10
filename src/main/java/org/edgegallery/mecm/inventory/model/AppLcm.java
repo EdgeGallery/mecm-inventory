@@ -56,6 +56,9 @@ public final class AppLcm implements BaseModel {
     @Column(name = "user_name")
     private String userName;
 
+    @Column(name = "applcm_name")
+    private String applcmName;
+
     @Override
     public String getIdentifier() {
         return applcmId;
