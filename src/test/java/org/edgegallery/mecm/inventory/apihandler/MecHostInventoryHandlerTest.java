@@ -53,7 +53,8 @@ public class MecHostInventoryHandlerTest {
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                                 + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                                + "\"affinity\":\"part1,part2\", \"appRuleIp\": \"1.1.1.1\"}"));
+                                + "\"affinity\":\"part1,part2\", \"appRuleIp\": \"1.1.1.1\","
+                                + " \"coordinates\": \"1,1\"}"));
 
         MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -76,7 +77,8 @@ public class MecHostInventoryHandlerTest {
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.1\",\"edgerepoPort\":\"10000\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"hwcapabilities\":[]}", getByIdResponse);
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
+                        + "\"hwcapabilities\":[]}", getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
         ResultActions deleteByIdResult =
@@ -102,7 +104,8 @@ public class MecHostInventoryHandlerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                         + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",  \"appRuleIp\": \"1.1.1.1\"}"));
+                        + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\","
+                        + "  \"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}"));
 
         // Update record
         ResultActions updateResult =
@@ -112,7 +115,7 @@ public class MecHostInventoryHandlerTest {
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.2\", "
                                 + "\"edgerepoPort\": \"10001\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", \"appRuleIp\": \"1.1.1"
-                                + ".1\"}"));
+                                + ".1\",\"coordinates\":\"1,1\"}"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -133,7 +136,7 @@ public class MecHostInventoryHandlerTest {
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.2\",\"edgerepoPort\":\"10001\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"hwcapabilities\":[]}]", getAllResponse);
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]", getAllResponse);
 
         // Test Delete all records
         ResultActions deleteAllresult =
@@ -161,7 +164,7 @@ public class MecHostInventoryHandlerTest {
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                                 + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                                + "\"affinity\":\"part1,part2\",\"appRuleIp\": \"1.1.1.1\", "
+                                + "\"affinity\":\"part1,part2\",\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\", "
                                 + "\"hwcapabilities\":[{\"hwType\": \"GPU1\","
                                 + "\"hwVendor\": \"testvendor1\",\"hwModel\": \"testmodel1\"}]}"));
 
@@ -187,7 +190,7 @@ public class MecHostInventoryHandlerTest {
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.1\",\"edgerepoPort\":\"10000\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\","
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
                         + "\"hwcapabilities\":[{\"hwType\":\"GPU1\","
                         + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}]}", getByIdResponse);
 
@@ -216,7 +219,7 @@ public class MecHostInventoryHandlerTest {
                 .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                         + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                        + "\"appRuleIp\": \"1.1.1.1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\","
+                        + "\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\","
                         + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}]}"));
 
         // Update record
@@ -227,7 +230,7 @@ public class MecHostInventoryHandlerTest {
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.2\", "
                                 + "\"edgerepoPort\": \"10001\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"appRuleIp\": \"1.1.1.1\","
-                                + "\"hwcapabilities\":[]}"));
+                                + "\"coordinates\":\"1,1\",\"hwcapabilities\":[]}"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -248,7 +251,7 @@ public class MecHostInventoryHandlerTest {
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"edgerepoName\":null,"
                         + "\"edgerepoIp\":\"1.1.1.2\",\"edgerepoPort\":\"10001\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"hwcapabilities\":[]}]", getAllResponse);
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]", getAllResponse);
 
         // Test Delete all records
         ResultActions deleteAllresult =
@@ -277,7 +280,7 @@ public class MecHostInventoryHandlerTest {
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                                 + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                                + "\"appRuleIp\": \"1.1.1.1\", \"affinity\":\"part1,part2\","
+                                + "\"appRuleIp\": \"1.1.1.1\", \"affinity\":\"part1,part2\",\"coordinates\":\"1,1\","
                                 + "\"hwcapabilities\":[{\"hwType\": \"GPU1\",\"hwVendor\": \"testvendor1\",\"hwModel\": \"testmodel1\"}]}"));
 
         MvcResult postMecMvcResult = postMecResult.andDo(MockMvcResultHandlers.print())

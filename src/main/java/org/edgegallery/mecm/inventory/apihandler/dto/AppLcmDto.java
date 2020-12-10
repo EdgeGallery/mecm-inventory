@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -40,6 +41,12 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 @NoArgsConstructor
 public final class AppLcmDto {
+
+    @NotEmpty(message = "applcm name is empty")
+    @Size(max = 128, message = "applcm name length exceeds max size")
+    @Pattern(regexp = Constants.NAME_REGEX, message = "applcm name is invalid. It must start and end with alpha "
+            + "numeric characters and special characters allowed are hyphen and underscore")
+    private String applcmName;
 
     @NotEmpty(message = "applcm IP is empty")
     @Size(max = 15, message = "applcm IP length exceeds max size")

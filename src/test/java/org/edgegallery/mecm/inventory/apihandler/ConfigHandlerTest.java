@@ -68,7 +68,7 @@ public class ConfigHandlerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                                 + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\"}"));
+                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}"));
 
         MvcResult postMvcResultMecHost = postResultMecHost.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -81,7 +81,9 @@ public class ConfigHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\" }"));
+                        .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
+                                + "\"10000\", "
+                                + "\"userName\": \"Test\" }"));
 
         MvcResult postMvcResultAppLcm = postResultAppLcm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

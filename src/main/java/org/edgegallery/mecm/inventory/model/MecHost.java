@@ -93,6 +93,9 @@ public final class MecHost implements BaseModel {
     @Column(name = "config_upload_status")
     private String configUploadStatus;
 
+    @Column(name = "coordinates")
+    private String coordinates;
+
     @OneToMany(mappedBy = "mecHost", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<MecHwCapability> hwcapabilities;
 
