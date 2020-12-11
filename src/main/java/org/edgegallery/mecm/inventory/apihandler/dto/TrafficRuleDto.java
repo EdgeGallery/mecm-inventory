@@ -17,10 +17,9 @@
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,15 +39,21 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 public class TrafficRuleDto {
 
-    // TODO: input validations
+    @NotEmpty(message = "Traffic rule id is mandatory")
+    @Size(max = 128)
     private String trafficRuleId;
 
+    @NotEmpty(message = "Filter type is mandatory")
+    @Size(max = 6)
     private String filterType;
 
-    private int priority;
+    private Integer priority;
 
+    @NotEmpty(message = "Action is mandatory")
+    @Size(max = 24)
     private String action;
 
+    @Size(max = 16)
     private Set<@Valid TrafficFilterDto> trafficFilter = new LinkedHashSet<>();
 
     @Size(max = 2)

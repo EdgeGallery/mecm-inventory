@@ -16,11 +16,15 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -34,11 +38,19 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 public class TunnelInfoDto {
 
+    @Size(max = 64)
     private String tunnelType;
 
+    @NotEmpty(message = "tunnel destination address is mandatory")
+    @Size(max = 18)
+    @Pattern(regexp = Constants.IP_CIRD_REGX, message = "Destination tunnel address is invalid")
     private String tunnelDstAddress;
 
+    @NotEmpty(message = "tunnel source address is mandatory")
+    @Size(max = 18)
+    @Pattern(regexp = Constants.IP_CIRD_REGX, message = "Source tunnel address is invalid")
     private String tunnelSrcAddress;
 
+    @Size(max = 256)
     private String tunnelSpecificData;
 }

@@ -88,8 +88,8 @@ public class AppdRuleInventoryHandlerTest {
                 + "          \"tunnelSrcAddress\" : \"2.2.2.2\",\n"
                 + "          \"tunnelSpecificData\" : \"some data\"\n"
                 + "        },\n"
-                + "        \"srcMacAddress\" : \"1.1.1.1\",\n"
-                + "        \"dstMacAddress\" : \"2.2.2.2\",\n"
+                + "        \"srcMacAddress\" : \"08:d4:0c:20:61:e7\",\n"
+                + "        \"dstMacAddress\" : \"08:d4:0c:20:61:e7\",\n"
                 + "        \"dstIpAddress\" : \"3.3.3.3\"\n"
                 + "      }]\n"
                 + "    }\n"
@@ -104,7 +104,7 @@ public class AppdRuleInventoryHandlerTest {
                 + "    }\n"
                 + "  ],\n"
                 + "  \"appSupportMp1\": false,\n"
-                + "  \"appName\": \"application name\"\n"
+                + "  \"appName\": \"applicationname\"\n"
                 + "}";
 
         // Test appdRule record post

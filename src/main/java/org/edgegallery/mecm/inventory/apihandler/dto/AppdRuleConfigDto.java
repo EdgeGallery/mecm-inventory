@@ -17,16 +17,17 @@
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -46,9 +47,11 @@ public final class AppdRuleConfigDto {
     @Size(max = 32)
     private Set<@Valid DnsRuleDto> appDNSRule = new LinkedHashSet<>();
 
-    private String status;
-
+    @NotEmpty(message = "Application name is mandatory")
+    @Size(max = 128)
+    @Pattern(regexp = Constants.APP_NAME_REGEX, message = "App name is invalid. It must start and end with alpha "
+            + "numeric character and special characters allowed are hyphen and underscore.")
     private String appName;
 
-    private boolean appSupportMp1;
+    private Boolean appSupportMp1;
 }

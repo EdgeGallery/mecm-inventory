@@ -59,7 +59,7 @@ public final class AppdRule implements BaseModel {
     private String appName;
 
     @Column(name = "app_support_mp1")
-    private boolean appSupportMp1;
+    private Boolean appSupportMp1;
 
     @OneToMany(mappedBy = "appDRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<AppDnsRule> appDNSRule;
