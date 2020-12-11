@@ -13,6 +13,7 @@
 
     create table apprulemanagerinventory (
         app_rule_manager_id varchar(255) not null,
+        apprule_name  varchar(255) not null,
         tenant_id  varchar(255) not null,
         app_rule_manager_ip varchar(255) not null,
         app_rule_manager_port varchar(255) not null,

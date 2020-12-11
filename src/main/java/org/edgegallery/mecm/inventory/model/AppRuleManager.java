@@ -41,6 +41,9 @@ public final class AppRuleManager implements BaseModel {
     @Column(name = "app_rule_manager_id")
     private String appRuleManagerId;
 
+    @Column(name = "apprule_name")
+    private String appRuleName;
+
     @Column(name = "tenant_id")
     private String tenantId;
 
