@@ -16,11 +16,15 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -34,13 +38,21 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 public class DstInterfaceDto {
 
+    @Size(max = 64)
     private String interfaceType;
 
     private TunnelInfoDto tunnelInfo;
 
+    @Size(max = 17)
+    @Pattern(regexp = Constants.MAC_ADDRESS_REGX, message = "Source MAC address is invalid")
     private String srcMacAddress;
 
+    @Size(max = 17)
+    @Pattern(regexp = Constants.MAC_ADDRESS_REGX, message = "Destination MAC address is invalid")
     private String dstMacAddress;
 
+    @NotEmpty(message = "Destination ip address is mandatory")
+    @Size(max = 15)
+    @Pattern(regexp = Constants.IP_CIRD_REGX, message = "Destination ip address is invalid")
     private String dstIpAddress;
 }

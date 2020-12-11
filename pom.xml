@@ -274,6 +274,8 @@
         <consoleOutput>true</consoleOutput>
         <failOnViolation>true</failOnViolation>
         <violationSeverity>warning</violationSeverity>
+        <!-- excluding below classes due to variable naming appDNSRule, dSCP, tC and qCI, to avoid checkstyle build
+        failure-->
         <excludes>
           **/org/edgegallery/mecm/inventory/apihandler/dto/AppdRuleConfigDto.java,
           **/org/edgegallery/mecm/inventory/apihandler/dto/TrafficFilterDto.java,

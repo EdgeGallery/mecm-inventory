@@ -18,11 +18,14 @@ package org.edgegallery.mecm.inventory.apihandler.dto;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -36,26 +39,35 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 public class TrafficFilterDto {
 
-    // TODO: input validations
-    private Set<String> srcAddress = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.IP_CIRD_REGX) String> srcAddress = new LinkedHashSet<>();
 
-    private Set<String> srcPort = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.PORT_REGEX) String> srcPort = new LinkedHashSet<>();
 
-    private Set<String> dstAddress = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.IP_CIRD_REGX) String> dstAddress = new LinkedHashSet<>();
 
-    private Set<String> dstPort = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.PORT_REGEX) String> dstPort = new LinkedHashSet<>();
 
+    @Size(max = 64)
     private Set<String> protocol = new LinkedHashSet<>();
 
+    @Size(max = 16)
     private Set<String> tag = new LinkedHashSet<>();
 
-    private Set<String> srcTunnelAddress = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.IP_CIRD_REGX) String> srcTunnelAddress = new LinkedHashSet<>();
 
-    private Set<String> dstTunnelAddress = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.IP_CIRD_REGX) String> dstTunnelAddress = new LinkedHashSet<>();
 
-    private Set<String> srcTunnelPort = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.PORT_REGEX) String> srcTunnelPort = new LinkedHashSet<>();
 
-    private Set<String> dstTunnelPort = new LinkedHashSet<>();
+    @Size(max = 16)
+    private Set<@Pattern(regexp = Constants.PORT_REGEX) String> dstTunnelPort = new LinkedHashSet<>();
 
     private int qCI;
 

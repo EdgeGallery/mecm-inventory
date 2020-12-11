@@ -50,7 +50,7 @@ public final class AppTrafficRule implements BaseModel {
     private String filterType;
 
     @Column(name = "priority")
-    private int priority;
+    private Integer priority;
 
     @Column(name = "action")
     private String action;
