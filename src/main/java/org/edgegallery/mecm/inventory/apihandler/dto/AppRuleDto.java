@@ -38,6 +38,12 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 public final class AppRuleDto {
 
+    @NotEmpty(message = "apprule name is empty")
+    @Size(max = 128, message = "apprule name length exceeds max size")
+    @Pattern(regexp = Constants.NAME_REGEX, message = "apprule name is invalid. It must start and end with alpha "
+            + "numeric characters and special characters allowed are hyphen and underscore")
+    private String appRuleName;
+
     @NotEmpty(message = "apprule manager IP is empty")
     @Size(max = 15, message = "apprule manager IP length exceeds max size")
     @Pattern(regexp = Constants.IP_REGEX, message = "apprule manger is invalid")
