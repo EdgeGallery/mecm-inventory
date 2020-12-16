@@ -34,7 +34,6 @@ import org.edgegallery.mecm.inventory.model.TrafficFilter;
 import org.edgegallery.mecm.inventory.model.TunnelInfo;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
-import org.edgegallery.mecm.inventory.service.repository.AppDnsRuleRepository;
 import org.edgegallery.mecm.inventory.service.repository.AppTrafficRuleRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
