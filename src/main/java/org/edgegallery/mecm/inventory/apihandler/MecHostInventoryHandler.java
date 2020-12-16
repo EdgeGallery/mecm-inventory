@@ -380,7 +380,7 @@ public class MecHostInventoryHandler {
         MecApplication app = InventoryUtilities.getModelMapper().map(mecAppDto, MecApplication.class);
         app.setCapabilities(null);
 
-        if (mecAppDto.getCapabilities().size() > 0) {
+        if (!mecAppDto.getCapabilities().isEmpty()) {
             String capabilities = mecAppDto.getCapabilities().stream().map(Object::toString)
                     .collect(Collectors.joining(","));
             if (!capabilities.isEmpty()) {

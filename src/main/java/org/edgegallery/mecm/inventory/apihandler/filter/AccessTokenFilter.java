@@ -19,7 +19,6 @@ package org.edgegallery.mecm.inventory.apihandler.filter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +78,13 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             }
 
             String userIdFromRequest = getTenantId(request.getRequestURI());
+            if (userIdFromRequest == null || additionalInfoMap.get("userId") == null) {
+                LOGGER.error("Access token is invalid.");
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
+                return;
+            }
             String userIdFromToken = additionalInfoMap.get("userId").toString();
+
             if (!StringUtils.isEmpty(userIdFromRequest) && !userIdFromRequest.equals(userIdFromToken)) {
                 LOGGER.error("Illegal tenant ID");
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "Illegal tenant ID");

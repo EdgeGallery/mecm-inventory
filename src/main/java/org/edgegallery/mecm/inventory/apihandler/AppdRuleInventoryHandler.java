@@ -39,8 +39,6 @@ import org.edgegallery.mecm.inventory.service.repository.AppTrafficRuleRepositor
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -65,16 +63,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppdRuleInventoryHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppdRuleInventoryHandler.class);
-
     @Autowired
     private InventoryServiceImpl service;
 
     @Autowired
     private AppDRuleRepository repository;
-
-    @Autowired
-    private AppDnsRuleRepository dnsRuleRepository;
 
     @Autowired
     private AppTrafficRuleRepository trafficRuleRepository;
@@ -98,6 +91,17 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
             @Valid @ApiParam(value = "appD rule inventory information")
             @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
+        Status status = service.addRecord(getAppdRule(tenantId, appInstanceId, appDRuleConfigDto), repository);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    /**
+     * Converts appd rule config dto to appd rule config.
+     *
+     * @param appDRuleConfigDto appd rule config dto
+     * @return appd rule
+     */
+    private AppdRule getAppdRule(String tenantId, String appInstanceId, AppdRuleConfigDto appDRuleConfigDto) {
 
         AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleConfigDto, AppdRule.class);
         appDRule.setTenantId(tenantId);
@@ -136,8 +140,7 @@ public class AppdRuleInventoryHandler {
             }
         }
 
-        Status status = service.addRecord(appDRule, repository);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        return appDRule;
     }
 
     /**
@@ -159,44 +162,7 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
             @Valid @ApiParam(value = "appD rule inventory information")
             @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
-        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleConfigDto, AppdRule.class);
-        appDRule.setTenantId(tenantId);
-        appDRule.setAppInstanceId(appInstanceId);
-        appDRule.setAppdRuleId(tenantId + appInstanceId);
-
-        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDNSRule();
-        for (AppDnsRule dnsRule : dnsRuleSet) {
-            dnsRule.setAppDRule(appDRule);
-            dnsRule.setTenantId(tenantId);
-            dnsRule.setAppInstanceId(appInstanceId);
-        }
-
-        Set<AppTrafficRule> trafficRuleSet = appDRule.getAppTrafficRule();
-        for (AppTrafficRule trafficRule : trafficRuleSet) {
-            trafficRule.setAppDRule(appDRule);
-            trafficRule.setTenantId(tenantId);
-            trafficRule.setAppInstanceId(appInstanceId);
-            Set<TrafficFilter> trafficFilterSet = trafficRule.getTrafficFilter();
-            for (TrafficFilter trafficFilter : trafficFilterSet) {
-                trafficFilter.setTrafficFilterId(UUID.randomUUID().toString());
-                trafficFilter.setTenantId(tenantId);
-                trafficFilter.setTrafficRule(trafficRule);
-            }
-
-            Set<DstInterface> dstInterfaceSet = trafficRule.getDstInterface();
-            for (DstInterface dstInterface : dstInterfaceSet) {
-                dstInterface.setDstInterfaceId(UUID.randomUUID().toString());
-                dstInterface.setTenantId(tenantId);
-                dstInterface.setTrafficRule(trafficRule);
-                TunnelInfo tunnelInfo = dstInterface.getTunnelInfo();
-                if (tunnelInfo != null) {
-                    tunnelInfo.setTenantId(tenantId);
-                    tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
-                }
-            }
-        }
-
-        Status status = service.updateRecord(appDRule, repository);
+        Status status = service.updateRecord(getAppdRule(tenantId, appInstanceId, appDRuleConfigDto), repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
