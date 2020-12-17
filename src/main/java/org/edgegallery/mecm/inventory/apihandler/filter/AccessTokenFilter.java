@@ -54,45 +54,49 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         // Skip token check for health check URI
-        if (request.getRequestURI() == null || !request.getRequestURI().equals(HEALTH_URI)) {
-            String accessTokenStr = request.getHeader("access_token");
-            if (StringUtils.isEmpty(accessTokenStr)) {
-                LOGGER.error("Access token is empty.");
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Access token is empty");
-                return;
-            }
-
-            OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(accessTokenStr);
-            if (accessToken == null || accessToken.isExpired()) {
-                LOGGER.error("Access token has expired.");
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
-                return;
-            }
-
-            Map<String, Object> additionalInfoMap = accessToken.getAdditionalInformation();
-            OAuth2Authentication auth = jwtTokenStore.readAuthentication(accessToken);
-            if (additionalInfoMap == null || auth == null) {
-                LOGGER.error("Access token is invalid.");
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
-                return;
-            }
-
-            String userIdFromRequest = getTenantId(request.getRequestURI());
-            if (userIdFromRequest == null || additionalInfoMap.get("userId") == null) {
-                LOGGER.error("Access token is invalid.");
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
-                return;
-            }
-            String userIdFromToken = additionalInfoMap.get("userId").toString();
-
-            if (!StringUtils.isEmpty(userIdFromRequest) && !userIdFromRequest.equals(userIdFromToken)) {
-                LOGGER.error("Illegal tenant ID");
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Illegal tenant ID");
-                return;
-            }
-
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        if (request.getRequestURI() != null && request.getRequestURI().equals(HEALTH_URI)) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        String accessTokenStr = request.getHeader("access_token");
+        if (StringUtils.isEmpty(accessTokenStr)) {
+            LOGGER.error("Access token is empty.");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Access token is empty");
+            return;
+        }
+
+        OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(accessTokenStr);
+        if (accessToken == null || accessToken.isExpired()) {
+            LOGGER.error("Access token has expired.");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
+            return;
+        }
+
+        Map<String, Object> additionalInfoMap = accessToken.getAdditionalInformation();
+        OAuth2Authentication auth = jwtTokenStore.readAuthentication(accessToken);
+        if (additionalInfoMap == null || auth == null) {
+            LOGGER.error("Access token is invalid.");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
+            return;
+        }
+
+        String userIdFromRequest = getTenantId(request.getRequestURI());
+        if (userIdFromRequest == null || additionalInfoMap.get("userId") == null) {
+            LOGGER.error("Access token is invalid.");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
+            return;
+        }
+        String userIdFromToken = additionalInfoMap.get("userId").toString();
+
+        if (!StringUtils.isEmpty(userIdFromRequest) && !userIdFromRequest.equals(userIdFromToken)) {
+            LOGGER.error("Illegal tenant ID");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Illegal tenant ID");
+            return;
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         filterChain.doFilter(request, response);
     }
 
