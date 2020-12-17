@@ -147,72 +147,72 @@ class TenantServiceImpl implements TenantService {
             case APP_LCM:
                 if (isNotOverflow(t.getAppLcms(), 1)) {
                     t.setAppLcms(t.getAppLcms() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case APP_RULE_MANAGER:
                 if (isNotOverflow(t.getAppRuleManagers(), 1)) {
                     t.setAppRuleManagers(t.getAppRuleManagers() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case APP_STORE:
                 if (isNotOverflow(t.getAppStores(), 1)) {
                     t.setAppStores(t.getAppStores() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case MEC_HOST:
                 if (isNotOverflow(t.getMecHosts(), 1)) {
                     t.setMecHosts(t.getMecHosts() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case MEC_HW_CAPABILITY:
                 if (isNotOverflow(t.getMecHwCapabilities(), 1)) {
                     t.setMecHwCapabilities(t.getMecHwCapabilities() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case MEC_APPLICATION:
                 if (isNotOverflow(t.getMecApplications(), 1)) {
                     t.setMecApplications(t.getMecApplications() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case DNS_RULE:
                 if (isNotOverflow(t.getAppDnsRules(), 1)) {
                     t.setAppDnsRules(t.getAppDnsRules() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case TRAFFIC_RULE:
                 if (isNotOverflow(t.getAppTrafficRules(), 1)) {
                     t.setAppTrafficRules(t.getAppTrafficRules() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case APPD_RULE:
                 if (isNotOverflow(t.getAppdRules(), 1)) {
                     t.setAppdRules(t.getAppdRules() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             case TRAFFIC_FILTER:
                 if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
                     t.setAppTrafficFilterRules(t.getAppTrafficFilterRules() + 1);
-                } else {
-                    LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             default:
                 LOGGER.error(Constants.INVALID_MODEL_TYPE);
@@ -229,72 +229,72 @@ class TenantServiceImpl implements TenantService {
             case APP_LCM:
                 if (isNotUnderflow(t.getAppLcms(), 1)) {
                     t.setAppLcms(t.getAppLcms() - 1);
-                } else {
-                    LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case APP_RULE_MANAGER:
                 if (isNotUnderflow(t.getAppRuleManagers(), 1)) {
                     t.setAppRuleManagers(t.getAppRuleManagers() - 1);
-                } else {
-                    LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case APP_STORE:
                 if (isNotUnderflow(t.getAppStores(), 1)) {
                     t.setAppStores(t.getAppStores() - 1);
-                } else {
-                    LOGGER.error("{} for appstore count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for appstore count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case MEC_HOST:
                 if (isNotUnderflow(t.getMecHosts(), 1)) {
                     t.setMecHosts(t.getMecHosts() - 1);
-                } else {
-                    LOGGER.error("{} for mechost count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for mechost count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case MEC_HW_CAPABILITY:
                 if (isNotUnderflow(t.getMecHwCapabilities(), 1)) {
                     t.setMecHwCapabilities(t.getMecHwCapabilities() - 1);
-                } else {
-                    LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case MEC_APPLICATION:
                 if (isNotUnderflow(t.getMecApplications(), 1)) {
                     t.setMecApplications(t.getMecApplications() - 1);
-                } else {
-                    LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case DNS_RULE:
                 if (isNotOverflow(t.getAppDnsRules(), 1)) {
                     t.setAppDnsRules(t.getAppDnsRules() - 1);
-                } else {
-                    LOGGER.error("{} for dns rule count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for dns rule count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case TRAFFIC_RULE:
                 if (isNotOverflow(t.getAppTrafficRules(), 1)) {
                     t.setAppTrafficRules(t.getAppTrafficRules() - 1);
-                } else {
-                    LOGGER.error("{} for traffic rule count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for traffic rule count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case APPD_RULE:
                 if (isNotOverflow(t.getAppdRules(), 1)) {
                     t.setAppdRules(t.getAppdRules() - 1);
-                } else {
-                    LOGGER.error("{} for appd rule count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for appd rule count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case TRAFFIC_FILTER:
                 if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
                     t.setAppTrafficFilterRules(t.getAppTrafficFilterRules() - 1);
-                } else {
-                    LOGGER.error("{} for traffic filter count", Constants.VAR_UNDERFLOW_ERROR);
+                    break;
                 }
+                LOGGER.error("{} for traffic filter count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             default:
                 LOGGER.error(Constants.INVALID_MODEL_TYPE);
