@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -94,6 +95,20 @@ public class InventoryExceptionHandler {
                 "No such element", Collections.singletonList(ex.getMessage()));
         LOGGER.info("No such element error: {}", response);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Returns error when access is denied.
+     *
+     * @param ex exception while processing request
+     * @return response entity with error code and message
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<InventoryExceptionResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
+                "Forbidden", Collections.singletonList("User is not authorized to perform this operation"));
+        LOGGER.info("User is not authorized to perform this operation", response);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     /**
