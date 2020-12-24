@@ -25,7 +25,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppStoreDto;
-import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
 import org.edgegallery.mecm.inventory.model.AppStore;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppStoreRepository;
@@ -144,7 +143,7 @@ public class AppStoreInventoryHandler {
      * @param appStoreIp application store IP
      * @return application store record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves application store record", response = MecHostDto.class)
+    @ApiOperation(value = "Retrieves application store record", response = AppStoreDto.class)
     @GetMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppStoreDto> getAppStoreRecord(
