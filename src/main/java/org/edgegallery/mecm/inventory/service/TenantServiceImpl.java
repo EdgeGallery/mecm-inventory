@@ -186,30 +186,9 @@ class TenantServiceImpl implements TenantService {
                 }
                 LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
-            case DNS_RULE:
-                if (isNotOverflow(t.getAppDnsRules(), 1)) {
-                    t.setAppDnsRules(t.getAppDnsRules() + 1);
-                    break;
-                }
-                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
-                break;
-            case TRAFFIC_RULE:
-                if (isNotOverflow(t.getAppTrafficRules(), 1)) {
-                    t.setAppTrafficRules(t.getAppTrafficRules() + 1);
-                    break;
-                }
-                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
-                break;
             case APPD_RULE:
                 if (isNotOverflow(t.getAppdRules(), 1)) {
                     t.setAppdRules(t.getAppdRules() + 1);
-                    break;
-                }
-                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
-                break;
-            case TRAFFIC_FILTER:
-                if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
-                    t.setAppTrafficFilterRules(t.getAppTrafficFilterRules() + 1);
                     break;
                 }
                 LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
@@ -268,33 +247,12 @@ class TenantServiceImpl implements TenantService {
                 }
                 LOGGER.error("{} for mec hardware capability count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
-            case DNS_RULE:
-                if (isNotOverflow(t.getAppDnsRules(), 1)) {
-                    t.setAppDnsRules(t.getAppDnsRules() - 1);
-                    break;
-                }
-                LOGGER.error("{} for dns rule count", Constants.VAR_UNDERFLOW_ERROR);
-                break;
-            case TRAFFIC_RULE:
-                if (isNotOverflow(t.getAppTrafficRules(), 1)) {
-                    t.setAppTrafficRules(t.getAppTrafficRules() - 1);
-                    break;
-                }
-                LOGGER.error("{} for traffic rule count", Constants.VAR_UNDERFLOW_ERROR);
-                break;
             case APPD_RULE:
                 if (isNotOverflow(t.getAppdRules(), 1)) {
                     t.setAppdRules(t.getAppdRules() - 1);
                     break;
                 }
                 LOGGER.error("{} for appd rule count", Constants.VAR_UNDERFLOW_ERROR);
-                break;
-            case TRAFFIC_FILTER:
-                if (isNotOverflow(t.getAppTrafficFilterRules(), 1)) {
-                    t.setAppTrafficFilterRules(t.getAppTrafficFilterRules() - 1);
-                    break;
-                }
-                LOGGER.error("{} for traffic filter count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             default:
                 LOGGER.error(Constants.INVALID_MODEL_TYPE);
