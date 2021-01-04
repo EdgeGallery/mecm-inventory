@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.utils.Constants;
-import org.edgegallery.mecm.inventory.utils.Enums;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -50,7 +49,7 @@ public class DnsRuleDto {
     private String domainName;
 
     @NotNull(message = "ip address type is mandatory")
-    private Enums.DnsRuleIpAddressType ipAddressType;
+    private DnsRuleIpAddressType ipAddressType;
 
     @NotEmpty(message = "IP address is mandatory")
     @Size(max = 18)
@@ -59,4 +58,9 @@ public class DnsRuleDto {
 
     @Min(1)
     private int ttl;
+
+    public enum DnsRuleIpAddressType {
+        IP_V4,
+        IP_V6
+    }
 }
