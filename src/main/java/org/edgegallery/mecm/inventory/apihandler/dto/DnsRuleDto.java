@@ -16,7 +16,9 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.edgegallery.mecm.inventory.utils.Constants;
+import org.edgegallery.mecm.inventory.utils.Enums;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -46,14 +49,14 @@ public class DnsRuleDto {
     @NotEmpty(message = "Domain name is mandatory")
     private String domainName;
 
-    @Size(max = 8)
-    @NotEmpty(message = "ip address is mandatory")
-    private String ipAddressType;
+    @NotNull(message = "ip address type is mandatory")
+    private Enums.DnsRuleIpAddressType ipAddressType;
 
     @NotEmpty(message = "IP address is mandatory")
     @Size(max = 18)
     @Pattern(regexp = Constants.IP_CIRD_REGX, message = "IP address is invalid")
     private String ipAddress;
 
+    @Min(1)
     private int ttl;
 }

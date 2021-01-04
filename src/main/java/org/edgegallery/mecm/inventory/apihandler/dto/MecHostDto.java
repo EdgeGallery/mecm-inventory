@@ -16,8 +16,8 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -111,5 +111,5 @@ public final class MecHostDto {
     private String coordinates;
 
     @Size(max = 10)
-    private List<@Valid MecHwCapabilityDto> hwcapabilities = new LinkedList<>();
+    private Set<@Valid MecHwCapabilityDto> hwcapabilities = new LinkedHashSet<>();
 }
