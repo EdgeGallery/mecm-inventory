@@ -44,7 +44,7 @@ public final class MecApplication implements BaseModel {
     private String appInstanceId;
 
     @Column(name = "capabilities")
-    public String capabilities;
+    private String capabilities;
 
     @Column(name = "app_name")
     private String appName;
