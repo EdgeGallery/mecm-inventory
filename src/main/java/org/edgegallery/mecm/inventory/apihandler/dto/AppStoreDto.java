@@ -16,11 +16,6 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
-import static org.edgegallery.mecm.inventory.utils.Constants.IP_REGEX;
-import static org.edgegallery.mecm.inventory.utils.Constants.NAME_REGEX;
-import static org.edgegallery.mecm.inventory.utils.Constants.PORT_REGEX;
-import static org.edgegallery.mecm.inventory.utils.Constants.URI_REGEX;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -29,6 +24,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -44,31 +40,40 @@ public final class AppStoreDto {
 
     @NotEmpty(message = "appstore IP is empty")
     @Size(max = 15, message = "appstore IP length exceeds max size")
-    @Pattern(regexp = IP_REGEX, message = "appstore IP is invalid")
+    @Pattern(regexp = Constants.IP_REGEX, message = "appstore IP is invalid")
     private String appstoreIp;
 
     @NotEmpty(message = "appstore port is empty")
     @Size(max = 5, message = "appstore port length exceeds max size")
-    @Pattern(regexp = PORT_REGEX, message = "appstore port is invalid")
+    @Pattern(regexp = Constants.PORT_REGEX, message = "appstore port is invalid")
     private String appstorePort;
 
-    @NotEmpty(message = "appstore URI is empty")
-    @Size(max = 128, message = "appstore URI length exceeds max size")
-    @Pattern(regexp = URI_REGEX, message = "appstore URI is invalid")
-    private String uri;
-
-    @Size(max = 128, message = "appstore username length exceeds max size")
-    @Pattern(regexp = NAME_REGEX, message = "appstore username is invalid. It must start and end with "
-            + "alpha numeric character and special characters allowed are hyphen and underscore")
-    private String userName;
-
     @Size(max = 128, message = "appstore name length exceeds max size")
-    @Pattern(regexp = NAME_REGEX, message = "appstore name is invalid. It must start and end with alpha "
+    @Pattern(regexp = Constants.NAME_REGEX, message = "appstore name is invalid. It must start and end with alpha "
             + "numeric character and special characters allowed are hyphen and underscore")
     private String appstoreName;
 
+    @Size(max = 128, message = "appstore repo name length exceeds max size")
+    @Pattern(regexp = Constants.NAME_REGEX, message = "appstore repo name is invalid. It must start and end with alpha "
+            + "numeric character and special characters allowed are hyphen and underscore")
+    private String appstoreRepoName;
+
+    @NotEmpty(message = "appstore repo URI is empty")
+    @Size(max = 128, message = "appstore repo URI length exceeds max size")
+    @Pattern(regexp = Constants.URI_REGEX, message = "appstore repo URI is invalid")
+    private String appstoreRepo;
+
+    @Size(max = 128, message = "appstore username length exceeds max size")
+    @Pattern(regexp = Constants.NAME_REGEX, message = "appstore username is invalid. It must start and end with "
+            + "alpha numeric character and special characters allowed are hyphen and underscore")
+    private String appstoreRepoUserName;
+
+    @Size(max = 128, message = "appstore password length exceeds max size")
+    @Pattern(regexp = Constants.PASSWORD_REGEX, message = "appstore password is invalid.")
+    private String appstoreRepoPassword;
+
     @Size(max = 128, message = "appstore producer length exceeds max size")
-    @Pattern(regexp = NAME_REGEX, message = "appstore producer is invalid. It must start and end with "
+    @Pattern(regexp = Constants.NAME_REGEX, message = "appstore producer is invalid. It must start and end with "
             + "alpha numeric character and special characters allowed are hyphen and underscore")
     private String producer;
 }

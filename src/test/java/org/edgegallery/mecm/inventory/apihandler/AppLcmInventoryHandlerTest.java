@@ -120,7 +120,8 @@ public class AppLcmInventoryHandlerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
-        Assert.assertEquals("[{\"applcmName\":\"applcm123\",\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10001\",\"userName\":\"Test\"}]",
+        Assert.assertEquals(
+                "[{\"applcmName\":\"applcm123\",\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10001\",\"userName\":\"Test\"}]",
                 getAllResponse);
 
         // Test Delete all records

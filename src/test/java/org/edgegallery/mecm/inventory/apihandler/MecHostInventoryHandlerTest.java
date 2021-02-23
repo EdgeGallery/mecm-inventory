@@ -41,7 +41,7 @@ public class MecHostInventoryHandlerTest {
     MockMvc mvc;
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
     public void validateMecHostInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -50,8 +50,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
-                                + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                        .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                                 + "\"affinity\":\"part1,part2\", \"appRuleIp\": \"1.1.1.1\","
                                 + " \"coordinates\": \"1,1\"}"));
@@ -75,8 +74,7 @@ public class MecHostInventoryHandlerTest {
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"edgerepoName\":null,"
-                        + "\"edgerepoIp\":\"1.1.1.1\",\"edgerepoPort\":\"10000\",\"edgerepoUsername\":null,"
+                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,"
                         + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
                         + "\"hwcapabilities\":[]}", getByIdResponse);
 
@@ -94,7 +92,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
     public void validateMecHostInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -102,8 +100,7 @@ public class MecHostInventoryHandlerTest {
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
-                        + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\","
                         + "  \"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}"));
 
@@ -112,8 +109,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.2\", "
-                                + "\"edgerepoPort\": \"10001\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                        .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", \"appRuleIp\": \"1.1.1"
                                 + ".1\",\"coordinates\":\"1,1\"}"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
@@ -134,9 +130,9 @@ public class MecHostInventoryHandlerTest {
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"edgerepoName\":null,"
-                        + "\"edgerepoIp\":\"1.1.1.2\",\"edgerepoPort\":\"10001\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]", getAllResponse);
+                        + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]",
+                getAllResponse);
 
         // Test Delete all records
         ResultActions deleteAllresult =
@@ -152,7 +148,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
     public void validateMecHostHardwareCapabilityInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -161,13 +157,11 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
-                                + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                        .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                                 + "\"affinity\":\"part1,part2\",\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\", "
                                 + "\"hwcapabilities\":[{\"hwType\": \"GPU1\","
                                 + "\"hwVendor\": \"testvendor1\",\"hwModel\": \"testmodel1\"}]}"));
-
 
         MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -188,8 +182,7 @@ public class MecHostInventoryHandlerTest {
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"edgerepoName\":null,"
-                        + "\"edgerepoIp\":\"1.1.1.1\",\"edgerepoPort\":\"10000\",\"edgerepoUsername\":null,"
+                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,"
                         + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
                         + "\"hwcapabilities\":[{\"hwType\":\"GPU1\","
                         + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}]}", getByIdResponse);
@@ -208,7 +201,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
     public void validateMecHostHardwareCapabilityInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -216,8 +209,7 @@ public class MecHostInventoryHandlerTest {
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
-                        + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                         + "\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\","
                         + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}]}"));
@@ -227,8 +219,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.2\", "
-                                + "\"edgerepoPort\": \"10001\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                        .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"appRuleIp\": \"1.1.1.1\","
                                 + "\"coordinates\":\"1,1\",\"hwcapabilities\":[]}"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
@@ -249,9 +240,9 @@ public class MecHostInventoryHandlerTest {
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"edgerepoName\":null,"
-                        + "\"edgerepoIp\":\"1.1.1.2\",\"edgerepoPort\":\"10001\",\"edgerepoUsername\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]", getAllResponse);
+                        + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]",
+                getAllResponse);
 
         // Test Delete all records
         ResultActions deleteAllresult =
@@ -267,7 +258,7 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT","MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
     public void validateMecApplicationInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b31";
         String hostIp = "1.1.1.1";
@@ -277,8 +268,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
-                                + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                        .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                                 + "\"appRuleIp\": \"1.1.1.1\", \"affinity\":\"part1,part2\",\"coordinates\":\"1,1\","
                                 + "\"hwcapabilities\":[{\"hwType\": \"GPU1\",\"hwVendor\": \"testvendor1\",\"hwModel\": \"testmodel1\"}]}"));

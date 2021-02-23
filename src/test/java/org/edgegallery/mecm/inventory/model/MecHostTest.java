@@ -32,10 +32,6 @@ public class MecHostTest {
         mecHost.setAffinity("affinity");
         mecHost.setApplcmIp("AppLcmIp");
         mecHost.setCity("city");
-        mecHost.setEdgerepoName("edgerepoName");
-        mecHost.setEdgerepoIp("edgeRepoIp");
-        mecHost.setEdgerepoPort("edgerepoPort");
-        mecHost.setEdgerepoUsername("edgerepoUsername");
         mecHost.setMechostId("mechostId");
         mecHost.setMechostIp("mecHostIp");
         mecHost.setMechostName("mecHostName");
@@ -50,10 +46,6 @@ public class MecHostTest {
         assertEquals("affinity", mecHost.getAffinity());
         assertEquals("AppLcmIp", mecHost.getApplcmIp());
         assertEquals("city", mecHost.getCity());
-        assertEquals("edgerepoName", mecHost.getEdgerepoName());
-        assertEquals("edgeRepoIp", mecHost.getEdgerepoIp());
-        assertEquals("edgerepoPort", mecHost.getEdgerepoPort());
-        assertEquals("edgerepoUsername", mecHost.getEdgerepoUsername());
         assertEquals("mechostId", mecHost.getMechostId());
         assertEquals("mecHostIp", mecHost.getMechostIp());
         assertEquals("mecHostName", mecHost.getMechostName());

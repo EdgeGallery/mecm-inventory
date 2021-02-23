@@ -44,26 +44,32 @@ public final class AppStore implements BaseModel {
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "created_time")
-    private LocalDateTime createTime;
-
     @Column(name = "appstore_ip")
     private String appstoreIp;
 
     @Column(name = "appstore_port")
     private String appstorePort;
 
-    @Column(name = "uri")
-    private String uri;
-
-    @Column(name = "user_name")
-    private String userName;
-
     @Column(name = "appstore_name")
     private String appstoreName;
 
+    @Column(name = "appstore_reponame")
+    private String appstoreRepoName;
+
+    @Column(name = "appstore_repo")
+    private String appstoreRepo;
+
+    @Column(name = "appstore_repousername")
+    private String appstoreRepoUserName;
+
+    @Column(name = "appstore_repopassword")
+    private String appstoreRepoPassword;
+
     @Column(name = "producer")
     private String producer;
+
+    @Column(name = "created_time")
+    private LocalDateTime createTime;
 
     @Override
     public String getIdentifier() {

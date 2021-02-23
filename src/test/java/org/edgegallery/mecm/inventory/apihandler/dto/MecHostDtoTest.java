@@ -36,9 +36,6 @@ public class MecHostDtoTest {
         mecHostDto.setAffinity("affinity");
         mecHostDto.setApplcmIp("AppLcmIp");
         mecHostDto.setCity("city");
-        mecHostDto.setEdgerepoName("edgerepoName");
-        mecHostDto.setEdgerepoPort("edgerepoPort");
-        mecHostDto.setUserName("UserName");
         mecHostDto.setZipCode("ZipCode");
     }
 
@@ -48,9 +45,6 @@ public class MecHostDtoTest {
         Assert.assertEquals("affinity", mecHostDto.getAffinity());
         Assert.assertEquals("AppLcmIp", mecHostDto.getApplcmIp());
         Assert.assertEquals("city", mecHostDto.getCity());
-        Assert.assertEquals("edgerepoName", mecHostDto.getEdgerepoName());
-        Assert.assertEquals("edgerepoPort", mecHostDto.getEdgerepoPort());
-        Assert.assertEquals("UserName", mecHostDto.getUserName());
         Assert.assertEquals("ZipCode", mecHostDto.getZipCode());
     }
 }
