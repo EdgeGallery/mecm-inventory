@@ -88,8 +88,7 @@ public class AppRepoInventoryHandler {
             try {
                 srcRepo = repo.split("\\s+");
                 if (srcRepo.length < 3) {
-                    LOGGER.info("invalid source repo input format... it should be {}",
-                            "repo=<ip>:<port> user=<> passwd=<>|repo=<ip>:<port>  user=<>  passwd=<>");
+                    LOGGER.info("invalid source repo input format");
                     continue;
                 }
                 appRepo = new AppRepo();
