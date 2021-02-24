@@ -70,6 +70,9 @@ public final class Tenant implements BaseModel {
     @Column(name = "trafficfilter_count")
     private int appTrafficFilterRules;
 
+    @Column(name = "apprepo_count")
+    private int appRepo;
+
     @Override
     public String getIdentifier() {
         // Return identifier

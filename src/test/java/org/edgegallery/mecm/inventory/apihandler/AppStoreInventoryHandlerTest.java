@@ -50,8 +50,11 @@ public class AppStoreInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstorePort\": \"10000\", \"uri\": "
-                                + "\"/test/resource\", \"appstoreName\": \"TestStore\", \"producer\": "
+                        .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4443\", "
+                                + "\"appstorePort\": \"10000\", "
+                                + "\"appstoreRepoUserName\": "
+                                + "\"repouserName\", \"appstoreRepoPassword\": \"RepoPassowrd@123\", \"appstoreName\": "
+                                + "\"TestStore\", \"producer\": "
                                 + "\"TestProducer\" }"));
 
         MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
@@ -72,8 +75,7 @@ public class AppStoreInventoryHandlerTest {
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"uri\":\"/test/resource\","
-                        + "\"userName\":null,\"appstoreName\":\"TestStore\",\"producer\":\"TestProducer\"}",
+                "{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"appstoreName\":\"TestStore\",\"appstoreRepoName\":null,\"appstoreRepo\":\"127.0.0.1:4443\",\"appstoreRepoUserName\":\"repouserName\",\"appstoreRepoPassword\":\"RepoPassowrd@123\",\"producer\":\"TestProducer\"}",
                 getByIdResponse);
 
         // Test AppStore record delete by AppStore ID
@@ -98,17 +100,25 @@ public class AppStoreInventoryHandlerTest {
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/appstores")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstorePort\": \"10000\", \"uri\": "
-                        + "\"/test/resource\", \"appstoreName\": \"TestStore\", \"producer\": "
+                .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4443\", \"appstorePort\": "
+                        + "\"10000\", "
+                        + "\"appstoreRepoUserName\": "
+                        + "\"repouserName\", \"appstoreRepoPassword\": \"RepoPassowrd@123\", \"appstoreName\": "
+                        + "\"TestStore\", \"producer\": "
                         + "\"TestProducer\" }"));
 
+        Thread.sleep(5000);
         // Update record
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstorePort\": \"10001\", \"uri\": "
-                                + "\"/test/resource\", \"appstoreName\": \"TestStore1\", \"producer\": "
+                        .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4453\", "
+                                + "\"appstorePort\": \"10000\", "
+                                + "\"appstoreRepoUserName\": "
+                                + "\"repouserName\", \"appstoreRepoPassword\": \"RepoPassowrd@123\", "
+                                + "\"appstoreName\": "
+                                + "\"TestStore\", \"producer\": "
                                 + "\"TestProducer\" }"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -127,8 +137,7 @@ public class AppStoreInventoryHandlerTest {
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "[{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10001\",\"uri\":\"/test/resource\","
-                        + "\"userName\":null,\"appstoreName\":\"TestStore1\",\"producer\":\"TestProducer\"}]",
+                "[{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"appstoreName\":\"TestStore\",\"appstoreRepoName\":null,\"appstoreRepo\":\"127.0.0.1:4453\",\"appstoreRepoUserName\":\"repouserName\",\"appstoreRepoPassword\":\"RepoPassowrd@123\",\"producer\":\"TestProducer\"}]",
                 getAllResponse);
 
         // Test Delete all records

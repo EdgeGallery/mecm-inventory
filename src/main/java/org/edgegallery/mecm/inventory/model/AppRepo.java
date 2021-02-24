@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Huawei Technologies Co., Ltd.
+ *  Copyright 2021 Huawei Technologies Co., Ltd.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.edgegallery.mecm.inventory.model;
 
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,53 +26,38 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * App store Inventory schema.
+ * MEC host Inventory schema.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "appstoreinventory")
-public final class AppStore implements BaseModel {
+@Table(name = "apprepoinventory")
+public final class AppRepo implements BaseModel {
 
     @Id
-    @Column(name = "appstore_id")
-    private String appstoreId;
+    @Column(name = "repo_id")
+    private String repoId;
+
+    @Column(name = "repo_name")
+    private String repoName;
 
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "appstore_ip")
-    private String appstoreIp;
+    @Column(name = "repo_endpoint")
+    private String repoEndPoint;
 
-    @Column(name = "appstore_port")
-    private String appstorePort;
+    @Column(name = "repo_username")
+    private String repoUserName;
 
-    @Column(name = "appstore_name")
-    private String appstoreName;
-
-    @Column(name = "appstore_reponame")
-    private String appstoreRepoName;
-
-    @Column(name = "appstore_repo")
-    private String appstoreRepo;
-
-    @Column(name = "appstore_repousername")
-    private String appstoreRepoUserName;
-
-    @Column(name = "appstore_repopassword")
-    private String appstoreRepoPassword;
-
-    @Column(name = "producer")
-    private String producer;
-
-    @Column(name = "created_time")
-    private LocalDateTime createTime;
+    @Column(name = "repo_password")
+    private String repoPassword;
 
     @Override
     public String getIdentifier() {
-        return appstoreId;
+        return repoId;
     }
 
     @Override
@@ -83,6 +67,6 @@ public final class AppStore implements BaseModel {
 
     @Override
     public ModelType getType() {
-        return ModelType.APP_STORE;
+        return ModelType.APP_REPO;
     }
 }

@@ -37,6 +37,8 @@ public final class Constants {
     public static final String APP_NAME_REGEX = "^[a-zA-Z0-9]*$|^[a-zA-Z0-9][a-zA-Z0-9_\\-]*[a-zA-Z0-9]$";
     public static final String APP_PKG_ID_REGEX = "[0-9a-f]{32}";
     public static final String NAME_REGEX = "^[\\d\\p{L}]*$|^[\\d\\p{L}][\\d\\p{L}_\\-]*[\\d\\p{L}]$";
+    public static final String PASSWORD_REGEX =
+            "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[~!@#$%^&*()_+\\-={}:\";<>?,./]).{6,18}$";
     public static final String CITY_REGEX = "^[\\d\\p{L}]*$|^[\\d\\p{L}][\\d\\p{L}\\/\\s]*[\\d\\p{L}]$";
     public static final String AFFINITY_REGEX = "^[\\d\\p{L}]*$|^[\\d\\p{L}][\\d\\p{L}_\\-\\,]*[\\d\\p{L}]$";
     public static final String APP_STATUS_REGEX = "^[a-zA-Z0-9_ ]*$";
@@ -52,6 +54,7 @@ public final class Constants {
     public static final String APPLCM_URI = "/lcmcontroller/v1/configuration";
     public static final String RECORD_NOT_FOUND_ERROR = "Record not found";
 
+    public static final String ADMIN_USER = "admin";
     // Below values can be taken from config file later.
     public static final int MAX_ENTRY_PER_TENANT_PER_MODEL = 50;
     public static final int MAX_TENANTS = 20;

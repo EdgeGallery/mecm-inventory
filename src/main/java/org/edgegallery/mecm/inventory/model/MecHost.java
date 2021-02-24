@@ -72,18 +72,6 @@ public final class MecHost implements BaseModel {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "edge_name")
-    private String edgerepoName;
-
-    @Column(name = "edgerepo_ip")
-    private String edgerepoIp;
-
-    @Column(name = "edgerepo_port")
-    private String edgerepoPort;
-
-    @Column(name = "edgerepo_username")
-    private String edgerepoUsername;
-
     @Column(name = "applcm_ip")
     private String applcmIp;
 

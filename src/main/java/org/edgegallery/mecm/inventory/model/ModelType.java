@@ -32,5 +32,6 @@ public enum ModelType {
     TRAFFIC_FILTER,
     APPD_RULE,
     DST_INTERFACE,
-    TUNNEL_INFO
+    TUNNEL_INFO,
+    APP_REPO
 }

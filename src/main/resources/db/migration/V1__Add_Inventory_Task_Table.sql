@@ -25,16 +25,28 @@
 
     create table appstoreinventory (
         appstore_id varchar(255) not null,
+        tenant_id varchar(200) not null,
         appstore_ip varchar(255) not null,
         appstore_port varchar(255) not null,
-        uri varchar(255) not null,
-        tenant_id varchar(200) not null,
-        user_name varchar(255),
         appstore_name varchar(255),
+        appstore_reponame varchar(255),
+        appstore_repo varchar(255),
+        appstore_repousername varchar(255) not null,
+        appstore_repopassword varchar(255) not null,
         producer varchar(255),
         created_time varchar(200),
         modified_time varchar(200),
         primary key (appstore_id)
+    );
+
+    create table apprepoinventory (
+        repo_id varchar(255) not null,
+        tenant_id varchar(255),
+        repo_name varchar(255),
+        repo_endpoint varchar(255) not null,
+        repo_username varchar(255) not null,
+        repo_password varchar(255) not null,
+        primary key (repo_id)
     );
 
     create table mechostinventory (
@@ -49,10 +61,6 @@
         address varchar(255) not null,
         affinity varchar(255),
         user_name varchar(255),
-        edge_name varchar(255),
-        edgerepo_ip varchar(255),
-        edgerepo_port varchar(255),
-        edgerepo_username varchar(255),
         config_upload_status varchar(255),
         coordinates varchar(128),
         -- config_file_path varchar(2000),
@@ -102,6 +110,7 @@
         appdnsrule_count int,
         apptrafficrule_count int,
         trafficfilter_count int,
+        apprepo_count int,
         primary key (tenant_id)
     );
 

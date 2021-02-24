@@ -136,6 +136,9 @@ class TenantServiceImpl implements TenantService {
             case TRAFFIC_FILTER:
                 ot.setAppTrafficFilterRules(0);
                 break;
+            case APP_REPO:
+                ot.setAppRepo(0);
+                break;
             default:
                 LOGGER.error(Constants.INVALID_MODEL_TYPE);
                 throw new InventoryException(Constants.INVALID_MODEL_TYPE);
@@ -189,6 +192,13 @@ class TenantServiceImpl implements TenantService {
             case APPD_RULE:
                 if (isNotOverflow(t.getAppdRules(), 1)) {
                     t.setAppdRules(t.getAppdRules() + 1);
+                    break;
+                }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
+                break;
+            case APP_REPO:
+                if (isNotOverflow(t.getAppRepo(), 1)) {
+                    t.setAppRepo(t.getAppRepo() + 1);
                     break;
                 }
                 LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
@@ -253,6 +263,13 @@ class TenantServiceImpl implements TenantService {
                     break;
                 }
                 LOGGER.error("{} for appd rule count", Constants.VAR_UNDERFLOW_ERROR);
+                break;
+            case APP_REPO:
+                if (isNotOverflow(t.getAppRepo(), 1)) {
+                    t.setAppRepo(t.getAppRepo() + 1);
+                    break;
+                }
+                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
                 break;
             default:
                 LOGGER.error(Constants.INVALID_MODEL_TYPE);

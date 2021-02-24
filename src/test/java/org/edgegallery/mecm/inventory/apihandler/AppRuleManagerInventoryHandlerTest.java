@@ -50,7 +50,8 @@ public class AppRuleManagerInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/apprulemanagers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("{\"appRuleName\": \"rule1\", \"appRuleIp\": \"1.1.1.1\", \"appRulePort\": \"10000\", \"userName\": \"Test\" }"));
+                        .content(
+                                "{\"appRuleName\": \"rule1\", \"appRuleIp\": \"1.1.1.1\", \"appRulePort\": \"10000\", \"userName\": \"Test\" }"));
 
         MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -68,14 +69,16 @@ public class AppRuleManagerInventoryHandlerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
-        Assert.assertEquals("{\"appRuleName\":\"rule1\",\"appRuleIp\":\"1.1.1.1\",\"appRulePort\":\"10000\",\"userName\":\"Test\"}",
+        Assert.assertEquals(
+                "{\"appRuleName\":\"rule1\",\"appRuleIp\":\"1.1.1.1\",\"appRulePort\":\"10000\",\"userName\":\"Test\"}",
                 getByIdResponse);
 
         // Test APP Rule manager record delete by APP Rule manager ID
         ResultActions deleteByIdResult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/apprulemanagers/1.1.1.1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                mvc.perform(
+                        MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/apprulemanagers/1.1.1.1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON));
 
         MvcResult deleteByIdMvcResult = deleteByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -93,7 +96,8 @@ public class AppRuleManagerInventoryHandlerTest {
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/apprulemanagers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{\"appRuleName\": \"rule1\", \"appRuleIp\": \"1.1.1.1\", \"appRulePort\": \"10000\", \"userName\": \"Test\" }"));
+                .content(
+                        "{\"appRuleName\": \"rule1\", \"appRuleIp\": \"1.1.1.1\", \"appRulePort\": \"10000\", \"userName\": \"Test\" }"));
 
         // Update record
         ResultActions updateResult =
@@ -117,7 +121,8 @@ public class AppRuleManagerInventoryHandlerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
-        Assert.assertEquals("[{\"appRuleName\":\"rule1\",\"appRuleIp\":\"1.1.1.1\",\"appRulePort\":\"10001\",\"userName\":\"Test\"}]",
+        Assert.assertEquals(
+                "[{\"appRuleName\":\"rule1\",\"appRuleIp\":\"1.1.1.1\",\"appRulePort\":\"10001\",\"userName\":\"Test\"}]",
                 getAllResponse);
 
         // Test Delete all records

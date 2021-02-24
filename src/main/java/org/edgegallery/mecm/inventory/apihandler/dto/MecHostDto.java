@@ -77,26 +77,6 @@ public final class MecHostDto {
             + "alpha numeric characters and special characters allowed are hyphen and underscore")
     private String userName;
 
-    @Size(max = 128, message = "edgerepoName length exceeds max size")
-    @Pattern(regexp = Constants.NAME_REGEX, message = "edgerepoName is invalid. It must start and end with alpha"
-            + " numeric characters and special characters allowed are hyphen and underscore")
-    private String edgerepoName;
-
-    @NotEmpty(message = "edgerepo IP is empty")
-    @Size(max = 15, message = "edgerepo IP length exceeds max size")
-    @Pattern(regexp = Constants.IP_REGEX, message = "edgerepo IP is invalid")
-    private String edgerepoIp;
-
-    @NotEmpty(message = "edgerepo port is empty")
-    @Size(max = 5, message = "edgerepo port length exceeds max size")
-    @Pattern(regexp = Constants.PORT_REGEX, message = "edgerepo port is invalid")
-    private String edgerepoPort;
-
-    @Size(max = 128, message = "edgerepo username length exceeds max size")
-    @Pattern(regexp = Constants.NAME_REGEX, message = "edgerepo username is invalid. It must start and end with "
-            + "alpha numeric characters and special characters allowed are hyphen and underscore")
-    private String edgerepoUsername;
-
     @NotEmpty(message = "applcm IP is empty")
     @Size(max = 15, message = "applcm IP length exceeds max size")
     @Pattern(regexp = Constants.IP_REGEX, message = "applcm IP is invalid")
