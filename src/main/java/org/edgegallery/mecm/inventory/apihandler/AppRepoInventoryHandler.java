@@ -93,11 +93,25 @@ public class AppRepoInventoryHandler {
                     continue;
                 }
                 appRepo = new AppRepo();
-                appRepo.setRepoId(srcRepo[0]);
+
+                String[] repoId = srcRepo[0].split("=");
+                if (repoId.length > 1) {
+                    appRepo.setRepoId(repoId[1]);
+                    appRepo.setRepoEndPoint(repoId[1]);
+                }
+
+                String[] userName = srcRepo[1].split("=");
+                if (userName.length > 1) {
+                    appRepo.setRepoUserName(userName[1]);
+                }
+
+                String[] password = srcRepo[2].split("=");
+                if (password.length > 1) {
+                    appRepo.setRepoPassword(password[1]);
+                }
+
                 appRepo.setTenantId(Constants.ADMIN_USER);
-                appRepo.setRepoEndPoint(srcRepo[0]);
-                appRepo.setRepoUserName(srcRepo[1]);
-                appRepo.setRepoPassword(srcRepo[2]);
+
                 LOGGER.info("Adding source repo info {}", appRepo.getRepoId());
                 service.addRecord(appRepo, repository);
             } catch (IllegalArgumentException ex) {
