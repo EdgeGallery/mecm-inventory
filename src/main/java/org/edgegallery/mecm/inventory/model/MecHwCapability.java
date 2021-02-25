@@ -44,9 +44,6 @@ public final class MecHwCapability implements BaseModel {
     @Column(name = "capability_id")
     private String mecCapabilityId;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
-
     @Column(name = "created_time")
     private LocalDateTime createTime;
 
@@ -70,7 +67,7 @@ public final class MecHwCapability implements BaseModel {
 
     @Override
     public String getTenantId() {
-        return tenantId;
+        return null;
     }
 
     @Override

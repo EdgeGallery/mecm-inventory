@@ -41,9 +41,6 @@ public final class AppStore implements BaseModel {
     @Column(name = "appstore_id")
     private String appstoreId;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
-
     @Column(name = "appstore_ip")
     private String appstoreIp;
 
@@ -78,7 +75,7 @@ public final class AppStore implements BaseModel {
 
     @Override
     public String getTenantId() {
-        return tenantId;
+        return null;
     }
 
     @Override

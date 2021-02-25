@@ -47,7 +47,7 @@ public class AppRuleManagerInventoryHandlerTest {
 
         // Test APP Rule manager record post
         ResultActions postResult =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/apprulemanagers")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/apprulemanagers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(
@@ -61,7 +61,7 @@ public class AppRuleManagerInventoryHandlerTest {
 
         // Test APP Rule manager record get by App rule manager ID
         ResultActions getByIdResult =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/apprulemanagers/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprulemanagers/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -76,7 +76,7 @@ public class AppRuleManagerInventoryHandlerTest {
         // Test APP Rule manager record delete by APP Rule manager ID
         ResultActions deleteByIdResult =
                 mvc.perform(
-                        MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/apprulemanagers/1.1.1.1")
+                        MockMvcRequestBuilders.delete("/inventory/v1/apprulemanagers/1.1.1.1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON));
 
@@ -93,7 +93,7 @@ public class AppRuleManagerInventoryHandlerTest {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
-        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/apprulemanagers")
+        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/apprulemanagers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(
@@ -101,7 +101,7 @@ public class AppRuleManagerInventoryHandlerTest {
 
         // Update record
         ResultActions updateResult =
-                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/apprulemanagers/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/apprulemanagers/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{\"appRuleIp\": \"1.1.1.1\",\"appRuleName\": \"rule1\", \"appRulePort\": "
@@ -114,7 +114,7 @@ public class AppRuleManagerInventoryHandlerTest {
 
         // Test APP Rule manager get all records
         ResultActions getAllResults =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/apprulemanagers")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprulemanagers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
@@ -127,7 +127,7 @@ public class AppRuleManagerInventoryHandlerTest {
 
         // Test Delete all records
         ResultActions deleteAllresult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/apprulemanagers")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/apprulemanagers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 

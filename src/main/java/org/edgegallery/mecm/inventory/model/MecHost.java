@@ -45,9 +45,6 @@ public final class MecHost implements BaseModel {
     @Column(name = "mechost_id")
     private String mechostId;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
-
     @Column(name = "created_time")
     private LocalDateTime createTime;
 
@@ -97,7 +94,7 @@ public final class MecHost implements BaseModel {
 
     @Override
     public String getTenantId() {
-        return tenantId;
+        return null;
     }
 
     @Override

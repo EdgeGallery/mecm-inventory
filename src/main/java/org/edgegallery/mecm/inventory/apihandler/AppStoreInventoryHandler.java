@@ -66,20 +66,16 @@ public class AppStoreInventoryHandler {
     /**
      * Adds a new application store record entry into the Inventory.
      *
-     * @param tenantId    tenant ID
      * @param appStoreDto application store record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application store record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PostMapping(path = "/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
         AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
-        store.setTenantId(tenantId);
-        store.setAppstoreId(appStoreDto.getAppstoreIp() + "_" + tenantId);
+        store.setAppstoreId(appStoreDto.getAppstoreIp());
         Status status = service.addRecord(store, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -88,17 +84,14 @@ public class AppStoreInventoryHandler {
      * Updates an exiting application store record in the Inventory matching the given tenant ID & application store
      * IP.
      *
-     * @param tenantId    tenant ID
      * @param appStoreIp  application store IP
      * @param appStoreDto application store record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application store record", response = String.class)
-    @PutMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PutMapping(path = "/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
@@ -108,8 +101,7 @@ public class AppStoreInventoryHandler {
             throw new IllegalArgumentException("appstore IP in body and url is different");
         }
         AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
-        store.setTenantId(tenantId);
-        store.setAppstoreId(appStoreIp + "_" + tenantId);
+        store.setAppstoreId(appStoreIp);
         Status status = service.updateRecord(store, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -117,16 +109,13 @@ public class AppStoreInventoryHandler {
     /**
      * Retrieves all application store records.
      *
-     * @param tenantId tenant ID
      * @return application store records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves all application store records", response = List.class)
-    @GetMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
-    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        List<AppStore> appStores = service.getTenantRecords(tenantId, repository);
+    @GetMapping(path = "/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
+    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords() {
+        List<AppStore> appStores = service.getTenantRecords(null, repository);
         List<AppStoreDto> appStoreDtos = new LinkedList<>();
         for (AppStore store : appStores) {
             AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
@@ -139,19 +128,16 @@ public class AppStoreInventoryHandler {
      * Retrieves a specific application store record in the Inventory matching the given tenant ID & application store
      * IP.
      *
-     * @param tenantId   tenant ID
      * @param appStoreIp application store IP
      * @return application store record & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves application store record", response = AppStoreDto.class)
-    @GetMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @GetMapping(path = "/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppStoreDto> getAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
-        AppStore store = service.getRecord(appStoreIp + "_" + tenantId, repository);
+        AppStore store = service.getRecord(appStoreIp, repository);
         AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
         return new ResponseEntity<>(appStoreDto, HttpStatus.OK);
     }
@@ -159,16 +145,13 @@ public class AppStoreInventoryHandler {
     /**
      * Deletes all application store records for a given tenant.
      *
-     * @param tenantId tenant ID
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all application store records", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
-    public ResponseEntity<Status> deleteAllAppStoreRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        Status status = service.deleteTenantRecords(tenantId, repository);
+    @DeleteMapping(path = "/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
+    public ResponseEntity<Status> deleteAllAppStoreRecords() {
+        Status status = service.deleteTenantRecords(null, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -176,19 +159,16 @@ public class AppStoreInventoryHandler {
      * Deletes a specific application store record in the Inventory matching the given tenant ID & application store
      * IP.
      *
-     * @param tenantId   tenant ID
      * @param appStoreIp application store IP
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes application store record", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @DeleteMapping(path = "/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteAppStoreRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
-        Status status = service.deleteRecord(appStoreIp + "_" + tenantId, repository);
+        Status status = service.deleteRecord(appStoreIp, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

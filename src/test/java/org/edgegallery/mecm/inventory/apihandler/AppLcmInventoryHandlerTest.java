@@ -47,7 +47,7 @@ public class AppLcmInventoryHandlerTest {
 
         // Test APPLCM record post
         ResultActions postResult =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
@@ -61,7 +61,7 @@ public class AppLcmInventoryHandlerTest {
 
         // Test APPLCM record get by APPLCM ID
         ResultActions getByIdResult =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -75,7 +75,7 @@ public class AppLcmInventoryHandlerTest {
 
         // Test APPLCM record delete by APPLCM ID
         ResultActions deleteByIdResult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -92,7 +92,7 @@ public class AppLcmInventoryHandlerTest {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
-        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")
+        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
@@ -100,7 +100,7 @@ public class AppLcmInventoryHandlerTest {
 
         // Update record
         ResultActions updateResult =
-                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10001\", \"userName\": \"Test\", "
@@ -113,7 +113,7 @@ public class AppLcmInventoryHandlerTest {
 
         // Test APPLCM get all records
         ResultActions getAllResults =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/applcms")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
@@ -126,7 +126,7 @@ public class AppLcmInventoryHandlerTest {
 
         // Test Delete all records
         ResultActions deleteAllresult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/applcms")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 

@@ -67,20 +67,17 @@ public class AppRuleManagerInventoryHandler {
     /**
      * Adds a new application rule manager record entry into the Inventory.
      *
-     * @param tenantId  tenant ID
      * @param appRuleDto application rule manager record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/apprulemanagers", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PostMapping(path = "/apprulemanagers", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addAppRuleManagerRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "app rule manager inventory information") @RequestBody AppRuleDto appRuleDto) {
         AppRuleManager appRuleManager = InventoryUtilities.getModelMapper().map(appRuleDto, AppRuleManager.class);
-        appRuleManager.setTenantId(tenantId);
-        appRuleManager.setAppRuleManagerId(appRuleDto.getAppRuleIp() + "_" + tenantId);
+
+        appRuleManager.setAppRuleManagerId(appRuleDto.getAppRuleIp());
         Status status = service.addRecord(appRuleManager, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -94,12 +91,10 @@ public class AppRuleManagerInventoryHandler {
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application rule manager record", response = String.class)
-    @PutMapping(path = "/tenants/{tenant_id}/apprulemanagers/{app_rule_manager_ip}",
+    @PutMapping(path = "/apprulemanagers/{app_rule_manager_ip}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateAppRuleManagerRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app rule manager IP") @PathVariable("app_rule_manager_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appRuleManagerIp,
             @Valid @ApiParam(value = "app rule manager information") @RequestBody AppRuleDto appRuleDto) {
@@ -109,8 +104,7 @@ public class AppRuleManagerInventoryHandler {
             throw new IllegalArgumentException("app rule manager IP in body and url is different");
         }
         AppRuleManager appRuleManager = InventoryUtilities.getModelMapper().map(appRuleDto, AppRuleManager.class);
-        appRuleManager.setTenantId(tenantId);
-        appRuleManager.setAppRuleManagerId(appRuleManagerIp + "_" + tenantId);
+        appRuleManager.setAppRuleManagerId(appRuleManagerIp);
         Status status = service.updateRecord(appRuleManager, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -118,16 +112,13 @@ public class AppRuleManagerInventoryHandler {
     /**
      * Retrieves all application rule manager records.
      *
-     * @param tenantId tenant ID
      * @return application rule manager records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves all application rule manager records", response = List.class)
-    @GetMapping(path = "/tenants/{tenant_id}/apprulemanagers", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
-    public ResponseEntity<List<AppRuleDto>> getAllAppRuleManagerRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        List<AppRuleManager> appRuleManagers = service.getTenantRecords(tenantId, repository);
+    @GetMapping(path = "/apprulemanagers", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
+    public ResponseEntity<List<AppRuleDto>> getAllAppRuleManagerRecords() {
+        List<AppRuleManager> appRuleManagers = service.getTenantRecords(null, repository);
         List<AppRuleDto> appRuleDtos = new LinkedList<>();
         for (AppRuleManager appRuleManager : appRuleManagers) {
             AppRuleDto appRuleDto = InventoryUtilities.getModelMapper().map(appRuleManager, AppRuleDto.class);
@@ -140,20 +131,17 @@ public class AppRuleManagerInventoryHandler {
      * Retrieves a specific application rule manager record in the Inventory matching the given tenant ID &
      * app rule manager IP.
      *
-     * @param tenantId tenant ID
      * @param appRuleManagerIp application rule manager IP
      * @return application rule manager record & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves application rule manager record", response = AppRuleDto.class)
-    @GetMapping(path = "/tenants/{tenant_id}/apprulemanagers/{app_rule_manager_ip}",
+    @GetMapping(path = "/apprulemanagers/{app_rule_manager_ip}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppRuleDto> getAppRuleManagerRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app rule manager IP") @PathVariable("app_rule_manager_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appRuleManagerIp) {
-        AppRuleManager appRuleManager = service.getRecord(appRuleManagerIp + "_" + tenantId, repository);
+        AppRuleManager appRuleManager = service.getRecord(appRuleManagerIp, repository);
         AppRuleDto appRuleDto = InventoryUtilities.getModelMapper().map(appRuleManager, AppRuleDto.class);
         return new ResponseEntity<>(appRuleDto, HttpStatus.OK);
     }
@@ -161,16 +149,13 @@ public class AppRuleManagerInventoryHandler {
     /**
      * Deletes all records for a given tenant.
      *
-     * @param tenantId tenant ID
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all application LCM records", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/apprulemanagers", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @DeleteMapping(path = "/apprulemanagers", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('MECM_TENANT')")
-    public ResponseEntity<Status> deleteAllAppRuleManagerRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        Status status = service.deleteTenantRecords(tenantId, repository);
+    public ResponseEntity<Status> deleteAllAppRuleManagerRecords() {
+        Status status = service.deleteTenantRecords(null, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -178,20 +163,17 @@ public class AppRuleManagerInventoryHandler {
      * Deletes a specific application rule manager record in the Inventory matching the given tenant ID
      * & app rule manager IP.
      *
-     * @param tenantId tenant ID
      * @param appRuleManagerIp application rule manager IP
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes application LCM record", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/apprulemanagers/{app_rule_manager_ip}",
+    @DeleteMapping(path = "/apprulemanagers/{app_rule_manager_ip}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteAppRuleManagerRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "app rule manager IP") @PathVariable("app_rule_manager_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appRuleManagerIp) {
-        Status status = service.deleteRecord(appRuleManagerIp + "_" + tenantId, repository);
+        Status status = service.deleteRecord(appRuleManagerIp, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

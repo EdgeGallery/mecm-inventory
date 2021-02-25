@@ -27,15 +27,7 @@ import org.springframework.data.repository.query.Param;
 /**
  * MEC host hardware capability repository.
  */
-public interface MecHwCapabilityRepository extends CrudRepository<MecHwCapability, String>,
-        BaseRepository<MecHwCapability> {
+public interface MecHwCapabilityRepository extends CrudRepository<MecHwCapability, String> {
 
-    @Transactional
-    @Modifying
-    @Query("delete from MecHwCapability m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
-
-    @Query(value = "SELECT * FROM mechwcapabilityinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<MecHwCapability> findByTenantId(@Param("tenantId") String tenantId);
 }
 

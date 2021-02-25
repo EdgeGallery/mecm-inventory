@@ -69,7 +69,7 @@ public final class AppStoreDto {
     private String appstoreRepoUserName;
 
     @Size(max = 128, message = "appstore password length exceeds max size")
-    @Pattern(regexp = Constants.PASSWORD_REGEX, message = "appstore password is invalid.")
+    @Pattern(regexp = Constants.AUTH_PASS_REGEX, message = "appstore password is invalid.")
     private String appstoreRepoPassword;
 
     @Size(max = 128, message = "appstore producer length exceeds max size")

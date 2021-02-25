@@ -44,9 +44,6 @@ public final class AppRuleManager implements BaseModel {
     @Column(name = "apprule_name")
     private String appRuleName;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
-
     @Column(name = "created_time")
     private LocalDateTime createTime;
 
@@ -66,7 +63,7 @@ public final class AppRuleManager implements BaseModel {
 
     @Override
     public String getTenantId() {
-        return tenantId;
+        return null;
     }
 
     @Override

@@ -27,13 +27,6 @@ import org.springframework.data.repository.query.Param;
 /**
  * Application LCM repository.
  */
-public interface AppLcmRepository extends CrudRepository<AppLcm, String>, BaseRepository<AppLcm> {
+public interface AppLcmRepository extends CrudRepository<AppLcm, String> {
 
-    @Transactional
-    @Modifying
-    @Query("delete from AppLcm m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
-
-    @Query(value = "SELECT * FROM applcminventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<AppLcm> findByTenantId(@Param("tenantId") String tenantId);
 }

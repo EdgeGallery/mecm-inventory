@@ -32,19 +32,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class TenantServiceImplTest {
 
+    public static final String MECHOST_ID = "Mec_Host_Id";
+    public static final String APPLCM_ID = "AppLcm_id";
+    public static final String APPSTORE_ID = "AppStore_id";
     @InjectMocks
     TenantServiceImpl tenantService;
-
     @Mock
     TenantRepository repository;
-
     Tenant tenant = new Tenant();
-
-    public static final String MECHOST_ID = "Mec_Host_Id";
-
-    public static final String APPLCM_ID = "AppLcm_id";
-
-    public static final String APPSTORE_ID = "AppStore_id";
 
     @Test
     public void addTenantAppLcm() {

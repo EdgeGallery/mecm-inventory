@@ -27,14 +27,7 @@ import org.springframework.data.repository.query.Param;
 /**
  * MEC host repository.
  */
-public interface MecHostRepository extends CrudRepository<MecHost, String>, BaseRepository<MecHost> {
+public interface MecHostRepository extends CrudRepository<MecHost, String> {
 
-    @Transactional
-    @Modifying
-    @Query("delete from MecHost m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
-
-    @Query(value = "SELECT * FROM mechostinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<MecHost> findByTenantId(@Param("tenantId") String tenantId);
 }
 

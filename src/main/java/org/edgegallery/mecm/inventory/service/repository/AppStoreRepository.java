@@ -27,13 +27,6 @@ import org.springframework.data.repository.query.Param;
 /**
  * Application store repository.
  */
-public interface AppStoreRepository extends CrudRepository<AppStore, String>, BaseRepository<AppStore> {
+public interface AppStoreRepository extends CrudRepository<AppStore, String> {
 
-    @Transactional
-    @Modifying
-    @Query("delete from AppStore m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
-
-    @Query(value = "SELECT * FROM appstoreinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<AppStore> findByTenantId(@Param("tenantId") String tenantId);
 }

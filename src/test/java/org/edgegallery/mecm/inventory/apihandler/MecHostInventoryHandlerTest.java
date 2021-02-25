@@ -41,13 +41,13 @@ public class MecHostInventoryHandlerTest {
     MockMvc mvc;
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateMecHostInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Test MecHost record post
         ResultActions postResult =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
@@ -63,8 +63,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test MecHost record get by MecHost ID
         ResultActions getByIdResult =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
-                        + "/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -80,7 +79,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test MecHost record delete by MecHost ID
         ResultActions deleteByIdResult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -92,12 +91,12 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateMecHostInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
-        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
@@ -106,7 +105,7 @@ public class MecHostInventoryHandlerTest {
 
         // Update record
         ResultActions updateResult =
-                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
@@ -121,7 +120,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test Mechost to get all records
         ResultActions getAllResults =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
@@ -136,7 +135,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test Delete all records
         ResultActions deleteAllresult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -148,13 +147,13 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateMecHostHardwareCapabilityInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Test MecHost record post
         ResultActions postResult =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
@@ -171,8 +170,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test MecHost record get by MecHost ID
         ResultActions getByIdResult =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
-                        + "/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -189,7 +187,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test MecHost record delete by MecHost ID
         ResultActions deleteByIdResult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -201,12 +199,12 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateMecHostHardwareCapabilityInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
-        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
@@ -216,7 +214,7 @@ public class MecHostInventoryHandlerTest {
 
         // Update record
         ResultActions updateResult =
-                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
@@ -231,7 +229,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test Mechost to get all records
         ResultActions getAllResults =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
@@ -246,7 +244,7 @@ public class MecHostInventoryHandlerTest {
 
         // Test Delete all records
         ResultActions deleteAllresult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -258,14 +256,14 @@ public class MecHostInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"MECM_TENANT", "MECM_GUEST"})
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateMecApplicationInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b31";
         String hostIp = "1.1.1.1";
 
         //Mec application record post
         ResultActions postMecResult =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
