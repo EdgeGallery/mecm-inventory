@@ -27,14 +27,6 @@ import org.springframework.data.repository.query.Param;
 /**
  * Application Rule manager repository.
  */
-public interface AppRuleManagerRepository extends CrudRepository<AppRuleManager, String>,
-        BaseRepository<AppRuleManager> {
+public interface AppRuleManagerRepository extends CrudRepository<AppRuleManager, String> {
 
-    @Transactional
-    @Modifying
-    @Query("delete from AppRuleManager m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
-
-    @Query(value = "SELECT * FROM apprulemanagerinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<AppRuleManager> findByTenantId(@Param("tenantId") String tenantId);
 }

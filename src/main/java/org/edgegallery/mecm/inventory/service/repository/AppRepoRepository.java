@@ -27,13 +27,6 @@ import org.springframework.data.repository.query.Param;
 /**
  * Application repo repository.
  */
-public interface AppRepoRepository extends CrudRepository<AppRepo, String>, BaseRepository<AppRepo> {
+public interface AppRepoRepository extends CrudRepository<AppRepo, String> {
 
-    @Transactional
-    @Modifying
-    @Query("delete from AppRepo m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
-
-    @Query(value = "SELECT * FROM apprepoinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<AppRepo> findByTenantId(@Param("tenantId") String tenantId);
 }
