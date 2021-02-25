@@ -68,7 +68,7 @@ public class ConfigServiceImpl implements ConfigService {
     private String isSslEnabled;
 
     @Override
-    public ResponseEntity<String> uploadConfig(String tenantId, String hostIp, MultipartFile file, String token) {
+    public ResponseEntity<String> uploadConfig(String hostIp, MultipartFile file, String token) {
 
         // Preparing request parts.
         Resource resource = file.getResource();
@@ -90,9 +90,9 @@ public class ConfigServiceImpl implements ConfigService {
         HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
         // Preparing URL
-        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        MecHost host = service.getRecord(hostIp, hostRepository);
         String lcmIp = host.getApplcmIp();
-        AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
+        AppLcm lcm = service.getRecord(lcmIp, lcmRepository);
         String lcmPort = lcm.getApplcmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
@@ -119,11 +119,11 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public ResponseEntity<String> deleteConfig(String tenantId, String hostIp, String token) {
+    public ResponseEntity<String> deleteConfig(String hostIp, String token) {
         // Preparing URL
-        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        MecHost host = service.getRecord(hostIp, hostRepository);
         String lcmIp = host.getApplcmIp();
-        AppLcm lcm = service.getRecord(lcmIp + "_" + tenantId, lcmRepository);
+        AppLcm lcm = service.getRecord(lcmIp, lcmRepository);
         String lcmPort = lcm.getApplcmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {

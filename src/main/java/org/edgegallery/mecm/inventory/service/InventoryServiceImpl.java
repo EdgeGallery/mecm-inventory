@@ -16,6 +16,7 @@
 
 package org.edgegallery.mecm.inventory.service;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -49,21 +50,31 @@ public final class InventoryServiceImpl implements InventoryService {
                     model.getIdentifier());
             throw new IllegalArgumentException("Record already exist");
         }
+        long size;
+        List<T> record = null;
         String tenantId = model.getTenantId();
-        List<T> record = ((BaseRepository) repository).findByTenantId(tenantId);
+        if (tenantId != null) {
+            record = ((BaseRepository) repository).findByTenantId(tenantId);
 
-        if (tenantService.isMaxTenantCountReached() && !tenantService.isTenantExist(tenantId)) {
-            LOGGER.error("Max tenant count {} reached", Constants.MAX_TENANTS);
+            if (tenantService.isMaxTenantCountReached() && !tenantService.isTenantExist(tenantId)) {
+                LOGGER.error("Max tenant count {} reached", Constants.MAX_TENANTS);
+                throw new InventoryException(Constants.MAX_LIMIT_REACHED_ERROR);
+            }
+            size = record.size();
+        } else {
+            size = repository.count();
+        }
+
+        if (size == Constants.MAX_ENTRY_PER_TENANT_PER_MODEL) {
+            LOGGER.error("Max entry per model {} reached", Constants.MAX_ENTRY_PER_TENANT_PER_MODEL);
             throw new InventoryException(Constants.MAX_LIMIT_REACHED_ERROR);
         }
 
-        if (record.size() == Constants.MAX_ENTRY_PER_TENANT_PER_MODEL) {
-            LOGGER.error("Max entry per tenant per model {} reached", Constants.MAX_ENTRY_PER_TENANT_PER_MODEL);
-            throw new InventoryException(Constants.MAX_LIMIT_REACHED_ERROR);
-        }
         repository.save(model);
         LOGGER.info("Record added for identifier {} & type {}", model.getIdentifier(), model.getType());
-        tenantService.addTenant(tenantId, model.getType());
+        if (tenantId != null) {
+            tenantService.addTenant(tenantId, model.getType());
+        }
         return new Status("Saved");
     }
 
@@ -81,13 +92,19 @@ public final class InventoryServiceImpl implements InventoryService {
 
     @Override
     public <T extends BaseModel> List<T> getTenantRecords(String tenantId, CrudRepository<T, String> repository) {
-        List<T> record = ((BaseRepository) repository).findByTenantId(tenantId);
-        if (record == null || record.isEmpty()) {
-            LOGGER.error(TENANT_NOT_FOUND_MESSAGE, tenantId);
-            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+        List<T> record;
+        if (tenantId != null) {
+            record = ((BaseRepository) repository).findByTenantId(tenantId);
+            if (record == null || record.isEmpty()) {
+                LOGGER.error(TENANT_NOT_FOUND_MESSAGE, tenantId);
+                throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+            }
+            LOGGER.info("Records returned for tenant identifier {} & type {}", record.get(0).getTenantId(),
+                    record.get(0).getType());
+        } else {
+            record = Lists.newArrayList(repository.findAll());
+            LOGGER.info("Records returned for the type {}", record.get(0).getType());
         }
-        LOGGER.info("Records returned for tenant identifier {} & type {}", record.get(0).getTenantId(),
-                record.get(0).getType());
         return record;
     }
 
@@ -105,15 +122,20 @@ public final class InventoryServiceImpl implements InventoryService {
 
     @Override
     public <T extends BaseModel> Status deleteTenantRecords(String tenantId, CrudRepository<T, String> repository) {
-        List<T> record = ((BaseRepository) repository).findByTenantId(tenantId);
-        if (record == null || record.isEmpty()) {
-            LOGGER.error(TENANT_NOT_FOUND_MESSAGE, tenantId);
-            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+        List<T> record;
+        if (tenantId != null) {
+            record = ((BaseRepository) repository).findByTenantId(tenantId);
+            if (record == null || record.isEmpty()) {
+                LOGGER.error(TENANT_NOT_FOUND_MESSAGE, tenantId);
+                throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+            }
+            ((BaseRepository) repository).deleteByTenantId(tenantId);
+            LOGGER.info("Record deleted for tenant identifier {} & type {}", record.get(0).getTenantId(),
+                    record.get(0).getType());
+            tenantService.clearCount(tenantId, record.get(0).getType());
+        } else {
+            repository.deleteAll();
         }
-        ((BaseRepository) repository).deleteByTenantId(tenantId);
-        LOGGER.info("Record deleted for tenant identifier {} & type {}", record.get(0).getTenantId(),
-                record.get(0).getType());
-        tenantService.clearCount(tenantId, record.get(0).getType());
         return new Status("Deleted");
     }
 
@@ -127,8 +149,13 @@ public final class InventoryServiceImpl implements InventoryService {
         BaseModel model = record.get();
         String tenantId = model.getTenantId();
         repository.deleteById(id);
-        LOGGER.info("Record deleted for identifier {} & type {}", tenantId, model.getType());
-        tenantService.reduceCount(tenantId, model.getType());
+        if (tenantId != null) {
+            LOGGER.info("Record deleted for identifier {} & type {}", tenantId, model.getType());
+            tenantService.reduceCount(tenantId, model.getType());
+        } else {
+            LOGGER.info("Record deleted for the type {}", model.getType());
+        }
+
         return new Status("Deleted");
     }
 }
