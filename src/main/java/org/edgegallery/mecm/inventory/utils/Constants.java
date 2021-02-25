@@ -35,7 +35,7 @@ public final class Constants {
     public static final String MAC_ADDRESS_REGX = "^(?:[0-9A-Fa-f]{2}([-: ]?))(?:[0-9A-Fa-f]{2}\\1){4}[0-9A-Fa-f]{2}|"
             + "([0-9A-Fa-f]{4}\\.){2}[0-9A-Fa-f]{4}$";
     public static final String APP_NAME_REGEX = "^[a-zA-Z0-9]*$|^[a-zA-Z0-9][a-zA-Z0-9_\\-]*[a-zA-Z0-9]$";
-    public static final String APP_PKG_ID_REGEX = "[0-9a-f]{32}";
+    public static final String APP_PKG_ID_REGEX = "[0-9a-f]{32,64}";
     public static final String NAME_REGEX = "^[\\d\\p{L}]*$|^[\\d\\p{L}][\\d\\p{L}_\\-]*[\\d\\p{L}]$";
     public static final String PASSWORD_REGEX =
             "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[~!@#$%^&*()_+\\-={}:\";<>?,./]).{6,18}$";

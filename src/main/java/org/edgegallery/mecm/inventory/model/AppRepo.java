@@ -43,9 +43,6 @@ public final class AppRepo implements BaseModel {
     @Column(name = "repo_name")
     private String repoName;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
-
     @Column(name = "repo_endpoint")
     private String repoEndPoint;
 
@@ -62,7 +59,7 @@ public final class AppRepo implements BaseModel {
 
     @Override
     public String getTenantId() {
-        return tenantId;
+        return null;
     }
 
     @Override
