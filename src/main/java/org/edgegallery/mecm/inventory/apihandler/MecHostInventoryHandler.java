@@ -86,20 +86,16 @@ public class MecHostInventoryHandler {
     /**
      * Adds a new MEC host record entry into the Inventory.
      *
-     * @param tenantId   tenant ID
      * @param mecHostDto mec host record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new MEC host record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PostMapping(path = "/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addMecHostRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDto mecHostDto) {
         MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
-        host.setTenantId(tenantId);
-        host.setMechostId(mecHostDto.getMechostIp() + "_" + tenantId);
+        host.setMechostId(mecHostDto.getMechostIp());
 
         Set<MecHwCapability> capabilities = new HashSet<>();
         for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
@@ -107,7 +103,6 @@ public class MecHostInventoryHandler {
 
             capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
             capability.setMecHost(host);
-            capability.setTenantId(tenantId);
 
             capabilities.add(capability);
         }
@@ -121,17 +116,14 @@ public class MecHostInventoryHandler {
     /**
      * Updates an exiting MEC host record in the Inventory matching the given tenant ID & mec host IP.
      *
-     * @param tenantId   tenant ID
      * @param mecHostIp  mec host IP
      * @param mecHostDto mec host record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing MEC host record", response = String.class)
-    @PutMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PutMapping(path = "/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateMecHostRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDto mecHostDto) {
@@ -141,21 +133,19 @@ public class MecHostInventoryHandler {
             throw new IllegalArgumentException("mechost IP in body and url is different");
         }
         MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
-        host.setTenantId(tenantId);
-        host.setMechostId(mecHostIp + "_" + tenantId);
+        host.setMechostId(mecHostIp);
 
         Set<MecHwCapability> capabilities = new HashSet<>();
         for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
             MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
             capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
             capability.setMecHost(host);
-            capability.setTenantId(tenantId);
 
             capabilities.add(capability);
         }
         host.setHwcapabilities(capabilities);
 
-        MecHost hostDb = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost hostDb = service.getRecord(mecHostIp, repository);
         host.setApplications(hostDb.getApplications());
         Status status = service.updateRecord(host, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
@@ -164,16 +154,13 @@ public class MecHostInventoryHandler {
     /**
      * Retrieves all MEC host records.
      *
-     * @param tenantId tenant ID
      * @return MEC host records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
-    @GetMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
-    public ResponseEntity<List<MecHostDto>> getAllMecHostRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        List<MecHost> mecHosts = service.getTenantRecords(tenantId, repository);
+    @GetMapping(path = "/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
+    public ResponseEntity<List<MecHostDto>> getAllMecHostRecords() {
+        List<MecHost> mecHosts = service.getTenantRecords(null, repository);
         List<MecHostDto> mecHostDtos = new LinkedList<>();
         for (MecHost host : mecHosts) {
             MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
@@ -185,19 +172,16 @@ public class MecHostInventoryHandler {
     /**
      * Retrieves a specific MEC host record in the Inventory matching the given tenant ID & mec host IP.
      *
-     * @param tenantId  tenant ID
      * @param mecHostIp MEC host IP
      * @return MEC host record & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves MEC host record", response = MecHostDto.class)
-    @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @GetMapping(path = "/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<MecHostDto> getMecHostRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost host = service.getRecord(mecHostIp, repository);
         MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
         return new ResponseEntity<>(mecHostDto, HttpStatus.OK);
     }
@@ -213,13 +197,13 @@ public class MecHostInventoryHandler {
     @ApiOperation(value = "Retrieves MEC host record", response = Map.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<Map<String, List<MecHwCapabilityDto>>> getMecHostCapabilities(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost host = service.getRecord(mecHostIp, repository);
         List<MecHwCapabilityDto> mecCapabilityDtos = new LinkedList<>();
         for (MecHwCapability hostCap : host.getHwcapabilities()) {
             MecHwCapabilityDto cap = InventoryUtilities.getModelMapper().map(hostCap, MecHwCapabilityDto.class);
@@ -247,7 +231,7 @@ public class MecHostInventoryHandler {
     @ApiOperation(value = "Retrieves MEC application records", response = Map.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities/{capability_type}/applications",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<Map<String, List<MecApplicationDto>>> getMecApplications(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
@@ -255,7 +239,7 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "capability type") @PathVariable("capability_type")
             @Pattern(regexp = Constants.NAME_REGEX) @Size(max = 128) String capabilityType) {
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost host = service.getRecord(mecHostIp, repository);
         List<MecApplicationDto> applications = new LinkedList<>();
 
         for (MecHwCapability hostCap : host.getHwcapabilities()) {
@@ -286,35 +270,29 @@ public class MecHostInventoryHandler {
     /**
      * Deletes all records for a given tenant.
      *
-     * @param tenantId tenant ID
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all MEC host records", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
-    public ResponseEntity<Status> deleteAllMecHostRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        Status status = service.deleteTenantRecords(tenantId, repository);
+    @DeleteMapping(path = "/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
+    public ResponseEntity<Status> deleteAllMecHostRecords() {
+        Status status = service.deleteTenantRecords(null, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
      * Deletes a specific MEC host record in the Inventory matching the given tenant ID & mec host IP.
      *
-     * @param tenantId  tenant ID
      * @param mecHostIp MEC host IP
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes MEC host record", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @DeleteMapping(path = "/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteMecHostRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        Status status = service.deleteRecord(mecHostIp + "_" + tenantId, repository);
+        Status status = service.deleteRecord(mecHostIp, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -328,7 +306,7 @@ public class MecHostInventoryHandler {
      */
     @ApiOperation(value = "Adds new Application record", response = String.class)
     @PostMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addApplicationRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
@@ -346,7 +324,7 @@ public class MecHostInventoryHandler {
             app.setCapabilities(capabilities);
         }
 
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost host = service.getRecord(mecHostIp, repository);
         app.setMecAppHost(host);
 
         Status status = service.addRecord(app, appRepository);
@@ -364,7 +342,7 @@ public class MecHostInventoryHandler {
     @ApiOperation(value = "Updates Application record", response = String.class)
     @PutMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps/{app_id}", produces =
             MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateApplicationRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
@@ -408,7 +386,7 @@ public class MecHostInventoryHandler {
     @ApiOperation(value = "Retrieves Application record", response = String.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps/{app_id}", produces =
             MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<MecApplicationDto> getApplicationRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
@@ -438,7 +416,7 @@ public class MecHostInventoryHandler {
     @ApiOperation(value = "Deletes Application record", response = String.class)
     @DeleteMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/apps/{app_id}", produces =
             MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteApplicationRecord(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
@@ -450,7 +428,7 @@ public class MecHostInventoryHandler {
 
         Status status = new Status("Deleted");
 
-        MecHost hostDb = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost hostDb = service.getRecord(mecHostIp, repository);
         Set<MecApplication> apps = hostDb.getApplications();
         for (MecApplication app : apps) {
             if (app.getAppInstanceId().equals(appId)) {
@@ -467,44 +445,38 @@ public class MecHostInventoryHandler {
     /**
      * Uploads K8s configuration file to host's infra manager plugin.
      *
-     * @param tenantId    tenant ID
      * @param mecHostIp   edge host IP
      * @param accessToken access token
      * @param file        configuration file
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Upload K8s configuration file to applcm", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/k8sconfig",
+    @PostMapping(path = "/mechosts/{mechost_ip}/k8sconfig",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<String> uploadConfigFile(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
             @ApiParam(value = "config file") @RequestParam("file") MultipartFile file) {
-        return configService.uploadConfig(tenantId, mecHostIp, file, accessToken);
+        return configService.uploadConfig(mecHostIp, file, accessToken);
     }
 
     /**
      * Deletes K8s configuration file for host's specific infra manager plugin.
      *
-     * @param tenantId    tenant ID
      * @param mecHostIp   edge host IP
      * @param accessToken access token
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes K8s configuration file from applcm", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/k8sconfig",
+    @DeleteMapping(path = "/mechosts/{mechost_ip}/k8sconfig",
             produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<String> deleteConfigFile(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken) {
-        return configService.deleteConfig(tenantId, mecHostIp, accessToken);
+        return configService.deleteConfig(mecHostIp, accessToken);
     }
 }

@@ -109,8 +109,6 @@ public class AppRepoInventoryHandler {
                     appRepo.setRepoPassword(password[1]);
                 }
 
-                appRepo.setTenantId(Constants.ADMIN_USER);
-
                 LOGGER.info("Adding source repo info {}", appRepo.getRepoId());
                 service.addRecord(appRepo, repository);
             } catch (IllegalArgumentException ex) {
@@ -127,12 +125,11 @@ public class AppRepoInventoryHandler {
      */
     @ApiOperation(value = "Adds new application repo record", response = String.class)
     @PostMapping(path = "/apprepos", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addAppRepoRecord(
             @Valid @ApiParam(value = "app repo inventory information") @RequestBody AppRepoDto appRepoDto) {
         AppRepo repo = InventoryUtilities.getModelMapper().map(appRepoDto, AppRepo.class);
         repo.setRepoId(appRepoDto.getRepoEndPoint());
-        repo.setTenantId(Constants.ADMIN_USER);
         Status status = service.addRecord(repo, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -146,7 +143,7 @@ public class AppRepoInventoryHandler {
      */
     @ApiOperation(value = "Updates existing application repo record", response = String.class)
     @PutMapping(path = "/apprepos/{apprepo_endpoint}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateAppRepoRecord(
             @ApiParam(value = "apprepo ID") @PathVariable("apprepo_endpoint")
             @Size(max = 255) String appRepoEndPoint,
@@ -158,7 +155,6 @@ public class AppRepoInventoryHandler {
         }
         AppRepo repo = InventoryUtilities.getModelMapper().map(appRepoDto, AppRepo.class);
         repo.setRepoId(repo.getRepoId());
-        repo.setTenantId(Constants.ADMIN_USER);
         Status status = service.updateRecord(repo, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -170,7 +166,7 @@ public class AppRepoInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all application repo records", response = List.class)
     @GetMapping(path = "/apprepos", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<List<AppRepoDto>> getAllAppRepoRecords() {
 
         Iterable<AppRepo> appRepos = repository.findAll();
@@ -190,7 +186,7 @@ public class AppRepoInventoryHandler {
      */
     @ApiOperation(value = "Retrieves application repo record", response = AppRepoDto.class)
     @GetMapping(path = "/apprepos/{apprepo_endpoint}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppRepoDto> getAppStoreRecord(
             @ApiParam(value = "apprepo endpoint") @PathVariable("apprepo_endpoint")
             @Size(max = 255) String appRepoEndPoint) {
@@ -206,9 +202,9 @@ public class AppRepoInventoryHandler {
      */
     @ApiOperation(value = "Deletes all application repo records", response = String.class)
     @DeleteMapping(path = "/apprepos", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteAllAppRepoRecords() {
-        Status status = service.deleteTenantRecords(Constants.ADMIN_USER, repository);
+        Status status = service.deleteTenantRecords(null, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -221,8 +217,8 @@ public class AppRepoInventoryHandler {
      */
     @ApiOperation(value = "Deletes application repo record", response = String.class)
     @DeleteMapping(path = "/apprepos/{apprepo_endpoint}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT')")
-    public ResponseEntity<Status> deleteAppStoreRecord(
+    @PreAuthorize("hasRole('MECM_ADMIN')")
+    public ResponseEntity<Status> deleteAppRepoRecord(
             @ApiParam(value = "apprepo endpoint") @PathVariable("apprepo_endpoint")
             @Size(max = 255) String appRepoEndPoint) {
         Status status = service.deleteRecord(appRepoEndPoint, repository);

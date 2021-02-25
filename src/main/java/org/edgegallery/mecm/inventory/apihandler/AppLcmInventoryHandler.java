@@ -66,20 +66,16 @@ public class AppLcmInventoryHandler {
     /**
      * Adds a new application LCM record entry into the Inventory.
      *
-     * @param tenantId  tenant ID
      * @param appLcmDto application lifecycle manager record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Adds new application LCM record", response = String.class)
-    @PostMapping(path = "/tenants/{tenant_id}/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PostMapping(path = "/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
         AppLcm lcm = InventoryUtilities.getModelMapper().map(appLcmDto, AppLcm.class);
-        lcm.setTenantId(tenantId);
-        lcm.setApplcmId(appLcmDto.getApplcmIp() + "_" + tenantId);
+        lcm.setApplcmId(appLcmDto.getApplcmIp());
         Status status = service.addRecord(lcm, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -87,17 +83,14 @@ public class AppLcmInventoryHandler {
     /**
      * Updates an exiting application LCM record in the Inventory matching the given tenant ID & appLCM IP.
      *
-     * @param tenantId  tenant ID
      * @param appLcmIp  application LCM IP
      * @param appLcmDto application lifecycle manager record details
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Updates existing application LCM record", response = String.class)
-    @PutMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PutMapping(path = "/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp,
             @Valid @ApiParam(value = "applcm inventory information") @RequestBody AppLcmDto appLcmDto) {
@@ -107,8 +100,7 @@ public class AppLcmInventoryHandler {
             throw new IllegalArgumentException("applcm IP in body and url is different");
         }
         AppLcm lcm = InventoryUtilities.getModelMapper().map(appLcmDto, AppLcm.class);
-        lcm.setTenantId(tenantId);
-        lcm.setApplcmId(appLcmIp + "_" + tenantId);
+        lcm.setApplcmId(appLcmIp);
         Status status = service.updateRecord(lcm, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -116,16 +108,13 @@ public class AppLcmInventoryHandler {
     /**
      * Retrieves all application LCM records.
      *
-     * @param tenantId tenant ID
      * @return application LCM records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves all application LCM records", response = List.class)
-    @GetMapping(path = "/tenants/{tenant_id}/applcms", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
-    public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        List<AppLcm> appLcms = service.getTenantRecords(tenantId, repository);
+    @GetMapping(path = "/applcms", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
+    public ResponseEntity<List<AppLcmDto>> getAllAppLcmRecords() {
+        List<AppLcm> appLcms = service.getTenantRecords(null, repository);
         List<AppLcmDto> appLcmDtos = new LinkedList<>();
         for (AppLcm lcm : appLcms) {
             AppLcmDto appLcmDto = InventoryUtilities.getModelMapper().map(lcm, AppLcmDto.class);
@@ -137,19 +126,16 @@ public class AppLcmInventoryHandler {
     /**
      * Retrieves a specific application LCM record in the Inventory matching the given tenant ID & appLCM IP.
      *
-     * @param tenantId tenant ID
      * @param appLcmIp application LCM IP
      * @return application LCM record & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves application LCM record", response = AppLcmDto.class)
-    @GetMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST')")
+    @GetMapping(path = "/applcms/{applcm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppLcmDto> getAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp) {
-        AppLcm lcm = service.getRecord(appLcmIp + "_" + tenantId, repository);
+        AppLcm lcm = service.getRecord(appLcmIp, repository);
         AppLcmDto appLcmDto = InventoryUtilities.getModelMapper().map(lcm, AppLcmDto.class);
         return new ResponseEntity<>(appLcmDto, HttpStatus.OK);
     }
@@ -157,35 +143,29 @@ public class AppLcmInventoryHandler {
     /**
      * Deletes all records for a given tenant.
      *
-     * @param tenantId tenant ID
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes all application LCM records", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
-    public ResponseEntity<Status> deleteAllAppLcmRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        Status status = service.deleteTenantRecords(tenantId, repository);
+    @DeleteMapping(path = "/applcms", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_ADMIN')")
+    public ResponseEntity<Status> deleteAllAppLcmRecords() {
+        Status status = service.deleteTenantRecords(null, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     /**
      * Deletes a specific application LCM record in the Inventory matching the given tenant ID & appLCM IP.
      *
-     * @param tenantId tenant ID
      * @param appLcmIp application LCM IP
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes application LCM record", response = String.class)
-    @DeleteMapping(path = "/tenants/{tenant_id}/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @DeleteMapping(path = "/applcms/{applcm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteAppLcmRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
-            @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "applcm IP") @PathVariable("applcm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appLcmIp) {
-        Status status = service.deleteRecord(appLcmIp + "_" + tenantId, repository);
+        Status status = service.deleteRecord(appLcmIp, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }
