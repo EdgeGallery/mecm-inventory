@@ -33,7 +33,6 @@ public class AppStoreTest {
         appLcmStore.setAppstoreName("appStoreName");
         appLcmStore.setAppstorePort("appStorePort");
         appLcmStore.setProducer("producer");
-        appLcmStore.setTenantId("tentantId");
         appLcmStore.setAppstoreRepoUserName("repousername");
         appLcmStore.setAppstoreRepoPassword("repoPassword@123");
     }
@@ -45,7 +44,6 @@ public class AppStoreTest {
         assertEquals("appStoreName", appLcmStore.getAppstoreName());
         assertEquals("appStorePort", appLcmStore.getAppstorePort());
         assertEquals("producer", appLcmStore.getProducer());
-        assertEquals("tentantId", appLcmStore.getTenantId());
         assertEquals("repousername", appLcmStore.getAppstoreRepoUserName());
         assertEquals("repoPassword@123", appLcmStore.getAppstoreRepoPassword());
     }

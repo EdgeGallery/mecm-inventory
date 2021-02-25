@@ -31,7 +31,6 @@ public class AppLcmTest {
         appLcm.setApplcmId("applcmId");
         appLcm.setApplcmIp("applcmIp");
         appLcm.setApplcmPort("applcmPort");
-        appLcm.setTenantId("tentantId");
         appLcm.setUserName("userName");
     }
 
@@ -40,7 +39,6 @@ public class AppLcmTest {
         Assert.assertEquals("applcmId", appLcm.getApplcmId());
         Assert.assertEquals("applcmIp", appLcm.getApplcmIp());
         Assert.assertEquals("applcmPort", appLcm.getApplcmPort());
-        Assert.assertEquals("tentantId", appLcm.getTenantId());
         Assert.assertEquals("userName", appLcm.getUserName());
     }
 }

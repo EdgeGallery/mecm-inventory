@@ -63,7 +63,7 @@ public class ConfigHandlerTest {
 
         // Add MecHost record
         ResultActions postResultMecHost =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
@@ -78,7 +78,7 @@ public class ConfigHandlerTest {
 
         // Add APPLCM record post
         ResultActions postResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/applcms")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
@@ -102,8 +102,7 @@ public class ConfigHandlerTest {
         // Test file upload
         File file = ResourceUtils.getFile("classpath:TestFile");
         ResultActions resultActions =
-                mvc.perform(MockMvcRequestBuilders.multipart("/inventory/v1/tenants/" + tenantId
-                        + "/mechosts/1.1.1.1/k8sconfig")
+                mvc.perform(MockMvcRequestBuilders.multipart("/inventory/v1/mechosts/1.1.1.1/k8sconfig")
                         .file(new MockMultipartFile("file", "TestFile", MediaType.TEXT_PLAIN_VALUE,
                                 FileUtils.openInputStream(file)))
                         .with(csrf())
@@ -119,8 +118,7 @@ public class ConfigHandlerTest {
 
         // Test file removal
         ResultActions deleteByIdResultConfig =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId
-                        + "/mechosts/1.1.1.1/k8sconfig")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1/k8sconfig")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -131,7 +129,7 @@ public class ConfigHandlerTest {
 
         // Test APPLCM record delete by APPLCM ID
         ResultActions deleteByIdResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -143,7 +141,7 @@ public class ConfigHandlerTest {
 
         // Test MecHost record delete by MecHost ID
         ResultActions deleteByIdResultMecHost =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 

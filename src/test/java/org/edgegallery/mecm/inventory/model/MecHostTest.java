@@ -35,7 +35,6 @@ public class MecHostTest {
         mecHost.setMechostId("mechostId");
         mecHost.setMechostIp("mecHostIp");
         mecHost.setMechostName("mecHostName");
-        mecHost.setTenantId("tentantId");
         mecHost.setUserName("UserName");
         mecHost.setZipCode("ZipCode");
     }
@@ -49,7 +48,6 @@ public class MecHostTest {
         assertEquals("mechostId", mecHost.getMechostId());
         assertEquals("mecHostIp", mecHost.getMechostIp());
         assertEquals("mecHostName", mecHost.getMechostName());
-        assertEquals("tentantId", mecHost.getTenantId());
         assertEquals("UserName", mecHost.getUserName());
         assertEquals("ZipCode", mecHost.getZipCode());
     }

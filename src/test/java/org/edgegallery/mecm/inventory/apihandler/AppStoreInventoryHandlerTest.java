@@ -47,7 +47,7 @@ public class AppStoreInventoryHandlerTest {
 
         // Test AppStore record post
         ResultActions postResult =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/appstores")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4443\", "
@@ -65,8 +65,7 @@ public class AppStoreInventoryHandlerTest {
 
         // Test AppStore record get by AppStore ID
         ResultActions getByIdResult =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
-                        + "/appstores/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -80,7 +79,7 @@ public class AppStoreInventoryHandlerTest {
 
         // Test AppStore record delete by AppStore ID
         ResultActions deleteByIdResult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/appstores/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -97,7 +96,7 @@ public class AppStoreInventoryHandlerTest {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
-        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/appstores")
+        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/appstores")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4443\", \"appstorePort\": "
@@ -110,7 +109,7 @@ public class AppStoreInventoryHandlerTest {
         Thread.sleep(5000);
         // Update record
         ResultActions updateResult =
-                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/appstores/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4453\", "
@@ -129,7 +128,7 @@ public class AppStoreInventoryHandlerTest {
 
         // Test Appstore to get all records
         ResultActions getAllResults =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/appstores")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
@@ -142,7 +141,7 @@ public class AppStoreInventoryHandlerTest {
 
         // Test Delete all records
         ResultActions deleteAllresult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/appstores")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 

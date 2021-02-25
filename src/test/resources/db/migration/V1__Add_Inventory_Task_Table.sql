@@ -2,7 +2,6 @@
     create table applcminventory (
         applcm_id varchar(255) not null,
         applcm_name varchar(255) not null,
-        tenant_id  varchar(255) not null,
         applcm_ip varchar(255) not null,
         applcm_port varchar(255) not null,
         user_name varchar(255),
@@ -14,7 +13,6 @@
     create table apprulemanagerinventory (
         app_rule_manager_id varchar(255) not null,
         apprule_name  varchar(255) not null,
-        tenant_id  varchar(255) not null,
         app_rule_manager_ip varchar(255) not null,
         app_rule_manager_port varchar(255) not null,
         user_name varchar(255),
@@ -25,7 +23,6 @@
 
     create table appstoreinventory (
         appstore_id varchar(255) not null,
-        tenant_id varchar(200) not null,
         appstore_ip varchar(255) not null,
         appstore_port varchar(255) not null,
         appstore_name varchar(255),
@@ -41,7 +38,6 @@
 
     create table apprepoinventory (
         repo_id varchar(255) not null,
-        tenant_id varchar(255) not null,
         repo_name varchar(255),
         repo_endpoint varchar(255) not null,
         repo_username varchar(255) not null,
@@ -51,7 +47,6 @@
 
     create table mechostinventory (
         mechost_id varchar(255) not null,
-        tenant_id varchar(255) not null,
         mechost_ip varchar(255) not null,
         applcm_ip varchar(255) not null,
         apprule_ip varchar(255),
@@ -72,7 +67,6 @@
     create table mechwcapabilityinventory (
         capability_id varchar(255) not null,
         mechost_id varchar(255) not null,
-        tenant_id varchar(255) not null,
         hw_type varchar(200),
         hw_vendor varchar(255),
         hw_model varchar(255),
