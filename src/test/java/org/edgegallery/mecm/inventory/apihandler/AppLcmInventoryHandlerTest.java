@@ -41,7 +41,7 @@ public class AppLcmInventoryHandlerTest {
     MockMvc mvc;
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = "MECM_ADMIN")
     public void validateAppLcmInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -87,7 +87,7 @@ public class AppLcmInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = "MECM_ADMIN")
     public void validateAppLcmInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 

@@ -42,7 +42,7 @@ public class AppdRuleInventoryHandlerTest {
 
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = "MECM_ADMIN")
     public void validateAppdRuleInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
         String appInstanceId = "28db0283-3c67-4042-a708-a8e4a10c6b32";

@@ -57,7 +57,7 @@ public class ConfigHandlerTest {
     private RestTemplate restTemplate;
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = "MECM_ADMIN")
     public void validateConfigOperation() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
