@@ -81,6 +81,9 @@ public final class MecHost implements BaseModel {
     @Column(name = "coordinates")
     private String coordinates;
 
+    @Column(name = "vim")
+    private String vim;
+
     @OneToMany(mappedBy = "mecHost", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<MecHwCapability> hwcapabilities;
 
