@@ -58,6 +58,7 @@
         user_name varchar(255),
         config_upload_status varchar(255),
         coordinates varchar(128),
+        vim varchar(128),
         -- config_file_path varchar(2000),
         created_time varchar(200),
         modified_time varchar(200),

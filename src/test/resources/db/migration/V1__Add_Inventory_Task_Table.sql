@@ -57,6 +57,7 @@
         affinity varchar(255),
         user_name varchar(255),
         coordinates varchar(128),
+        vim varchar(128),
         config_upload_status varchar(255),
         -- config_file_path varchar(2000),
         created_time varchar(200),
