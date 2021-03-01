@@ -92,4 +92,9 @@ public final class MecHostDto {
 
     @Size(max = 10)
     private Set<@Valid MecHwCapabilityDto> hwcapabilities = new LinkedHashSet<>();
+
+    @Size(max = 128, message = "vim name length exceeds max size")
+    @Pattern(regexp = Constants.NAME_REGEX, message = "vim name is invalid. It must start and end with alpha "
+            + "numeric characters and special characters allowed are hyphen and underscore")
+    private String vim;
 }

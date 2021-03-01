@@ -75,7 +75,7 @@ public class MecHostInventoryHandlerTest {
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,"
                         + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
-                        + "\"hwcapabilities\":[]}", getByIdResponse);
+                        + "\"hwcapabilities\":[],\"vim\":null}", getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
         ResultActions deleteByIdResult =
@@ -110,7 +110,7 @@ public class MecHostInventoryHandlerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", \"appRuleIp\": \"1.1.1"
-                                + ".1\",\"coordinates\":\"1,1\"}"));
+                                + ".1\",\"coordinates\":\"1,1\",\"vim\":\"k8s\"}"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -130,7 +130,8 @@ public class MecHostInventoryHandlerTest {
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]",
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
+                        + "\"hwcapabilities\":[],\"vim\":\"k8s\"}]",
                 getAllResponse);
 
         // Test Delete all records
@@ -183,7 +184,7 @@ public class MecHostInventoryHandlerTest {
                         + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,"
                         + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
                         + "\"hwcapabilities\":[{\"hwType\":\"GPU1\","
-                        + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}]}", getByIdResponse);
+                        + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}],\"vim\":null}", getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
         ResultActions deleteByIdResult =
@@ -239,7 +240,7 @@ public class MecHostInventoryHandlerTest {
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[]}]",
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":null}]",
                 getAllResponse);
 
         // Test Delete all records
