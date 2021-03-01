@@ -28,7 +28,6 @@ import org.edgegallery.mecm.inventory.apihandler.dto.AppRepoDto;
 import org.edgegallery.mecm.inventory.model.AppRepo;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppRepoRepository;
-import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
 import org.slf4j.Logger;

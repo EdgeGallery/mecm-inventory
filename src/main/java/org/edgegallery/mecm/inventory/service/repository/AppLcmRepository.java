@@ -16,13 +16,8 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
-import java.util.List;
-import javax.transaction.Transactional;
 import org.edgegallery.mecm.inventory.model.AppLcm;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
 /**
  * Application LCM repository.
