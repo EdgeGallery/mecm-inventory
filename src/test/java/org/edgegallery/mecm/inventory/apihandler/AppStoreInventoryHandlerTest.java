@@ -41,7 +41,7 @@ public class AppStoreInventoryHandlerTest {
     MockMvc mvc;
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = "MECM_ADMIN")
     public void validateAppStoreInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
@@ -91,7 +91,7 @@ public class AppStoreInventoryHandlerTest {
     }
 
     @Test
-    @WithMockUser(roles = "MECM_TENANT")
+    @WithMockUser(roles = "MECM_ADMIN")
     public void validateAppStoreInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 

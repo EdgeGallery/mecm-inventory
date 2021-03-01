@@ -153,7 +153,7 @@ public class AppRuleManagerInventoryHandler {
      */
     @ApiOperation(value = "Deletes all application LCM records", response = String.class)
     @DeleteMapping(path = "/apprulemanagers", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasRole('MECM_TENANT')")
+    @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteAllAppRuleManagerRecords() {
         Status status = service.deleteTenantRecords(null, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
