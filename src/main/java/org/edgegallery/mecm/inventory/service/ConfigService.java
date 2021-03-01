@@ -27,9 +27,9 @@ public interface ConfigService {
     /**
      * Uploads K8s configuration file to host's infra manager plugin.
      *
-     * @param hostIp   edge host IP
-     * @param file     configuration file
-     * @param token    access token
+     * @param hostIp edge host IP
+     * @param file   configuration file
+     * @param token  access token
      * @return status
      */
     ResponseEntity<String> uploadConfig(String hostIp, MultipartFile file, String token);
@@ -37,8 +37,8 @@ public interface ConfigService {
     /**
      * Deletes K8s configuration file for host's specific infra manager plugin.
      *
-     * @param hostIp   edge host IP
-     * @param token    access token
+     * @param hostIp edge host IP
+     * @param token  access token
      * @return status
      */
     ResponseEntity<String> deleteConfig(String hostIp, String token);
