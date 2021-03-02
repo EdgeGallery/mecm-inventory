@@ -81,14 +81,13 @@ public class AccessTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        String userIdFromRequest = getTenantId(request.getRequestURI());
-        if (userIdFromRequest == null || additionalInfoMap.get("userId") == null) {
+        if (additionalInfoMap.get("userId") == null) {
             LOGGER.error("Access token is invalid.");
             response.sendError(HttpStatus.UNAUTHORIZED.value(), INVALID_TOKEN_MESSAGE);
             return;
         }
         String userIdFromToken = additionalInfoMap.get("userId").toString();
-
+        String userIdFromRequest = getTenantId(request.getRequestURI());
         if (!StringUtils.isEmpty(userIdFromRequest) && !userIdFromRequest.equals(userIdFromToken)) {
             LOGGER.error("Illegal tenant ID");
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Illegal tenant ID");
