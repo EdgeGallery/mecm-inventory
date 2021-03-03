@@ -102,6 +102,10 @@ public final class InventoryServiceImpl implements InventoryService {
             LOGGER.info("Records returned for tenant identifier {} & type {}", record.get(0).getTenantId(),
                     record.get(0).getType());
         } else {
+            Iterable<T> records = repository.findAll();
+            if (!records.iterator().hasNext()) {
+                throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+            }
             record = Lists.newArrayList(repository.findAll());
             LOGGER.info("Records returned for the type {}", record.get(0).getType());
         }
