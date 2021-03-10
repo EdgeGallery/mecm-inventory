@@ -208,6 +208,8 @@ public class MepmSyncHandler {
                 }
                 host.setHwcapabilities(capabilities);
                 host.setApplications(new HashSet<>());
+                host.setApplcmIp(mepmIp);
+                host.setAppRuleIp(mepmIp);
                 Status addOrUpdateStatus = null;
 
                 try {
