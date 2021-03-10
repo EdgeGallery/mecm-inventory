@@ -19,17 +19,29 @@ package org.edgegallery.mecm.inventory.apihandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleConfigDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleDeletedDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDeletedDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.MecHwCapabilityDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.SyncDeletedMecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncDeletedRulesDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.SyncUpdatedMecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncUpdatedRulesDto;
+import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.edgegallery.mecm.inventory.model.AppRuleManager;
+import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.model.MecHwCapability;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.SyncServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
+import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
 import org.edgegallery.mecm.inventory.service.repository.AppRuleManagerRepository;
+import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
@@ -65,7 +77,13 @@ public class MepmSyncHandler {
     private AppDRuleRepository appDRuleRepository;
 
     @Autowired
+    private MecHostRepository hostRepository;
+
+    @Autowired
     private AppRuleManagerRepository ruleManagerRepository;
+
+    @Autowired
+    private AppLcmRepository lcmRepository;
 
     @Value("${server.ssl.enabled:false}")
     private String isSslEnabled;
@@ -139,4 +157,81 @@ public class MepmSyncHandler {
         }
         return url;
     }
+
+    /**
+     * Synchronize MEC host from a given MEPM to center.
+     *
+     * @param accessToken access token
+     * @param mepmIp      mepm IP
+     * @return success if ok, partial failure is something failed
+     */
+    @ApiOperation(value = "Synchronize mec host record", response = String.class)
+    @GetMapping(path = "/mepms/{mepm_ip}/mechost/sync", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_ADMIN')")
+    public ResponseEntity<Status> syncMecHostsRecords(
+            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
+            @ApiParam(value = "mepm ip") @PathVariable("mepm_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mepmIp) {
+        Status finalStatus = new Status("Success");
+        // Synchronize added & updated records
+        // Get dto records
+        ResponseEntity<SyncUpdatedMecHostDto> updateResponse =
+                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_updated",
+                        SyncUpdatedMecHostDto.class, accessToken);
+        SyncUpdatedMecHostDto syncUpdatedMecHostDto = updateResponse.getBody();
+        // Update table
+        if (syncUpdatedMecHostDto != null) {
+            for (MecHostDto mecHostDto : syncUpdatedMecHostDto.getMecHostUpdatedRecs()) {
+
+                MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
+                host.setMechostId(mecHostDto.getMechostIp());
+
+                Set<MecHwCapability> capabilities = new HashSet<>();
+                for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
+                    MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
+
+                    capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
+                    capability.setMecHost(host);
+
+                    capabilities.add(capability);
+                }
+                host.setHwcapabilities(capabilities);
+                host.setApplications(new HashSet<>());
+                Status updateStatus = service.addRecord(host, hostRepository);
+                if (!updateStatus.getResponse().equals("Saved")) {
+                    finalStatus.setResponse("Partial Failure");
+                }
+            }
+        }
+
+        // Synchronize deleted records
+        // Get dto records
+        ResponseEntity<SyncDeletedMecHostDto> deleteResponse =
+                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_deleted",
+                        SyncDeletedMecHostDto.class, accessToken);
+        SyncDeletedMecHostDto syncDeletedMecHostDto = deleteResponse.getBody();
+        // Update table
+        if (syncDeletedMecHostDto != null) {
+            for (MecHostDeletedDto deletedRecord : syncDeletedMecHostDto.getMecHostStaleRecs()) {
+                Status deleteStatus = service.deleteRecord(deletedRecord.getMechostIp(), hostRepository);
+                if (!deleteStatus.getResponse().equals("Deleted")) {
+                    finalStatus.setResponse("Partial Failure");
+                }
+            }
+        }
+        return new ResponseEntity<>(finalStatus, HttpStatus.OK);
+    }
+
+    private String getMecHostSyncUrl(String mepmIp) {
+        AppLcm lcm = service.getRecord(mepmIp, lcmRepository);
+        String port = lcm.getApplcmPort();
+        String url;
+        if (Boolean.parseBoolean(isSslEnabled)) {
+            url = "https://" + mepmIp + ":" + port + "/lcmcontroller/v1/hosts";
+        } else {
+            url = "http://" + mepmIp + ":" + port + "/lcmcontroller/v1/hosts";
+        }
+        return url;
+    }
+
 }
