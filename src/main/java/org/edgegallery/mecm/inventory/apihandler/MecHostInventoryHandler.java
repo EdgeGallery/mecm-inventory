@@ -16,6 +16,9 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
+import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_HOST_URL;
+
+import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -34,11 +37,14 @@ import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecApplicationDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHwCapabilityDto;
+import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.edgegallery.mecm.inventory.model.MecApplication;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.model.MecHwCapability;
 import org.edgegallery.mecm.inventory.service.ConfigServiceImpl;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
+import org.edgegallery.mecm.inventory.service.RestServiceImpl;
+import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecApplicationRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
@@ -47,6 +53,8 @@ import org.edgegallery.mecm.inventory.utils.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +90,12 @@ public class MecHostInventoryHandler {
     private MecApplicationRepository appRepository;
     @Autowired
     private ConfigServiceImpl configService;
+    @Autowired
+    private RestServiceImpl restService;
+    @Autowired
+    private AppLcmRepository lcmRepository;
+    @Value("${server.ssl.enabled:false}")
+    private String isSslEnabled;
 
     /**
      * Adds a new MEC host record entry into the Inventory.
@@ -93,7 +107,9 @@ public class MecHostInventoryHandler {
     @PostMapping(path = "/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addMecHostRecord(
-            @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDto mecHostDto) {
+            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
+            @Valid @ApiParam(value = "mechost inventory information")
+            @RequestBody MecHostDto mecHostDto) {
         MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
         host.setMechostId(mecHostDto.getMechostIp());
 
@@ -110,6 +126,15 @@ public class MecHostInventoryHandler {
         host.setApplications(new HashSet<>());
 
         Status status = service.addRecord(host, repository);
+
+        // Send record to MEPM
+        Gson gson = new Gson();
+        String request = gson.toJson(mecHostDto);
+        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getApplcmIp()), HttpMethod.POST,
+                accessToken, request);
+        LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
+                response.getBody());
+
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -124,6 +149,7 @@ public class MecHostInventoryHandler {
     @PutMapping(path = "/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateMecHostRecord(
+            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @Valid @ApiParam(value = "mechost inventory information") @RequestBody MecHostDto mecHostDto) {
@@ -148,6 +174,15 @@ public class MecHostInventoryHandler {
         MecHost hostDb = service.getRecord(mecHostIp, repository);
         host.setApplications(hostDb.getApplications());
         Status status = service.updateRecord(host, repository);
+
+        // Send record to MEPM
+        Gson gson = new Gson();
+        String request = gson.toJson(mecHostDto);
+        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getApplcmIp()), HttpMethod.PUT,
+                accessToken, request);
+        LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
+                response.getBody());
+
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -290,9 +325,22 @@ public class MecHostInventoryHandler {
     @DeleteMapping(path = "/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteMecHostRecord(
+            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
+        // Save applcm IP
+        MecHost host = service.getRecord(mecHostIp, repository);
+        String applcmIp = host.getApplcmIp();
+
+        // Delete record
         Status status = service.deleteRecord(mecHostIp, repository);
+
+        // Send record to MEPM
+        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(applcmIp) + "/" + mecHostIp,
+                HttpMethod.DELETE, accessToken, "");
+        LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
+                response.getBody());
+
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -478,5 +526,17 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken) {
         return configService.deleteConfig(mecHostIp, accessToken);
+    }
+
+    private String getMepmUrl(String applcmIp) {
+        AppLcm lcm = service.getRecord(applcmIp, lcmRepository);
+        String port = lcm.getApplcmPort();
+        String url;
+        if (Boolean.parseBoolean(isSslEnabled)) {
+            url = "https://" + applcmIp + ":" + port + APPLCM_HOST_URL;
+        } else {
+            url = "http://" + applcmIp + ":" + port + APPLCM_HOST_URL;
+        }
+        return url;
     }
 }

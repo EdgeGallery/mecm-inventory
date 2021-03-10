@@ -16,6 +16,7 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
+import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_HOST_URL;
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -61,21 +62,6 @@ public class ConfigHandlerTest {
     public void validateConfigOperation() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-        // Add MecHost record
-        ResultActions postResultMecHost =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
-                                + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}"));
-
-        MvcResult postMvcResultMecHost = postResultMecHost.andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String postResponseMecHost = postMvcResultMecHost.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMecHost);
-
         // Add APPLCM record post
         ResultActions postResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
@@ -90,6 +76,30 @@ public class ConfigHandlerTest {
                 .andReturn();
         String postResponseAppLcm = postMvcResultAppLcm.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppLcm);
+
+        // Prepare the mock REST server
+        String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
+        MockRestServiceServer mockServerHostPost = MockRestServiceServer.createServer(restTemplate);
+        mockServerHostPost.expect(requestTo(urlmepmPost))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess());
+
+        // Add MecHost record
+        ResultActions postResultMecHost =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
+                                + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}")
+                        .with(csrf())
+                        .header("access_token", "SampleToken"));
+
+        MvcResult postMvcResultMecHost = postResultMecHost.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String postResponseMecHost = postMvcResultMecHost.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMecHost);
 
         // Begin test for file upload
         // Prepare the mock REST server
@@ -127,6 +137,26 @@ public class ConfigHandlerTest {
         deleteByIdResultConfig.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
+        // Test MecHost record delete by MecHost ID
+        // Prepare the mock REST server
+        String urlmepmDelete = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL + "/" + "1.1.1.1";
+        MockRestServiceServer mockServerHostDelete = MockRestServiceServer.createServer(restTemplate);
+        mockServerHostDelete.expect(requestTo(urlmepmDelete))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withSuccess());
+
+        ResultActions deleteByIdResultMecHost =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
+                        .header("access_token", "SampleToken"));
+
+        MvcResult deleteByIdMvcResultMecHost = deleteByIdResultMecHost.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String deleteByIdResponseMecHost = deleteByIdMvcResultMecHost.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMecHost);
+
         // Test APPLCM record delete by APPLCM ID
         ResultActions deleteByIdResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
@@ -138,17 +168,5 @@ public class ConfigHandlerTest {
                 .andReturn();
         String deleteByIdResponseAppLcm = deleteByIdMvcResultAppLcm.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppLcm);
-
-        // Test MecHost record delete by MecHost ID
-        ResultActions deleteByIdResultMecHost =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
-
-        MvcResult deleteByIdMvcResultMecHost = deleteByIdResultMecHost.andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String deleteByIdResponseMecHost = deleteByIdMvcResultMecHost.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMecHost);
     }
 }
