@@ -28,7 +28,7 @@ import lombok.ToString;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Appd rule deleted record synchronization request schema.
+ * MEC host deleted record synchronization request schema.
  */
 @Validated
 @Getter
@@ -36,8 +36,8 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SyncDeletedRulesDto extends SyncBaseDto {
+public final class SyncDeletedMecHostDto extends SyncBaseDto {
 
-    @Size(max = 20, message = "App rule deleted records exceeds max limit 20")
-    private List<@Valid AppdRuleDeletedDto> appdRuleDeletedRecs = new LinkedList<>();
+    @Size(max = 20, message = "MEC host deleted records exceeds max limit 20")
+    private List<@Valid MecHostDeletedDto> mecHostStaleRecs = new LinkedList<>();
 }

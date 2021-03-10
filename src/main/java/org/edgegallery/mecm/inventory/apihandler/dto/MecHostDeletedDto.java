@@ -16,19 +16,18 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
-import java.util.LinkedList;
-import java.util.List;
-import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Appd rule deleted record synchronization request schema.
+ * MEC host deleted record schema.
  */
 @Validated
 @Getter
@@ -36,8 +35,9 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SyncDeletedRulesDto extends SyncBaseDto {
+public final class MecHostDeletedDto {
 
-    @Size(max = 20, message = "App rule deleted records exceeds max limit 20")
-    private List<@Valid AppdRuleDeletedDto> appdRuleDeletedRecs = new LinkedList<>();
+    @Size(max = 15, message = "mechost IP length exceeds max size")
+    @Pattern(regexp = Constants.IP_REGEX, message = "mechost IP is invalid")
+    private String mechostIp;
 }
