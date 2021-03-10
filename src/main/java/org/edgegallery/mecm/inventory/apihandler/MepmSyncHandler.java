@@ -88,6 +88,8 @@ public class MepmSyncHandler {
     @Value("${server.ssl.enabled:false}")
     private String isSslEnabled;
 
+    private static final String PARTIAL_FAILURE = "Partial Failure";
+
     /**
      * Synchronizes application rules from a given edge to center.
      *
@@ -116,11 +118,20 @@ public class MepmSyncHandler {
         // Update table
         if (syncUpdatedRulesDto != null) {
             for (AppdRuleConfigDto updatedRecord : syncUpdatedRulesDto.getAppdRuleUpdatedRecs()) {
-                Status updateStatus = service.addRecord(
-                        InventoryUtilities.getAppdRule(tenantId, updatedRecord.getAppInstanceId(), updatedRecord),
-                        appDRuleRepository);
-                if (!updateStatus.getResponse().equals("Saved")) {
-                    finalStatus.setResponse("Partial Failure");
+                Status addOrUpdateStatus = null;
+                try {
+                    addOrUpdateStatus = service.addRecord(
+                            InventoryUtilities.getAppdRule(tenantId, updatedRecord.getAppInstanceId(), updatedRecord),
+                            appDRuleRepository);
+                } catch (IllegalArgumentException e) {
+                    if (e.getMessage().equals("Record already exist")) {
+                        addOrUpdateStatus = service.updateRecord(InventoryUtilities.getAppdRule(tenantId,
+                                updatedRecord.getAppInstanceId(), updatedRecord), appDRuleRepository);
+                    }
+                }
+                if (addOrUpdateStatus != null && !addOrUpdateStatus.getResponse().equals("Saved") && !addOrUpdateStatus
+                        .getResponse().equals("Updated")) {
+                    finalStatus.setResponse(PARTIAL_FAILURE);
                 }
             }
         }
@@ -137,7 +148,7 @@ public class MepmSyncHandler {
                 Status deleteStatus = service.deleteRecord(tenantId + deletedRecord.getAppInstanceId(),
                         appDRuleRepository);
                 if (!deleteStatus.getResponse().equals("Deleted")) {
-                    finalStatus.setResponse("Partial Failure");
+                    finalStatus.setResponse(PARTIAL_FAILURE);
                 }
             }
         }
@@ -197,9 +208,21 @@ public class MepmSyncHandler {
                 }
                 host.setHwcapabilities(capabilities);
                 host.setApplications(new HashSet<>());
-                Status updateStatus = service.addRecord(host, hostRepository);
-                if (!updateStatus.getResponse().equals("Saved")) {
-                    finalStatus.setResponse("Partial Failure");
+                Status addOrUpdateStatus = null;
+
+                try {
+                    addOrUpdateStatus = service.addRecord(host, hostRepository);
+                } catch (IllegalArgumentException e) {
+                    if (e.getMessage().equals("Record already exist")) {
+                        MecHost hostDb = service.getRecord(mecHostDto.getMechostIp(), hostRepository);
+                        host.setApplications(hostDb.getApplications());
+                        addOrUpdateStatus = service.updateRecord(host, hostRepository);
+                    }
+                }
+
+                if (addOrUpdateStatus != null && !addOrUpdateStatus.getResponse().equals("Saved") && !addOrUpdateStatus
+                        .getResponse().equals("Updated")) {
+                    finalStatus.setResponse(PARTIAL_FAILURE);
                 }
             }
         }
@@ -215,7 +238,7 @@ public class MepmSyncHandler {
             for (MecHostDeletedDto deletedRecord : syncDeletedMecHostDto.getMecHostStaleRecs()) {
                 Status deleteStatus = service.deleteRecord(deletedRecord.getMechostIp(), hostRepository);
                 if (!deleteStatus.getResponse().equals("Deleted")) {
-                    finalStatus.setResponse("Partial Failure");
+                    finalStatus.setResponse(PARTIAL_FAILURE);
                 }
             }
         }
