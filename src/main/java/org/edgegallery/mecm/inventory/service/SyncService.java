@@ -16,7 +16,7 @@
 
 package org.edgegallery.mecm.inventory.service;
 
-import org.edgegallery.mecm.inventory.apihandler.dto.BaseDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.SyncBaseDto;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -33,5 +33,5 @@ public interface SyncService {
      * @param <T>           type of body
      * @return response entity with body of type T
      */
-    <T extends BaseDto> ResponseEntity<T> syncUpdatedRecords(String url, Class<T> responseClass, String token);
+    <T extends SyncBaseDto> ResponseEntity<T> syncRecords(String url, Class<T> responseClass, String token);
 }

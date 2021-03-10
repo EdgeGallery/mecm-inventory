@@ -16,6 +16,15 @@
 
 package org.edgegallery.mecm.inventory.utils;
 
+import java.util.Set;
+import java.util.UUID;
+import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleConfigDto;
+import org.edgegallery.mecm.inventory.model.AppDnsRule;
+import org.edgegallery.mecm.inventory.model.AppTrafficRule;
+import org.edgegallery.mecm.inventory.model.AppdRule;
+import org.edgegallery.mecm.inventory.model.DstInterface;
+import org.edgegallery.mecm.inventory.model.TrafficFilter;
+import org.edgegallery.mecm.inventory.model.TunnelInfo;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
@@ -34,5 +43,53 @@ public final class InventoryUtilities {
         mapper.getConfiguration().setFieldMatchingEnabled(true);
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return mapper;
+    }
+
+    /**
+     * Converts appd rule config dto to appd rule config.
+     *
+     * @param appDRuleConfigDto appd rule config dto
+     * @return appd rule
+     */
+    public static AppdRule getAppdRule(String tenantId, String appInstanceId, AppdRuleConfigDto appDRuleConfigDto) {
+
+        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleConfigDto, AppdRule.class);
+        appDRule.setTenantId(tenantId);
+        appDRule.setAppInstanceId(appInstanceId);
+        appDRule.setAppdRuleId(tenantId + appInstanceId);
+
+        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDNSRule();
+        for (AppDnsRule dnsRule : dnsRuleSet) {
+            dnsRule.setAppDRule(appDRule);
+            dnsRule.setTenantId(tenantId);
+            dnsRule.setAppInstanceId(appInstanceId);
+        }
+
+        Set<AppTrafficRule> trafficRuleSet = appDRule.getAppTrafficRule();
+        for (AppTrafficRule trafficRule : trafficRuleSet) {
+            trafficRule.setAppDRule(appDRule);
+            trafficRule.setTenantId(tenantId);
+            trafficRule.setAppInstanceId(appInstanceId);
+            Set<TrafficFilter> trafficFilterSet = trafficRule.getTrafficFilter();
+            for (TrafficFilter trafficFilter : trafficFilterSet) {
+                trafficFilter.setTrafficFilterId(UUID.randomUUID().toString());
+                trafficFilter.setTenantId(tenantId);
+                trafficFilter.setTrafficRule(trafficRule);
+            }
+
+            Set<DstInterface> dstInterfaceSet = trafficRule.getDstInterface();
+            for (DstInterface dstInterface : dstInterfaceSet) {
+                dstInterface.setDstInterfaceId(UUID.randomUUID().toString());
+                dstInterface.setTenantId(tenantId);
+                dstInterface.setTrafficRule(trafficRule);
+                TunnelInfo tunnelInfo = dstInterface.getTunnelInfo();
+                if (tunnelInfo != null) {
+                    tunnelInfo.setTenantId(tenantId);
+                    tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
+                }
+            }
+        }
+
+        return appDRule;
     }
 }

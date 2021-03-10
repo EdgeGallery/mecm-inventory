@@ -18,7 +18,7 @@ package org.edgegallery.mecm.inventory.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import org.edgegallery.mecm.inventory.apihandler.dto.BaseDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.SyncBaseDto;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class SyncServiceImpl implements SyncService {
     private RestTemplate restTemplate;
 
     @Override
-    public <T extends BaseDto> ResponseEntity<T> syncUpdatedRecords(String url, Class<T> responseClass, String token) {
+    public <T extends SyncBaseDto> ResponseEntity<T> syncRecords(String url, Class<T> responseClass, String token) {
         // Preparing HTTP header
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);

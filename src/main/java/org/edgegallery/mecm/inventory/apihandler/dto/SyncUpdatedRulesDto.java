@@ -16,7 +16,28 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
-// Base DTO for synchronization
-public class BaseDto {
-    // do nothing
+import java.util.LinkedList;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.validation.annotation.Validated;
+
+/**
+ * Appd rule updated record synchronization request schema.
+ */
+@Validated
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public final class SyncUpdatedRulesDto extends SyncBaseDto {
+
+    @Size(max = 20, message = "capabilities exceeds max limit 20")
+    private List<@Valid AppdRuleConfigDto> appdRuleUpdatedRecs = new LinkedList<>();
 }

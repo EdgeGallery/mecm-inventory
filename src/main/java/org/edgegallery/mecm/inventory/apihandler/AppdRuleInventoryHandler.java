@@ -86,56 +86,9 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
             @Valid @ApiParam(value = "appD rule inventory information")
             @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
-        Status status = service.addRecord(getAppdRule(tenantId, appInstanceId, appDRuleConfigDto), repository);
+        Status status = service.addRecord(InventoryUtilities.getAppdRule(tenantId, appInstanceId, appDRuleConfigDto),
+                repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
-    }
-
-    /**
-     * Converts appd rule config dto to appd rule config.
-     *
-     * @param appDRuleConfigDto appd rule config dto
-     * @return appd rule
-     */
-    private AppdRule getAppdRule(String tenantId, String appInstanceId, AppdRuleConfigDto appDRuleConfigDto) {
-
-        AppdRule appDRule = InventoryUtilities.getModelMapper().map(appDRuleConfigDto, AppdRule.class);
-        appDRule.setTenantId(tenantId);
-        appDRule.setAppInstanceId(appInstanceId);
-        appDRule.setAppdRuleId(tenantId + appInstanceId);
-
-        Set<AppDnsRule> dnsRuleSet = appDRule.getAppDNSRule();
-        for (AppDnsRule dnsRule : dnsRuleSet) {
-            dnsRule.setAppDRule(appDRule);
-            dnsRule.setTenantId(tenantId);
-            dnsRule.setAppInstanceId(appInstanceId);
-        }
-
-        Set<AppTrafficRule> trafficRuleSet = appDRule.getAppTrafficRule();
-        for (AppTrafficRule trafficRule : trafficRuleSet) {
-            trafficRule.setAppDRule(appDRule);
-            trafficRule.setTenantId(tenantId);
-            trafficRule.setAppInstanceId(appInstanceId);
-            Set<TrafficFilter> trafficFilterSet = trafficRule.getTrafficFilter();
-            for (TrafficFilter trafficFilter : trafficFilterSet) {
-                trafficFilter.setTrafficFilterId(UUID.randomUUID().toString());
-                trafficFilter.setTenantId(tenantId);
-                trafficFilter.setTrafficRule(trafficRule);
-            }
-
-            Set<DstInterface> dstInterfaceSet = trafficRule.getDstInterface();
-            for (DstInterface dstInterface : dstInterfaceSet) {
-                dstInterface.setDstInterfaceId(UUID.randomUUID().toString());
-                dstInterface.setTenantId(tenantId);
-                dstInterface.setTrafficRule(trafficRule);
-                TunnelInfo tunnelInfo = dstInterface.getTunnelInfo();
-                if (tunnelInfo != null) {
-                    tunnelInfo.setTenantId(tenantId);
-                    tunnelInfo.setTunnelInfoId(UUID.randomUUID().toString());
-                }
-            }
-        }
-
-        return appDRule;
     }
 
     /**
@@ -157,7 +110,8 @@ public class AppdRuleInventoryHandler {
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
             @Valid @ApiParam(value = "appD rule inventory information")
             @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
-        Status status = service.updateRecord(getAppdRule(tenantId, appInstanceId, appDRuleConfigDto), repository);
+        Status status = service.updateRecord(InventoryUtilities.getAppdRule(tenantId, appInstanceId,
+                appDRuleConfigDto), repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
