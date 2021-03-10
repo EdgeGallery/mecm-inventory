@@ -20,18 +20,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleConfigDto;
-import org.edgegallery.mecm.inventory.model.AppDnsRule;
-import org.edgegallery.mecm.inventory.model.AppTrafficRule;
 import org.edgegallery.mecm.inventory.model.AppdRule;
-import org.edgegallery.mecm.inventory.model.DstInterface;
-import org.edgegallery.mecm.inventory.model.TrafficFilter;
-import org.edgegallery.mecm.inventory.model.TunnelInfo;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
@@ -70,8 +63,8 @@ public class AppdRuleInventoryHandler {
     /**
      * Adds a new APPDRule record entry into the Inventory.
      *
-     * @param tenantId   tenant ID
-     * @param appInstanceId  appInstance ID
+     * @param tenantId          tenant ID
+     * @param appInstanceId     appInstance ID
      * @param appDRuleConfigDto appDRule record details
      * @return status code 200 on success, error code on failure
      */
@@ -94,8 +87,8 @@ public class AppdRuleInventoryHandler {
     /**
      * Updates an exiting APPDRule record in the Inventory matching the given tenant ID & app instance ID.
      *
-     * @param tenantId   tenant ID
-     * @param appInstanceId  app instance Id
+     * @param tenantId          tenant ID
+     * @param appInstanceId     app instance Id
      * @param appDRuleConfigDto appDRule record details
      * @return status code 200 on success, error code on failure
      */
@@ -118,8 +111,8 @@ public class AppdRuleInventoryHandler {
     /**
      * Retrieves appDRule records for given tenant ID and app instance ID.
      *
-     * @param tenantId tenant ID
-     * @param appInstanceId  app instance Id
+     * @param tenantId      tenant ID
+     * @param appInstanceId app instance Id
      * @return appDRule records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves appDRule records for given tenent ID and app instance ID", response =
@@ -141,8 +134,8 @@ public class AppdRuleInventoryHandler {
     /**
      * Deletes appDRule records for a given tenant and app instance.
      *
-     * @param tenantId   tenant ID
-     * @param appInstanceId  app instance Id
+     * @param tenantId      tenant ID
+     * @param appInstanceId app instance Id
      * @return status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Deletes appDRule records", response = String.class)
@@ -155,6 +148,6 @@ public class AppdRuleInventoryHandler {
             @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId) {
         Status status = service.deleteRecord(tenantId + appInstanceId, repository);
-        return new ResponseEntity<>(status,HttpStatus.OK);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }
