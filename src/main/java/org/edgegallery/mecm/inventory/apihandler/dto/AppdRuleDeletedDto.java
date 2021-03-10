@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Huawei Technologies Co., Ltd.
+ *  Copyright 2021 Huawei Technologies Co., Ltd.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -31,7 +27,7 @@ import org.edgegallery.mecm.inventory.utils.Constants;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * AppDRule Inventory input request schema.
+ * Appd rule deleted record schema.
  */
 @Validated
 @Getter
@@ -39,23 +35,9 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public final class AppdRuleConfigDto {
+public final class AppdRuleDeletedDto {
 
     @Size(max = 64, message = "application instance ID length exceeds max size")
     @Pattern(regexp = Constants.APPLICATION_ID_REGEX, message = "application instance ID is invalid")
     private String appInstanceId;
-
-    @Size(max = 16)
-    private Set<@Valid TrafficRuleDto> appTrafficRule = new LinkedHashSet<>();
-
-    @Size(max = 32)
-    private Set<@Valid DnsRuleDto> appDNSRule = new LinkedHashSet<>();
-
-    @NotEmpty(message = "Application name is mandatory")
-    @Size(max = 128)
-    @Pattern(regexp = Constants.APP_NAME_REGEX, message = "App name is invalid. It must start and end with alpha "
-            + "numeric character and special characters allowed are hyphen and underscore.")
-    private String appName;
-
-    private Boolean appSupportMp1;
 }
