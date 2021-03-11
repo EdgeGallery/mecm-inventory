@@ -34,12 +34,12 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Implementation of sync service.
+ * Implementation of rest service.
  */
 @Service("SyncServiceImpl")
-public class SyncServiceImpl implements SyncService {
+public class RestServiceImpl implements RestService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SyncServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestServiceImpl.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -47,14 +47,7 @@ public class SyncServiceImpl implements SyncService {
     @Override
     public <T extends SyncBaseDto> ResponseEntity<T> syncRecords(String url, Class<T> responseClass, String token) {
         // Preparing HTTP header
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        try {
-            httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
-            httpHeaders.set("access_token", token);
-        } catch (UnknownHostException e) {
-            throw new InventoryException(e.getLocalizedMessage());
-        }
+        HttpHeaders httpHeaders = getHttpHeader(token);
 
         // Creating HTTP entity with headers
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
@@ -75,5 +68,48 @@ public class SyncServiceImpl implements SyncService {
                     + statusCode);
         }
         return responseEntity;
+    }
+
+    @Override
+    public ResponseEntity<String> sendRequest(String url, HttpMethod method, String token, String data) {
+        // Preparing HTTP header
+        HttpHeaders httpHeaders = getHttpHeader(token);
+
+        // Creating HTTP entity with headers
+        HttpEntity<String> httpEntity = null;
+        if (method == HttpMethod.POST || method == HttpMethod.PUT) {
+            httpEntity = new HttpEntity<>(data, httpHeaders);
+        } else if (method == HttpMethod.DELETE) {
+            httpEntity = new HttpEntity<>(httpHeaders);
+        }
+
+        ResponseEntity<String> responseEntity;
+        // Sending request
+        try {
+            responseEntity = restTemplate.exchange(url, method, httpEntity, String.class);
+        } catch (RestClientException e) {
+            throw new InventoryException("Failure while sending request with error message: "
+                    + e.getLocalizedMessage());
+        }
+        LOGGER.info("Send request status code {}, value {} ", responseEntity.getStatusCodeValue(),
+                responseEntity.getBody());
+
+        HttpStatus statusCode = responseEntity.getStatusCode();
+        if (!statusCode.is2xxSuccessful()) {
+            throw new InventoryException("Failure while sending request status code: " + statusCode);
+        }
+        return responseEntity;
+    }
+
+    private HttpHeaders getHttpHeader(String token) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        try {
+            httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
+            httpHeaders.set("access_token", token);
+        } catch (UnknownHostException e) {
+            throw new InventoryException(e.getLocalizedMessage());
+        }
+        return httpHeaders;
     }
 }

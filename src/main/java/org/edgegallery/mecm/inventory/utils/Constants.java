@@ -52,6 +52,7 @@ public final class Constants {
     public static final int MAX_PWD_COUNT = 2;
 
     public static final String APPLCM_URI = "/lcmcontroller/v1/configuration";
+    public static final String APPLCM_HOST_URL = "/lcmcontroller/v1/hosts";
     public static final String RECORD_NOT_FOUND_ERROR = "Record not found";
 
     public static final String ADMIN_USER = "admin";

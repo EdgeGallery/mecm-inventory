@@ -37,7 +37,7 @@ import org.edgegallery.mecm.inventory.model.AppRuleManager;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.model.MecHwCapability;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
-import org.edgegallery.mecm.inventory.service.SyncServiceImpl;
+import org.edgegallery.mecm.inventory.service.RestServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
 import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
 import org.edgegallery.mecm.inventory.service.repository.AppRuleManagerRepository;
@@ -68,7 +68,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MepmSyncHandler {
 
     @Autowired
-    private SyncServiceImpl syncService;
+    private RestServiceImpl syncService;
 
     @Autowired
     private InventoryServiceImpl service;
