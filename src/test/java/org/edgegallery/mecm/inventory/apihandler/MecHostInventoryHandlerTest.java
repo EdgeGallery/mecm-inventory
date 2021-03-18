@@ -110,7 +110,7 @@ public class MecHostInventoryHandlerTest {
                 "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,"
                         + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
-                        + "\"hwcapabilities\":[],\"vim\":null}", getByIdResponse);
+                        + "\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null}", getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
         // Prepare the mock REST server
@@ -195,7 +195,8 @@ public class MecHostInventoryHandlerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", \"appRuleIp\": \"1.1.1"
-                                + ".1\",\"coordinates\":\"1,1\",\"vim\":\"k8s\"}").with(csrf())
+                                + ".1\",\"coordinates\":\"1,1\",\"vim\":\"k8s\",\"configUploadStatus\":null}")
+                        .with(csrf())
                         .header("access_token", "SampleToken"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -217,7 +218,7 @@ public class MecHostInventoryHandlerTest {
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
                         + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
-                        + "\"hwcapabilities\":[],\"vim\":\"k8s\"}]",
+                        + "\"hwcapabilities\":[],\"vim\":\"k8s\",\"configUploadStatus\":null}]",
                 getAllResponse);
 
         // Test Delete all records
@@ -301,11 +302,8 @@ public class MecHostInventoryHandlerTest {
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
-                        + "\"hwcapabilities\":[{\"hwType\":\"GPU1\","
-                        + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}],\"vim\":null}", getByIdResponse);
+                "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\",\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}],\"vim\":null,\"configUploadStatus\":null}",
+                getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
         // Prepare the mock REST server
@@ -412,7 +410,8 @@ public class MecHostInventoryHandlerTest {
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":null}]",
+                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
+                        + "\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null}]",
                 getAllResponse);
 
         // Test Delete all records

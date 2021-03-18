@@ -16,12 +16,9 @@
 
 package org.edgegallery.mecm.inventory.service;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncBaseDto;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.utils.Constants;

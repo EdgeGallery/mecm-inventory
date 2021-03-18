@@ -97,4 +97,7 @@ public final class MecHostDto {
     @Pattern(regexp = Constants.NAME_REGEX, message = "vim name is invalid. It must start and end with alpha "
             + "numeric characters and special characters allowed are hyphen and underscore")
     private String vim;
+
+    @Size(max = 32, message = "config upload status length exceeds max size")
+    private String configUploadStatus;
 }
