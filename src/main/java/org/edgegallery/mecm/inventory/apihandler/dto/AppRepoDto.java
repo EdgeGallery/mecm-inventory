@@ -54,7 +54,5 @@ public final class AppRepoDto {
 
     @NotEmpty(message = "app repo password is empty")
     @Size(max = 128, message = "app repo password length exceeds max size")
-    @Pattern(regexp = Constants.AUTH_PASS_REGEX, message = "app repo password is invalid. It must start and end with "
-            + "alpha numeric character and special characters allowed are hyphen and underscore")
     private String repoPassword;
 }
