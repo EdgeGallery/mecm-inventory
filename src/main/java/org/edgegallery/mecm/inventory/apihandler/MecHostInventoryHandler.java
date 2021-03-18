@@ -336,10 +336,14 @@ public class MecHostInventoryHandler {
         Status status = service.deleteRecord(mecHostIp, repository);
 
         // Send record to MEPM
-        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(applcmIp) + "/" + mecHostIp,
-                HttpMethod.DELETE, accessToken, "");
-        LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
-                response.getBody());
+        try {
+            ResponseEntity<String> response = restService.sendRequest(getMepmUrl(applcmIp) + "/" + mecHostIp,
+                    HttpMethod.DELETE, accessToken, "");
+            LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
+                    response.getBody());
+        } catch (NoSuchElementException e) {
+            LOGGER.info("mec host does not exist");
+        }
 
         return new ResponseEntity<>(status, HttpStatus.OK);
     }

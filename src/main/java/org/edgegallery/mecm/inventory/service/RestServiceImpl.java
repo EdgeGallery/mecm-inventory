@@ -18,8 +18,13 @@ package org.edgegallery.mecm.inventory.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncBaseDto;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +100,9 @@ public class RestServiceImpl implements RestService {
                 responseEntity.getBody());
 
         HttpStatus statusCode = responseEntity.getStatusCode();
+        if (statusCode.toString().equals("404")) {
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+        }
         if (!statusCode.is2xxSuccessful()) {
             throw new InventoryException("Failure while sending request status code: " + statusCode);
         }
@@ -102,14 +110,13 @@ public class RestServiceImpl implements RestService {
     }
 
     private HttpHeaders getHttpHeader(String token) {
+        List<MediaType> list = new LinkedList<>();
+        list.add(MediaType.ALL);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        try {
-            httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
-            httpHeaders.set("access_token", token);
-        } catch (UnknownHostException e) {
-            throw new InventoryException(e.getLocalizedMessage());
-        }
+        httpHeaders.setAccept(list);
+
+        httpHeaders.set("access_token", token);
         return httpHeaders;
     }
 }

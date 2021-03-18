@@ -116,7 +116,7 @@ public class MepmSyncHandler {
                         SyncUpdatedRulesDto.class, accessToken);
         SyncUpdatedRulesDto syncUpdatedRulesDto = updateResponse.getBody();
         // Update table
-        if (syncUpdatedRulesDto != null) {
+        if (syncUpdatedRulesDto != null && syncUpdatedRulesDto.getAppdRuleUpdatedRecs() != null) {
             for (AppdRuleConfigDto updatedRecord : syncUpdatedRulesDto.getAppdRuleUpdatedRecs()) {
                 Status addOrUpdateStatus = null;
                 try {
@@ -143,7 +143,7 @@ public class MepmSyncHandler {
                         SyncDeletedRulesDto.class, accessToken);
         SyncDeletedRulesDto syncDeletedRulesDto = deleteResponse.getBody();
         // Update table
-        if (syncDeletedRulesDto != null) {
+        if (syncDeletedRulesDto != null && syncDeletedRulesDto.getAppdRuleDeletedRecs() != null) {
             for (AppdRuleDeletedDto deletedRecord : syncDeletedRulesDto.getAppdRuleDeletedRecs()) {
                 Status deleteStatus = service.deleteRecord(tenantId + deletedRecord.getAppInstanceId(),
                         appDRuleRepository);
@@ -160,10 +160,10 @@ public class MepmSyncHandler {
         String rulePort = ruleManager.getAppRulePort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + rulePort + "/apprulemgr/v1/configuration/tenants/" + tenantId
+            url = "https://" + mepmIp + ":" + rulePort + "/apprulemgr/v1/tenants/" + tenantId
                     + "/app_instances/appd_configuration";
         } else {
-            url = "http://" + mepmIp + ":" + rulePort + "/apprulemgr/v1/configuration/tenants/" + tenantId
+            url = "http://" + mepmIp + ":" + rulePort + "/apprulemgr/v1/tenants/" + tenantId
                     + "/app_instances/appd_configuration";
         }
         return url;
@@ -191,7 +191,7 @@ public class MepmSyncHandler {
                         SyncUpdatedMecHostDto.class, accessToken);
         SyncUpdatedMecHostDto syncUpdatedMecHostDto = updateResponse.getBody();
         // Update table
-        if (syncUpdatedMecHostDto != null) {
+        if (syncUpdatedMecHostDto != null && syncUpdatedMecHostDto.getMecHostUpdatedRecs() != null) {
             for (MecHostDto mecHostDto : syncUpdatedMecHostDto.getMecHostUpdatedRecs()) {
 
                 MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
@@ -236,7 +236,7 @@ public class MepmSyncHandler {
                         SyncDeletedMecHostDto.class, accessToken);
         SyncDeletedMecHostDto syncDeletedMecHostDto = deleteResponse.getBody();
         // Update table
-        if (syncDeletedMecHostDto != null) {
+        if (syncDeletedMecHostDto != null && syncDeletedMecHostDto.getMecHostStaleRecs() != null) {
             for (MecHostDeletedDto deletedRecord : syncDeletedMecHostDto.getMecHostStaleRecs()) {
                 Status deleteStatus = service.deleteRecord(deletedRecord.getMechostIp(), hostRepository);
                 if (!deleteStatus.getResponse().equals("Deleted")) {
