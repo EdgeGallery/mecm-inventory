@@ -153,7 +153,7 @@ public class AppRepoInventoryHandler {
             throw new IllegalArgumentException("apprepo endpoint in body and url is different");
         }
         AppRepo repo = InventoryUtilities.getModelMapper().map(appRepoDto, AppRepo.class);
-        repo.setRepoId(repo.getRepoId());
+        repo.setRepoId(appRepoDto.getRepoEndPoint());
         Status status = service.updateRecord(repo, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
