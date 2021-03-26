@@ -36,7 +36,7 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SyncDeletedRulesDto extends SyncBaseDto {
+public final class SyncDeletedRulesDto implements SyncBaseDto {
 
     @Size(max = 20, message = "App rule deleted records exceeds max limit 20")
     private List<@Valid AppdRuleDeletedDto> appdRuleDeletedRecs = new LinkedList<>();

@@ -112,19 +112,7 @@ public class MecHostInventoryHandler {
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
             @Valid @ApiParam(value = "mechost inventory information")
             @RequestBody MecHostDto mecHostDto) {
-        MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
-        host.setMechostId(mecHostDto.getMechostIp());
-
-        Set<MecHwCapability> capabilities = new HashSet<>();
-        for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
-            MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
-
-            capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
-            capability.setMecHost(host);
-
-            capabilities.add(capability);
-        }
-        host.setHwcapabilities(capabilities);
+        MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostDto.getMechostIp());
         host.setApplications(new HashSet<>());
 
         Status status = service.addRecord(host, repository);
@@ -160,18 +148,8 @@ public class MecHostInventoryHandler {
                     mecHostDto.getMechostIp(), mecHostIp);
             throw new IllegalArgumentException("mechost IP in body and url is different");
         }
-        MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
-        host.setMechostId(mecHostIp);
 
-        Set<MecHwCapability> capabilities = new HashSet<>();
-        for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
-            MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
-            capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
-            capability.setMecHost(host);
-
-            capabilities.add(capability);
-        }
-        host.setHwcapabilities(capabilities);
+        MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostIp);
 
         MecHost hostDb = service.getRecord(mecHostIp, repository);
         host.setApplications(hostDb.getApplications());

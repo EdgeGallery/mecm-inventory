@@ -16,13 +16,18 @@
 
 package org.edgegallery.mecm.inventory.utils;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleConfigDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
+import org.edgegallery.mecm.inventory.apihandler.dto.MecHwCapabilityDto;
 import org.edgegallery.mecm.inventory.model.AppDnsRule;
 import org.edgegallery.mecm.inventory.model.AppTrafficRule;
 import org.edgegallery.mecm.inventory.model.AppdRule;
 import org.edgegallery.mecm.inventory.model.DstInterface;
+import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.model.MecHwCapability;
 import org.edgegallery.mecm.inventory.model.TrafficFilter;
 import org.edgegallery.mecm.inventory.model.TunnelInfo;
 import org.modelmapper.ModelMapper;
@@ -91,5 +96,28 @@ public final class InventoryUtilities {
         }
 
         return appDRule;
+    }
+
+    /**
+     * To get mec host record.
+     *
+     * @param mecHostDto mec host dto information
+     * @param mecHostIp mec host ip address
+     * @return host mechost
+     */
+    public static MecHost getMecHost(MecHostDto mecHostDto, String mecHostIp) {
+        MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
+        host.setMechostId(mecHostIp);
+
+        Set<MecHwCapability> capabilities = new HashSet<>();
+        for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
+            MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
+            capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
+            capability.setMecHost(host);
+
+            capabilities.add(capability);
+        }
+        host.setHwcapabilities(capabilities);
+        return host;
     }
 }

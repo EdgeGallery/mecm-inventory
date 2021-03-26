@@ -191,22 +191,31 @@ public class MepmSyncHandler {
                         SyncUpdatedMecHostDto.class, accessToken);
         SyncUpdatedMecHostDto syncUpdatedMecHostDto = updateResponse.getBody();
         // Update table
+        updateMecHostRecord(syncUpdatedMecHostDto, finalStatus, mepmIp);
+
+        // Synchronize deleted records
+        // Get dto records
+        ResponseEntity<SyncDeletedMecHostDto> deleteResponse =
+                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_deleted",
+                        SyncDeletedMecHostDto.class, accessToken);
+        SyncDeletedMecHostDto syncDeletedMecHostDto = deleteResponse.getBody();
+        // Update table
+        if (syncDeletedMecHostDto != null && syncDeletedMecHostDto.getMecHostStaleRecs() != null) {
+            for (MecHostDeletedDto deletedRecord : syncDeletedMecHostDto.getMecHostStaleRecs()) {
+                Status deleteStatus = service.deleteRecord(deletedRecord.getMechostIp(), hostRepository);
+                if (!deleteStatus.getResponse().equals("Deleted")) {
+                    finalStatus.setResponse(PARTIAL_FAILURE);
+                }
+            }
+        }
+        return new ResponseEntity<>(finalStatus, HttpStatus.OK);
+    }
+
+    private void updateMecHostRecord(SyncUpdatedMecHostDto syncUpdatedMecHostDto, Status finalStatus, String mepmIp) {
         if (syncUpdatedMecHostDto != null && syncUpdatedMecHostDto.getMecHostUpdatedRecs() != null) {
             for (MecHostDto mecHostDto : syncUpdatedMecHostDto.getMecHostUpdatedRecs()) {
 
-                MecHost host = InventoryUtilities.getModelMapper().map(mecHostDto, MecHost.class);
-                host.setMechostId(mecHostDto.getMechostIp());
-
-                Set<MecHwCapability> capabilities = new HashSet<>();
-                for (MecHwCapabilityDto v : mecHostDto.getHwcapabilities()) {
-                    MecHwCapability capability = InventoryUtilities.getModelMapper().map(v, MecHwCapability.class);
-
-                    capability.setMecCapabilityId(v.getHwType() + host.getMechostId());
-                    capability.setMecHost(host);
-
-                    capabilities.add(capability);
-                }
-                host.setHwcapabilities(capabilities);
+                MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostDto.getMechostIp());
                 host.setApplications(new HashSet<>());
                 host.setApplcmIp(mepmIp);
                 host.setAppRuleIp(mepmIp);
@@ -228,23 +237,6 @@ public class MepmSyncHandler {
                 }
             }
         }
-
-        // Synchronize deleted records
-        // Get dto records
-        ResponseEntity<SyncDeletedMecHostDto> deleteResponse =
-                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_deleted",
-                        SyncDeletedMecHostDto.class, accessToken);
-        SyncDeletedMecHostDto syncDeletedMecHostDto = deleteResponse.getBody();
-        // Update table
-        if (syncDeletedMecHostDto != null && syncDeletedMecHostDto.getMecHostStaleRecs() != null) {
-            for (MecHostDeletedDto deletedRecord : syncDeletedMecHostDto.getMecHostStaleRecs()) {
-                Status deleteStatus = service.deleteRecord(deletedRecord.getMechostIp(), hostRepository);
-                if (!deleteStatus.getResponse().equals("Deleted")) {
-                    finalStatus.setResponse(PARTIAL_FAILURE);
-                }
-            }
-        }
-        return new ResponseEntity<>(finalStatus, HttpStatus.OK);
     }
 
     private String getMecHostSyncUrl(String mepmIp) {

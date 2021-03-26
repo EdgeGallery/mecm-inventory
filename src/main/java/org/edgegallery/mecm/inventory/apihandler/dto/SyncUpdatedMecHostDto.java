@@ -36,7 +36,7 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SyncUpdatedMecHostDto extends SyncBaseDto {
+public final class SyncUpdatedMecHostDto implements SyncBaseDto {
 
     @Size(max = 20, message = "MEC host updated records exceeds max limit 20")
     private List<@Valid MecHostDto> mecHostUpdatedRecs = new LinkedList<>();

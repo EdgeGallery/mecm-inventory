@@ -63,20 +63,24 @@ public final class FileChecker {
             throw new IllegalArgumentException(fileName + " :fileSize is too big");
         }
 
-        if (!isFileValidYaml(file)) {
+        if (isFileValidYaml(file)) {
+            LOGGER.info("Valid yaml file");
+        } else {
             throw new IllegalArgumentException(fileName + " :file type is invalid");
         }
+
     }
 
     private static boolean isFileValidYaml(File file) {
+        boolean flag = false;
         ObjectMapper om = new ObjectMapper(new YAMLFactory());
         try {
             om.readValue(file, Object.class);
+            flag = true;
         } catch (IOException e) {
             LOGGER.error("File type validation failed");
-            return false;
         }
-        return true;
+        return flag;
     }
 
     private static boolean isAllowedFileName(String originalFilename) {

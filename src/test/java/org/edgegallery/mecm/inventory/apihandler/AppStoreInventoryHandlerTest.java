@@ -106,7 +106,7 @@ public class AppStoreInventoryHandlerTest {
                         + "\"TestStore\", \"producer\": "
                         + "\"TestProducer\" }"));
 
-        Thread.sleep(5000);
+
         // Update record
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/appstores/1.1.1.1")

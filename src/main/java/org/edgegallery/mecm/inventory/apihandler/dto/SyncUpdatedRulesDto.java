@@ -36,7 +36,7 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public final class SyncUpdatedRulesDto extends SyncBaseDto {
+public final class SyncUpdatedRulesDto implements SyncBaseDto {
 
     @Size(max = 20, message = "App rule updated records exceeds max limit 20")
     private List<@Valid AppdRuleConfigDto> appdRuleUpdatedRecs = new LinkedList<>();
