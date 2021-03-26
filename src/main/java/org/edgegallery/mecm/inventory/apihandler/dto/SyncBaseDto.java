@@ -17,6 +17,6 @@
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
 // Base sync DTO for synchronization
-public class SyncBaseDto {
+public interface SyncBaseDto {
     // do nothing
 }
