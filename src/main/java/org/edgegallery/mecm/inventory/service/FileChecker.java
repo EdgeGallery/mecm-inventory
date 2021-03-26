@@ -72,13 +72,14 @@ public final class FileChecker {
     }
 
     private static boolean isFileValidYaml(File file) {
-        boolean flag = false;
+        boolean flag;
         ObjectMapper om = new ObjectMapper(new YAMLFactory());
         try {
             om.readValue(file, Object.class);
             flag = true;
         } catch (IOException e) {
             LOGGER.error("File type validation failed");
+            flag = false;
         }
         return flag;
     }

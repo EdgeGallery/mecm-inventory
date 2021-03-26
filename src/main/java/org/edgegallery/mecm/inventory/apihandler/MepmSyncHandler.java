@@ -112,6 +112,27 @@ public class MepmSyncHandler {
                 syncService.syncRecords(getAppRuleMgrSyncUrl(mepmIp, tenantId) + "/sync_updated",
                         SyncUpdatedRulesDto.class, accessToken);
         SyncUpdatedRulesDto syncUpdatedRulesDto = updateResponse.getBody();
+        updateAppdRuleRecord(syncUpdatedRulesDto, tenantId, finalStatus);
+        // Synchronize deleted records
+        // Get dto records
+        ResponseEntity<SyncDeletedRulesDto> deleteResponse =
+                syncService.syncRecords(getAppRuleMgrSyncUrl(mepmIp, tenantId) + "/sync_deleted",
+                        SyncDeletedRulesDto.class, accessToken);
+        SyncDeletedRulesDto syncDeletedRulesDto = deleteResponse.getBody();
+        // Update table
+        if (syncDeletedRulesDto != null && syncDeletedRulesDto.getAppdRuleDeletedRecs() != null) {
+            for (AppdRuleDeletedDto deletedRecord : syncDeletedRulesDto.getAppdRuleDeletedRecs()) {
+                Status deleteStatus = service.deleteRecord(tenantId + deletedRecord.getAppInstanceId(),
+                        appDRuleRepository);
+                if (!deleteStatus.getResponse().equals("Deleted")) {
+                    finalStatus.setResponse(PARTIAL_FAILURE);
+                }
+            }
+        }
+        return new ResponseEntity<>(finalStatus, HttpStatus.OK);
+    }
+
+    private void updateAppdRuleRecord(SyncUpdatedRulesDto syncUpdatedRulesDto, String tenantId, Status finalStatus) {
         // Update table
         if (syncUpdatedRulesDto != null && syncUpdatedRulesDto.getAppdRuleUpdatedRecs() != null) {
             for (AppdRuleConfigDto updatedRecord : syncUpdatedRulesDto.getAppdRuleUpdatedRecs()) {
@@ -132,24 +153,6 @@ public class MepmSyncHandler {
                 }
             }
         }
-
-        // Synchronize deleted records
-        // Get dto records
-        ResponseEntity<SyncDeletedRulesDto> deleteResponse =
-                syncService.syncRecords(getAppRuleMgrSyncUrl(mepmIp, tenantId) + "/sync_deleted",
-                        SyncDeletedRulesDto.class, accessToken);
-        SyncDeletedRulesDto syncDeletedRulesDto = deleteResponse.getBody();
-        // Update table
-        if (syncDeletedRulesDto != null && syncDeletedRulesDto.getAppdRuleDeletedRecs() != null) {
-            for (AppdRuleDeletedDto deletedRecord : syncDeletedRulesDto.getAppdRuleDeletedRecs()) {
-                Status deleteStatus = service.deleteRecord(tenantId + deletedRecord.getAppInstanceId(),
-                        appDRuleRepository);
-                if (!deleteStatus.getResponse().equals("Deleted")) {
-                    finalStatus.setResponse(PARTIAL_FAILURE);
-                }
-            }
-        }
-        return new ResponseEntity<>(finalStatus, HttpStatus.OK);
     }
 
     private String getAppRuleMgrSyncUrl(String mepmIp, String tenantId) {
