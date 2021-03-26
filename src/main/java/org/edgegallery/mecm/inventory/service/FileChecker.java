@@ -49,6 +49,7 @@ public final class FileChecker {
      */
     static void check(File file) {
         String fileName = file.getName();
+        ObjectMapper om = new ObjectMapper(new YAMLFactory());
 
         // file name should not contains blank.
         if (fileName != null && WHITE_SPACE_PATTERN.split(fileName).length > 1) {
@@ -63,25 +64,12 @@ public final class FileChecker {
             throw new IllegalArgumentException(fileName + " :fileSize is too big");
         }
 
-        if (isFileValidYaml(file)) {
-            LOGGER.info("Valid yaml file");
-        } else {
-            throw new IllegalArgumentException(fileName + " :file type is invalid");
-        }
-
-    }
-
-    private static boolean isFileValidYaml(File file) {
-        boolean flag;
-        ObjectMapper om = new ObjectMapper(new YAMLFactory());
         try {
             om.readValue(file, Object.class);
-            flag = true;
         } catch (IOException e) {
             LOGGER.error("File type validation failed");
-            flag = false;
+            throw new IllegalArgumentException(fileName + " :file type is invalid");
         }
-        return flag;
     }
 
     private static boolean isAllowedFileName(String originalFilename) {
