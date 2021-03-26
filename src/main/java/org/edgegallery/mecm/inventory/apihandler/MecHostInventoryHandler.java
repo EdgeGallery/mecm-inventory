@@ -82,6 +82,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class MecHostInventoryHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MecHostInventoryHandler.class);
+    private static final String STATUS_CODE = "Send record to MEPM status code {} and body {}";
+
     @Autowired
     private InventoryServiceImpl service;
     @Autowired
@@ -132,7 +134,7 @@ public class MecHostInventoryHandler {
         String request = gson.toJson(mecHostDto);
         ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getApplcmIp()), HttpMethod.POST,
                 accessToken, request);
-        LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
+        LOGGER.info(STATUS_CODE, response.getStatusCodeValue(),
                 response.getBody());
 
         return new ResponseEntity<>(status, HttpStatus.OK);
@@ -180,7 +182,7 @@ public class MecHostInventoryHandler {
         String request = gson.toJson(mecHostDto);
         ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getApplcmIp()), HttpMethod.PUT,
                 accessToken, request);
-        LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
+        LOGGER.info(STATUS_CODE, response.getStatusCodeValue(),
                 response.getBody());
 
         return new ResponseEntity<>(status, HttpStatus.OK);
@@ -339,7 +341,7 @@ public class MecHostInventoryHandler {
         try {
             ResponseEntity<String> response = restService.sendRequest(getMepmUrl(applcmIp) + "/" + mecHostIp,
                     HttpMethod.DELETE, accessToken, "");
-            LOGGER.info("Send record to MEPM status code {} and body {}", response.getStatusCodeValue(),
+            LOGGER.info(STATUS_CODE, response.getStatusCodeValue(),
                     response.getBody());
         } catch (NoSuchElementException e) {
             LOGGER.info("mec host does not exist");
