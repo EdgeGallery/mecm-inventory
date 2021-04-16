@@ -23,6 +23,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.apache.servicecomb.provider.rest.common.RestSchema;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleConfigDto;
 import org.edgegallery.mecm.inventory.model.AppdRule;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
@@ -48,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * AppD Rule Inventory API handler.
  */
+@RestSchema(schemaId = "inventory-apprule")
 @Api(value = "Inventory AppD Rule Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")

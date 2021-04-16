@@ -18,6 +18,7 @@ package org.edgegallery.mecm.inventory.apihandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.servicecomb.provider.rest.common.RestSchema;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Application LCM Inventory API handler.
  */
+@RestSchema(schemaId = "inventory-healthcheck")
 @Api(value = "Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")

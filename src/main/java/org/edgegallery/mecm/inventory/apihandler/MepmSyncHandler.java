@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiParam;
 import java.util.HashSet;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.apache.servicecomb.provider.rest.common.RestSchema;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleConfigDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppdRuleDeletedDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDeletedDto;
@@ -58,6 +59,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * MEPM synchronization API handler.
  */
+@RestSchema(schemaId = "inventory-mepmsync")
 @Api(value = "MEPM synchronization API system")
 @Validated
 @RequestMapping("/inventory/v1")

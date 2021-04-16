@@ -24,6 +24,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.apache.servicecomb.provider.rest.common.RestSchema;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppStoreDto;
 import org.edgegallery.mecm.inventory.model.AppStore;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
@@ -38,6 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,15 +48,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Application store Inventory API handler.
  */
+@RestSchema(schemaId = "inventory-appstore")
 @Api(value = "Inventory MEC Application store Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")
-@RestController
+@Controller
 public class AppStoreInventoryHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppStoreInventoryHandler.class);

@@ -15,13 +15,10 @@
 
 package org.edgegallery.mecm.inventory.service;
 
-import org.junit.Test;
-import org.springframework.util.ResourceUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import org.junit.Test;
+import org.springframework.util.ResourceUtils;
 
 public class FileCheckTest {
 
