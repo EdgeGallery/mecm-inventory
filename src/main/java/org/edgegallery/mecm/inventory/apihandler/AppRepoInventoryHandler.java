@@ -24,6 +24,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import org.apache.servicecomb.provider.rest.common.RestSchema;
 import org.edgegallery.mecm.inventory.apihandler.dto.AppRepoDto;
 import org.edgegallery.mecm.inventory.model.AppRepo;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
@@ -51,6 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Application store Inventory API handler.
  */
+@RestSchema(schemaId = "inventory-app")
 @Api(value = "Inventory MEC Application repo Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")

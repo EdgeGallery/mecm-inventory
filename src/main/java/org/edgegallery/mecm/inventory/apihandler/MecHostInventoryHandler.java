@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.apache.servicecomb.provider.rest.common.RestSchema;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecApplicationDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHwCapabilityDto;
@@ -75,6 +76,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * MEC host Inventory API handler.
  */
+@RestSchema(schemaId = "inventory-mechost")
 @Api(value = "Inventory MEC host Inventory api system")
 @Validated
 @RequestMapping("/inventory/v1")
@@ -209,7 +211,7 @@ public class MecHostInventoryHandler {
      * @param mecHostIp MEC host IP
      * @return capabilities record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves MEC host record", response = Map.class)
+    @ApiOperation(value = "Retrieves MEC host record", response = String.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
@@ -243,11 +245,11 @@ public class MecHostInventoryHandler {
      * @param capabilityType MEC host capability type
      * @return application record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves MEC application records", response = Map.class)
+    @ApiOperation(value = "Retrieves MEC application records", response = String.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities/{capability_type}/applications",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
-    public ResponseEntity<Map<String, List<MecApplicationDto>>> getMecApplications(
+    public ResponseEntity<Map<String,List<MecApplicationDto>>> getMecApplications(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
