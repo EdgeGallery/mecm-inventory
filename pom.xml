@@ -105,12 +105,6 @@
       <groupId>org.springframework</groupId>
       <version>5.1.13.RELEASE</version>
     </dependency>
-    <dependency>
-      <artifactId>spring-aop</artifactId>
-      <groupId>org.springframework</groupId>
-      <version>5.1.13.RELEASE</version>
-    </dependency>
-
 
     <!-- Spring -->
     <dependency>
@@ -165,6 +159,11 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
+      <version>5.2.8.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
       <version>5.2.8.RELEASE</version>
     </dependency>
     <!-- end of spring -->
