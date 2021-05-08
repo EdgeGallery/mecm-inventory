@@ -16,6 +16,9 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,7 +115,7 @@ public class AppdRuleInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId
                         + "/app_instances/" + appInstanceId + "/appd_configuration")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content(postBody));
         MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
