@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -49,14 +48,6 @@ public class AppLcmInventoryHandlerTest {
     public void validateAppLcmInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-        // MvcResult result = mvc.perform(
-        //     MockMvcRequestBuilders.post(String.format("/inventory/v1/applcms")).content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
-        //         + "\"applcmName\": \"applcm123\" }").with(csrf())
-        //         .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-        //     .andDo(MockMvcResultHandlers.print()).andReturn();
-        //
-        // String postResponse = result.getResponse().getContentAsString();
-        // Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
 
         // Test APPLCM record post
         MvcResult result =
