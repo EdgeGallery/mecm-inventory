@@ -16,6 +16,9 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +52,7 @@ public class AppStoreInventoryHandlerTest {
         ResultActions postResult =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4443\", "
                                 + "\"appstorePort\": \"10000\", "
                                 + "\"appstoreRepoUserName\": "
@@ -67,7 +70,7 @@ public class AppStoreInventoryHandlerTest {
         ResultActions getByIdResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult getByIdMvcResult = getByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -81,7 +84,7 @@ public class AppStoreInventoryHandlerTest {
         ResultActions deleteByIdResult =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResult = deleteByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -98,7 +101,7 @@ public class AppStoreInventoryHandlerTest {
         // Create record
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/appstores")
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON).with(csrf())
                 .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4443\", \"appstorePort\": "
                         + "\"10000\", "
                         + "\"appstoreRepoUserName\": "
@@ -111,7 +114,7 @@ public class AppStoreInventoryHandlerTest {
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/appstores/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"appstoreIp\": \"1.1.1.1\", \"appstoreRepo\": \"127.0.0.1:4453\", "
                                 + "\"appstorePort\": \"10000\", "
                                 + "\"appstoreRepoUserName\": "
@@ -130,7 +133,7 @@ public class AppStoreInventoryHandlerTest {
         ResultActions getAllResults =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -143,7 +146,7 @@ public class AppStoreInventoryHandlerTest {
         ResultActions deleteAllresult =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/appstores")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteAllMvcResult = deleteAllresult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

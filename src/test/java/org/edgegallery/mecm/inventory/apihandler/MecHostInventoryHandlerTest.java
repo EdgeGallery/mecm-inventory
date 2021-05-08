@@ -61,7 +61,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
@@ -83,7 +83,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postResult =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                                 + "\"affinity\":\"part1,part2\", \"appRuleIp\": \"1.1.1.1\","
@@ -100,7 +100,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions getByIdResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult getByIdMvcResult = getByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -136,7 +136,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions deleteByIdResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -154,7 +154,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
@@ -175,7 +175,7 @@ public class MecHostInventoryHandlerTest {
         // Create record
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON).with(csrf())
                 .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\","
                         + "  \"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}").with(csrf())
@@ -192,7 +192,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", \"appRuleIp\": \"1.1.1"
                                 + ".1\",\"coordinates\":\"1,1\",\"vim\":\"k8s\",\"configUploadStatus\":null}")
@@ -209,7 +209,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions getAllResults =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -225,7 +225,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions deleteAllresult =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteAllMvcResult = deleteAllresult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -237,7 +237,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions deleteByIdResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -255,7 +255,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
@@ -277,7 +277,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postResult =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                                 + "\"affinity\":\"part1,part2\",\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\", "
@@ -295,7 +295,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions getByIdResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult getByIdMvcResult = getByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -329,7 +329,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions deleteByIdResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -347,7 +347,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
@@ -368,7 +368,7 @@ public class MecHostInventoryHandlerTest {
         // Create record
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON).with(csrf())
                 .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                         + "\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\","
@@ -386,7 +386,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"appRuleIp\": \"1.1.1.1\","
                                 + "\"coordinates\":\"1,1\",\"hwcapabilities\":[]}").with(csrf())
@@ -402,7 +402,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions getAllResults =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -418,7 +418,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions deleteAllresult =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteAllMvcResult = deleteAllresult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -450,7 +450,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
@@ -472,7 +472,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions postMecResult =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
                                 + "\"appRuleIp\": \"1.1.1.1\", \"affinity\":\"part1,part2\",\"coordinates\":\"1,1\","
@@ -491,7 +491,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId
                         + "/mechosts/" + hostIp + "/apps")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"appInstanceId\":\"4c6fb452-640d-4e73-9016-6ccec856080d\",\"appName\":\"app-name\","
                                 + "\"packageId\":\"ea339be5f1044dcf9f76b05db46f0a56\","
                                 + "\"capabilities\":[\"GPU1\",\"GPU2\"],\"status\":\"Created\"}"));
@@ -507,7 +507,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
                         + "/mechosts/" + hostIp + "/capabilities")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getMvcResult = getResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -521,7 +521,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId
                         + "/mechosts/" + hostIp + "/capabilities/GPU1/applications")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -556,7 +556,7 @@ public class MecHostInventoryHandlerTest {
         ResultActions deleteByIdResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

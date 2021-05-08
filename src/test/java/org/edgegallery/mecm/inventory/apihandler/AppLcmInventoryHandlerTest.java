@@ -16,12 +16,16 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -45,30 +49,34 @@ public class AppLcmInventoryHandlerTest {
     public void validateAppLcmInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
+        // MvcResult result = mvc.perform(
+        //     MockMvcRequestBuilders.post(String.format("/inventory/v1/applcms")).content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
+        //         + "\"applcmName\": \"applcm123\" }").with(csrf())
+        //         .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+        //     .andDo(MockMvcResultHandlers.print()).andReturn();
+        //
+        // String postResponse = result.getResponse().getContentAsString();
+        // Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
+
         // Test APPLCM record post
-        ResultActions postResult =
+        MvcResult result =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
-                                + "\"applcmName\": \"applcm123\" }"));
+                                + "\"applcmName\": \"applcm123\" }")).andDo(MockMvcResultHandlers.print()).andReturn();
 
-        MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String postResponse = postMvcResult.getResponse().getContentAsString();
+        String postResponse = result.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
 
         // Test APPLCM record get by APPLCM ID
-        ResultActions getByIdResult =
+        result =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())).andDo(MockMvcResultHandlers.print()).andReturn();
 
-        MvcResult getByIdMvcResult = getByIdResult.andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
+
+        String getByIdResponse = result.getResponse().getContentAsString();
         Assert.assertEquals("{\"applcmName\":\"applcm123\",\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10000\","
                         + "\"userName\":\"Test\"}",
                 getByIdResponse);
@@ -77,7 +85,7 @@ public class AppLcmInventoryHandlerTest {
         ResultActions deleteByIdResult =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResult = deleteByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -94,7 +102,7 @@ public class AppLcmInventoryHandlerTest {
         // Create record
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON).with(csrf())
                 .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
                         + "\"applcmName\": \"applcm123\"  }"));
 
@@ -102,7 +110,7 @@ public class AppLcmInventoryHandlerTest {
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10001\", \"userName\": \"Test\", "
                                 + "\"applcmName\": \"applcm123\" }"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
@@ -115,7 +123,7 @@ public class AppLcmInventoryHandlerTest {
         ResultActions getAllResults =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -128,7 +136,7 @@ public class AppLcmInventoryHandlerTest {
         ResultActions deleteAllresult =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteAllMvcResult = deleteAllresult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

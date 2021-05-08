@@ -66,7 +66,7 @@ public class ConfigHandlerTest {
         ResultActions postResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
@@ -88,7 +88,7 @@ public class ConfigHandlerTest {
         ResultActions postResultMecHost =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                                 + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}")
@@ -161,7 +161,7 @@ public class ConfigHandlerTest {
         ResultActions deleteByIdResultAppLcm =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

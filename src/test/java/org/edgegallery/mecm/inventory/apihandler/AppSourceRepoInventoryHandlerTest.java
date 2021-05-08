@@ -60,7 +60,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions postResultAppRepo =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/apprepos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"repoEndPoint\": \"1.1.1.1\", \"repoName\": \"AppRepo1\","
                                 + " \"repoUserName\": \"admin\", \"repoPassword\": \"Harbor12345\" }"));
 
@@ -75,7 +75,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions getByIdResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprepos/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult getByIdMvcResult = getByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -88,7 +88,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions deleteByIdResultAppRepos =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/apprepos/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResultAppRepos = deleteByIdResultAppRepos.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -104,7 +104,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions postResultAppRepo =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/apprepos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"repoEndPoint\": \"1.1.1.1\", \"repoName\": \"AppRepo1\","
                                 + " \"repoUserName\": \"admin\", \"repoPassword\": \"Harbor12345\" }"));
 
@@ -119,7 +119,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions getByIdResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprepos/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult getByIdMvcResult = getByIdResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -133,7 +133,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions updateResult =
                 mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/apprepos/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{\"repoEndPoint\":\"1.1.1.1\",\"repoName\":\"AppRepo1\",\"repoUserName\":\"admin\","
                                 + "\"repoPassword\":\"Harbor12346\"}")
                         .with(csrf())
@@ -149,7 +149,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions getAllResults =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprepos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -164,7 +164,7 @@ public class AppSourceRepoInventoryHandlerTest {
         ResultActions deleteByIdResultAppRepos =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/apprepos/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
         MvcResult deleteByIdMvcResultAppRepos = deleteByIdResultAppRepos.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
