@@ -89,10 +89,6 @@
           <artifactId>tomcat-embed-el</artifactId>
           <groupId>org.apache.tomcat.embed</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>io.swagger</artifactId>
-          <groupId>swagger-core</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <!-- jackson -->
@@ -172,7 +168,6 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-<!--      <version>6.4.4</version>-->
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
