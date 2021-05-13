@@ -49,8 +49,8 @@ server:
     key-store-password: ${SSL_KEY_STORE_PASSWORD:}
     key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}
     key-alias: ${SSL_KEY_ALIAS:edgegallery}
-    trust-store: ${SSL_KEY_STORE_JKS_PATH:/usr/app/ssl/keystore.jks}
-    trust-store-password: ${SSL_TRUST_PASSWORD:}
+#    trust-store: ${SSL_KEY_STORE_JKS_PATH:/usr/app/ssl/keystore.jks}
+#    trust-store-password: ${SSL_TRUST_PASSWORD:}
 
 spring:
   datasource:
