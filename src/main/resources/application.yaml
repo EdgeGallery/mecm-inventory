@@ -15,27 +15,29 @@
 #
 
 ### ServiceComb config #########
-servicecomb-config-order: 1
-APPLICATION_ID: edgegallery
-service_description:
-  name: mecm-inventory
-  version: 1.1.1
-  environment: development
-servicecomb:
-  service:
-    registry:
-      address: ${SC_ADDRESS}
-  rest:
-    address: ${LISTEN_IP:}:8093
-    servlet:
-      urlPattern: /cse/*
-  uploads:
-    directory: /home/mecm-inventory
-    maxSize: -1
+#servicecomb-config-order: 1
+#APPLICATION_ID: edgegallery
+#service_description:
+#  name: mecm-inventory
+#  version: 1.1.1
+#  environment: development
+#servicecomb:
+#  service:
+#    registry:
+#      address: ${SC_ADDRESS}
+#  rest:
+#    address: ${LISTEN_IP:}:8093
+#    servlet:
+#      urlPattern: /cse/*
+#  uploads:
+#    directory: /home/mecm-inventory
+#    maxSize: -1
 
 ### Server port #########
 server:
   port: 8093
+  address: ${LISTEN_IP:}
+  contextPath: /home
 
   ssl:
     enabled: true
