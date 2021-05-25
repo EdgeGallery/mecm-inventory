@@ -24,20 +24,16 @@ import org.mockito.InjectMocks;
 
 public class TenantTest {
 
+    public static final int MEPM = 30101;
+    public static final int APP_STORE = 90000;
+    public static final int MEC_HOST = 32806;
+    public static final String TENANT_ID = "tenant_id";
     @InjectMocks
     Tenant tenant = new Tenant();
 
-    public static final int APPLCM = 30101;
-
-    public static final int APP_STORE = 90000;
-
-    public static final int MEC_HOST = 32806;
-
-    public static final String TENANT_ID = "tenant_id";
-
     @Before
     public void setUp() {
-        tenant.setAppLcms(APPLCM);
+        tenant.setMepms(MEPM);
         tenant.setAppStores(APP_STORE);
         tenant.setMecHosts(MEC_HOST);
         tenant.setTenantId(TENANT_ID);
@@ -45,7 +41,7 @@ public class TenantTest {
 
     @Test
     public void testTenantModel() {
-        assertEquals(APPLCM, tenant.getAppLcms());
+        assertEquals(MEPM, tenant.getMepms());
         assertEquals(APP_STORE, tenant.getAppStores());
         assertEquals(MEC_HOST, tenant.getMecHosts());
         assertEquals(TENANT_ID, tenant.getTenantId());

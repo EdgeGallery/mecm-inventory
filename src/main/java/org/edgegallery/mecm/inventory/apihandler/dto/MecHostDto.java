@@ -77,14 +77,9 @@ public final class MecHostDto {
             + "alpha numeric characters and special characters allowed are hyphen and underscore")
     private String userName;
 
-    @NotEmpty(message = "applcm IP is empty")
-    @Size(max = 15, message = "applcm IP length exceeds max size")
-    @Pattern(regexp = Constants.IP_REGEX, message = "applcm IP is invalid")
-    private String applcmIp;
-
-    @Size(max = 15, message = "app rule manager IP length exceeds max size")
-    @Pattern(regexp = Constants.IP_REGEX, message = "app rule manage IP is invalid")
-    private String appRuleIp;
+    @Size(max = 15, message = "mec platform manager IP length exceeds max size")
+    @Pattern(regexp = Constants.IP_REGEX, message = "mec platform manager IP is invalid")
+    private String mepmIp;
 
     @NotEmpty(message = "co-ordinates is empty")
     @Size(max = 128, message = "co-ordinates length exceeds max size")

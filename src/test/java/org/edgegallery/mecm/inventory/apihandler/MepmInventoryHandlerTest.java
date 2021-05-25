@@ -18,7 +18,6 @@ package org.edgegallery.mecm.inventory.apihandler;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,43 +37,42 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = InventoryApplicationTest.class)
 @AutoConfigureMockMvc
-public class AppLcmInventoryHandlerTest {
+public class MepmInventoryHandlerTest {
 
     @Autowired
     MockMvc mvc;
 
     @Test
     @WithMockUser(roles = "MECM_ADMIN")
-    public void validateAppLcmInventory() throws Exception {
+    public void validateMepmInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-
-        // Test APPLCM record post
+        // Test mepm record post
         MvcResult result =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
-                                + "\"applcmName\": \"applcm123\" }")).andDo(MockMvcResultHandlers.print()).andReturn();
+                        .content("{ \"mepmIp\": \"1.1.1.1\", \"mepmPort\": \"10000\", \"userName\": \"Test\", "
+                                + "\"mepmName\": \"mepm123\" }")).andDo(MockMvcResultHandlers.print()).andReturn();
 
         String postResponse = result.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
 
-        // Test APPLCM record get by APPLCM ID
+        // Test mepm record get by mepm ID
         result =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON).with(csrf())).andDo(MockMvcResultHandlers.print()).andReturn();
-
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())).andDo(MockMvcResultHandlers.print())
+                        .andReturn();
 
         String getByIdResponse = result.getResponse().getContentAsString();
-        Assert.assertEquals("{\"applcmName\":\"applcm123\",\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10000\","
+        Assert.assertEquals("{\"mepmName\":\"mepm123\",\"mepmIp\":\"1.1.1.1\",\"mepmPort\":\"10000\","
                         + "\"userName\":\"Test\"}",
                 getByIdResponse);
 
-        // Test APPLCM record delete by APPLCM ID
+        // Test mepm record delete by mepm ID
         ResultActions deleteByIdResult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
@@ -87,32 +85,32 @@ public class AppLcmInventoryHandlerTest {
 
     @Test
     @WithMockUser(roles = "MECM_ADMIN")
-    public void validateAppLcmInventoryUpdate() throws Exception {
+    public void validateMepmInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
         // Create record
-        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+        mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON).with(csrf())
-                .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10000\", \"userName\": \"Test\", "
-                        + "\"applcmName\": \"applcm123\"  }"));
+                .content("{ \"mepmIp\": \"1.1.1.1\", \"mepmPort\": \"10000\", \"userName\": \"Test\", "
+                        + "\"mepmName\": \"mepm123\"  }"));
 
         // Update record
         ResultActions updateResult =
-                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/applcms/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{ \"applcmIp\": \"1.1.1.1\", \"applcmPort\": \"10001\", \"userName\": \"Test\", "
-                                + "\"applcmName\": \"applcm123\" }"));
+                        .content("{ \"mepmIp\": \"1.1.1.1\", \"mepmPort\": \"10001\", \"userName\": \"Test\", "
+                                + "\"mepmName\": \"mepm123\" }"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String updateResponse = updateMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Updated\"}", updateResponse);
 
-        // Test APPLCM get all records
+        // Test mepm get all records
         ResultActions getAllResults =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/applcms")
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
         MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
@@ -120,12 +118,12 @@ public class AppLcmInventoryHandlerTest {
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "[{\"applcmName\":\"applcm123\",\"applcmIp\":\"1.1.1.1\",\"applcmPort\":\"10001\",\"userName\":\"Test\"}]",
+                "[{\"mepmName\":\"mepm123\",\"mepmIp\":\"1.1.1.1\",\"mepmPort\":\"10001\",\"userName\":\"Test\"}]",
                 getAllResponse);
 
         // Test Delete all records
         ResultActions deleteAllresult =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
 

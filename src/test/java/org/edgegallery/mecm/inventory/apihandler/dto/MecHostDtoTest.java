@@ -34,7 +34,7 @@ public class MecHostDtoTest {
 
         mecHostDto.setAddress("address");
         mecHostDto.setAffinity("affinity");
-        mecHostDto.setApplcmIp("AppLcmIp");
+        mecHostDto.setMepmIp("mepmIp");
         mecHostDto.setCity("city");
         mecHostDto.setZipCode("ZipCode");
     }
@@ -43,7 +43,7 @@ public class MecHostDtoTest {
     public void testAppoProcessFlowResponse() {
         Assert.assertEquals("address", mecHostDto.getAddress());
         Assert.assertEquals("affinity", mecHostDto.getAffinity());
-        Assert.assertEquals("AppLcmIp", mecHostDto.getApplcmIp());
+        Assert.assertEquals("mepmIp", mecHostDto.getMepmIp());
         Assert.assertEquals("city", mecHostDto.getCity());
         Assert.assertEquals("ZipCode", mecHostDto.getZipCode());
     }

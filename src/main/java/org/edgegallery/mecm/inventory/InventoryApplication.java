@@ -32,7 +32,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * External system Inventory application.
@@ -60,7 +59,7 @@ public class InventoryApplication {
     public static void main(String[] args) {
         LOGGER.info("Inventory application starting--------");
         // do not check host name
-        TrustManager[] trustAllCerts = new TrustManager[] {
+        TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
                     return new X509Certificate[0];

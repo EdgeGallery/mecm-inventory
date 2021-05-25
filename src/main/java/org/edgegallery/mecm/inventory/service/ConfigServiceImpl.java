@@ -21,10 +21,10 @@ import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
-import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.edgegallery.mecm.inventory.model.MecHost;
-import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
+import org.edgegallery.mecm.inventory.model.Mepm;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
+import org.edgegallery.mecm.inventory.service.repository.MepmRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class ConfigServiceImpl implements ConfigService {
     private MecHostRepository hostRepository;
 
     @Autowired
-    private AppLcmRepository lcmRepository;
+    private MepmRepository mepmRepository;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -91,14 +91,14 @@ public class ConfigServiceImpl implements ConfigService {
 
         // Preparing URL
         MecHost host = service.getRecord(hostIp, hostRepository);
-        String lcmIp = host.getApplcmIp();
-        AppLcm lcm = service.getRecord(lcmIp, lcmRepository);
-        String lcmPort = lcm.getApplcmPort();
+        String mepmIp = host.getMepmIp();
+        Mepm mepm = service.getRecord(mepmIp, mepmRepository);
+        String mepmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+            url = "https://" + mepmIp + ":" + mepmPort + APPLCM_URI;
         } else {
-            url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+            url = "http://" + mepmIp + ":" + mepmPort + APPLCM_URI;
         }
 
         ResponseEntity<String> response;
@@ -106,7 +106,7 @@ public class ConfigServiceImpl implements ConfigService {
         try {
             response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
         } catch (RestClientException e) {
-            throw new InventoryException("Failure while uploading file to APPLCM with error message: "
+            throw new InventoryException("Failure while uploading file to mepm with error message: "
                     + e.getLocalizedMessage());
         }
 
@@ -122,14 +122,14 @@ public class ConfigServiceImpl implements ConfigService {
     public ResponseEntity<String> deleteConfig(String hostIp, String token) {
         // Preparing URL
         MecHost host = service.getRecord(hostIp, hostRepository);
-        String lcmIp = host.getApplcmIp();
-        AppLcm lcm = service.getRecord(lcmIp, lcmRepository);
-        String lcmPort = lcm.getApplcmPort();
+        String mepmIp = host.getMepmIp();
+        Mepm mepm = service.getRecord(mepmIp, mepmRepository);
+        String mecmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+            url = "https://" + mepmIp + ":" + mecmPort + APPLCM_URI;
         } else {
-            url = "http://" + lcmIp + ":" + lcmPort + APPLCM_URI;
+            url = "http://" + mepmIp + ":" + mecmPort + APPLCM_URI;
         }
 
         // Preparing request parts.
@@ -153,7 +153,7 @@ public class ConfigServiceImpl implements ConfigService {
         try {
             response = restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, String.class);
         } catch (RestClientException e) {
-            throw new InventoryException("Failure while removing file from APPLCM with error message: "
+            throw new InventoryException("Failure while removing file from mepm with error message: "
                     + e.getLocalizedMessage());
         }
 

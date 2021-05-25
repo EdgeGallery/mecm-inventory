@@ -62,20 +62,22 @@ public class ConfigHandlerTest {
     public void validateConfigOperation() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-        // Add APPLCM record post
-        ResultActions postResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+        // Add MEPM record post
+        ResultActions postResultMepm =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
+
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
+                        .content("{\"mepmName\": \"applcm123\", \"mepmIp\": \"1.1.1.1\", \"mepmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
 
-        MvcResult postMvcResultAppLcm = postResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult postMvcResultMepm = postResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String postResponseAppLcm = postMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppLcm);
+        String postResponseMepm = postMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMepm);
+
 
         // Prepare the mock REST server
         String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
@@ -91,7 +93,7 @@ public class ConfigHandlerTest {
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
                                 + "\"edgerepoPort\": \"10000\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}")
+                                + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}")
                         .with(csrf())
                         .header("access_token", "SampleToken"));
 
@@ -157,16 +159,16 @@ public class ConfigHandlerTest {
         String deleteByIdResponseMecHost = deleteByIdMvcResultMecHost.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMecHost);
 
-        // Test APPLCM record delete by APPLCM ID
-        ResultActions deleteByIdResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
+        // Test MEPM record delete by MEPM ID
+        ResultActions deleteByIdResultMepm =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
-        MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult deleteByIdMvcResultMepm = deleteByIdResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String deleteByIdResponseAppLcm = deleteByIdMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppLcm);
+        String deleteByIdResponseMepm = deleteByIdMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMepm);
     }
 }

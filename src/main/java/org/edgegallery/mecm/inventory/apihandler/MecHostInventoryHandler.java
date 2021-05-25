@@ -38,16 +38,16 @@ import org.apache.servicecomb.provider.rest.common.RestSchema;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecApplicationDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.MecHwCapabilityDto;
-import org.edgegallery.mecm.inventory.model.AppLcm;
 import org.edgegallery.mecm.inventory.model.MecApplication;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.model.MecHwCapability;
+import org.edgegallery.mecm.inventory.model.Mepm;
 import org.edgegallery.mecm.inventory.service.ConfigServiceImpl;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.RestServiceImpl;
-import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecApplicationRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
+import org.edgegallery.mecm.inventory.service.repository.MepmRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
@@ -97,7 +97,7 @@ public class MecHostInventoryHandler {
     @Autowired
     private RestServiceImpl restService;
     @Autowired
-    private AppLcmRepository lcmRepository;
+    private MepmRepository mepmRepository;
     @Value("${server.ssl.enabled:false}")
     private String isSslEnabled;
 
@@ -122,7 +122,7 @@ public class MecHostInventoryHandler {
         // Send record to MEPM
         Gson gson = new Gson();
         String request = gson.toJson(mecHostDto);
-        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getApplcmIp()), HttpMethod.POST,
+        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getMepmIp()), HttpMethod.POST,
                 accessToken, request);
         LOGGER.info(STATUS_CODE, response.getStatusCodeValue(),
                 response.getBody());
@@ -160,7 +160,7 @@ public class MecHostInventoryHandler {
         // Send record to MEPM
         Gson gson = new Gson();
         String request = gson.toJson(mecHostDto);
-        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getApplcmIp()), HttpMethod.PUT,
+        ResponseEntity<String> response = restService.sendRequest(getMepmUrl(host.getMepmIp()), HttpMethod.PUT,
                 accessToken, request);
         LOGGER.info(STATUS_CODE, response.getStatusCodeValue(),
                 response.getBody());
@@ -249,7 +249,7 @@ public class MecHostInventoryHandler {
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities/{capability_type}/applications",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
-    public ResponseEntity<Map<String,List<MecApplicationDto>>> getMecApplications(
+    public ResponseEntity<Map<String, List<MecApplicationDto>>> getMecApplications(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
@@ -310,16 +310,16 @@ public class MecHostInventoryHandler {
             @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
             @ApiParam(value = "mechost IP") @PathVariable("mechost_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        // Save applcm IP
+        // Save mepm IP
         MecHost host = service.getRecord(mecHostIp, repository);
-        String applcmIp = host.getApplcmIp();
+        String mepmIp = host.getMepmIp();
 
         // Delete record
         Status status = service.deleteRecord(mecHostIp, repository);
 
         // Send record to MEPM
         try {
-            ResponseEntity<String> response = restService.sendRequest(getMepmUrl(applcmIp) + "/" + mecHostIp,
+            ResponseEntity<String> response = restService.sendRequest(getMepmUrl(mepmIp) + "/" + mecHostIp,
                     HttpMethod.DELETE, accessToken, "");
             LOGGER.info(STATUS_CODE, response.getStatusCodeValue(),
                     response.getBody());
@@ -484,7 +484,7 @@ public class MecHostInventoryHandler {
      * @param file        configuration file
      * @return status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Upload K8s configuration file to applcm", response = String.class)
+    @ApiOperation(value = "Upload K8s configuration file to mepm", response = String.class)
     @PostMapping(path = "/mechosts/{mechost_ip}/k8sconfig",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('MECM_ADMIN')")
@@ -503,7 +503,7 @@ public class MecHostInventoryHandler {
      * @param accessToken access token
      * @return status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Deletes K8s configuration file from applcm", response = String.class)
+    @ApiOperation(value = "Deletes K8s configuration file from mepm", response = String.class)
     @DeleteMapping(path = "/mechosts/{mechost_ip}/k8sconfig",
             produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('MECM_ADMIN')")
@@ -514,14 +514,14 @@ public class MecHostInventoryHandler {
         return configService.deleteConfig(mecHostIp, accessToken);
     }
 
-    private String getMepmUrl(String applcmIp) {
-        AppLcm lcm = service.getRecord(applcmIp, lcmRepository);
-        String port = lcm.getApplcmPort();
+    private String getMepmUrl(String mepmIp) {
+        Mepm mepm = service.getRecord(mepmIp, mepmRepository);
+        String port = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + applcmIp + ":" + port + APPLCM_HOST_URL;
+            url = "https://" + mepmIp + ":" + port + APPLCM_HOST_URL;
         } else {
-            url = "http://" + applcmIp + ":" + port + APPLCM_HOST_URL;
+            url = "http://" + mepmIp + ":" + port + APPLCM_HOST_URL;
         }
         return url;
     }

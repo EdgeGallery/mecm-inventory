@@ -16,37 +16,19 @@
 package org.edgegallery.mecm.inventory.validator;
 
 
-
-import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
-
-import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraint;
-
-import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraintValidator;
-
-import org.junit.Assert;
-
-import org.junit.Before;
-
-import org.junit.Test;
-
-import org.junit.runner.RunWith;
-
-import org.mockito.InjectMocks;
-
-import org.mockito.Mock;
-
-import org.mockito.junit.MockitoJUnitRunner;
-
-
-
-import javax.validation.ConstraintValidatorContext;
-
-
-
 import static org.mockito.Mockito.mock;
 
-
-
+import javax.validation.ConstraintValidatorContext;
+import org.edgegallery.mecm.inventory.apihandler.validator.ConstraintType;
+import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraint;
+import org.edgegallery.mecm.inventory.apihandler.validator.CustomConstraintValidator;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,28 +36,16 @@ import static org.mockito.Mockito.mock;
 public class CustomConstraintValidatorTest {
 
 
-
-    private ConstraintValidatorContext cvc;
-
-    private ConstraintType type;
-
-
-
     @InjectMocks
 
     CustomConstraintValidator customConstraintValidator;
-
-
-
     @Mock
 
     CustomConstraint customConstraint;
-
-
+    private ConstraintValidatorContext cvc;
+    private ConstraintType type;
 
     // ConstraintValidator constraintValidator = mock(ConstraintValidator.class);
-
-
 
     @Before
 
@@ -83,32 +53,27 @@ public class CustomConstraintValidatorTest {
 
         cvc = mock(ConstraintValidatorContext.class);
 
-        type= ConstraintType.PASSWORD;
+        type = ConstraintType.PASSWORD;
 
       /*when(cvc.buildConstraintViolationWithTemplate(anyString()))
 
                 .thenReturn(mock(ConstraintValidatorContext.ConstraintViolationBuilder.class));*/
 
-
-
     }
-
 
 
     @Test
 
     public void testInitialize() {
 
-        type =ConstraintType.PASSWORD;
+        type = ConstraintType.PASSWORD;
 
         customConstraintValidator.initialize(customConstraint);
 
         Assert.assertNotNull(type);
 
 
-
     }
-
 
 
     @Test
@@ -134,7 +99,6 @@ public class CustomConstraintValidatorTest {
     }
 
 
-
     @Test
 
     public void testParamNotValid() {
@@ -148,7 +112,6 @@ public class CustomConstraintValidatorTest {
     }
 
 
-
     @Test
 
     public void testParamNull() {
@@ -160,7 +123,6 @@ public class CustomConstraintValidatorTest {
         Assert.assertTrue(result);
 
     }
-
 
 
 }

@@ -102,7 +102,7 @@ public final class InventoryUtilities {
      * To get mec host record.
      *
      * @param mecHostDto mec host dto information
-     * @param mecHostIp mec host ip address
+     * @param mecHostIp  mec host ip address
      * @return host mechost
      */
     public static MecHost getMecHost(MecHostDto mecHostDto, String mecHostIp) {

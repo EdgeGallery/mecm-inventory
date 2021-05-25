@@ -16,11 +16,7 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
-import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_HOST_URL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,11 +24,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -56,7 +50,7 @@ public class AppSourceRepoInventoryHandlerTest {
     @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateAppSourceRepoInventory() throws Exception {
 
-        // Add APPLCM record post
+        // Add MEPM record post
         ResultActions postResultAppRepo =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/apprepos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +64,6 @@ public class AppSourceRepoInventoryHandlerTest {
         String postResponseAppRepo = postMvcResultAppRepo.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppRepo);
 
-
         // Test MecHost record get by repo endpoint
         ResultActions getByIdResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprepos/1.1.1.1")
@@ -82,9 +75,10 @@ public class AppSourceRepoInventoryHandlerTest {
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "{\"repoEndPoint\":\"1.1.1.1\",\"repoName\":\"AppRepo1\",\"repoUserName\":\"admin\",\"repoPassword\":\"Harbor12345\"}", getByIdResponse);
+                "{\"repoEndPoint\":\"1.1.1.1\",\"repoName\":\"AppRepo1\",\"repoUserName\":\"admin\",\"repoPassword\":\"Harbor12345\"}",
+                getByIdResponse);
 
-        // Test APPLCM record delete by APPLCM ID
+        // Test MEPM record delete by MEPM ID
         ResultActions deleteByIdResultAppRepos =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/apprepos/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +94,7 @@ public class AppSourceRepoInventoryHandlerTest {
     @Test
     @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateAppReposInventoryUpdate() throws Exception {
-        // Add APPLCM record post
+        // Add MEPM record post
         ResultActions postResultAppRepo =
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/apprepos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,7 +108,6 @@ public class AppSourceRepoInventoryHandlerTest {
         String postResponseAppRepo = postMvcResultAppRepo.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppRepo);
 
-
         // Test app repo record get by repo endpoint
         ResultActions getByIdResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprepos/1.1.1.1")
@@ -126,8 +119,8 @@ public class AppSourceRepoInventoryHandlerTest {
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "{\"repoEndPoint\":\"1.1.1.1\",\"repoName\":\"AppRepo1\",\"repoUserName\":\"admin\",\"repoPassword\":\"Harbor12345\"}", getByIdResponse);
-
+                "{\"repoEndPoint\":\"1.1.1.1\",\"repoName\":\"AppRepo1\",\"repoUserName\":\"admin\",\"repoPassword\":\"Harbor12345\"}",
+                getByIdResponse);
 
         // Update record
         ResultActions updateResult =
@@ -159,8 +152,7 @@ public class AppSourceRepoInventoryHandlerTest {
                         + "\"repoPassword\":\"Harbor12346\"}]",
                 getAllResponse);
 
-
-        // Test APPLCM record delete by APPLCM ID
+        // Test MEPM record delete by MEPM ID
         ResultActions deleteByIdResultAppRepos =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/apprepos/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
