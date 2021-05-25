@@ -40,11 +40,8 @@ public final class Tenant implements BaseModel {
     @Column(name = "tenant_id")
     private String tenantId;
 
-    @Column(name = "applcm_count")
-    private int appLcms;
-
-    @Column(name = "app_rule_manager_count")
-    private int appRuleManagers;
+    @Column(name = "mepm_count")
+    private int mepms;
 
     @Column(name = "appstore_count")
     private int appStores;
