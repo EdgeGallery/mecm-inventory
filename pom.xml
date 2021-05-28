@@ -168,11 +168,7 @@
       <artifactId>snakeyaml</artifactId>
       <version>1.26</version>
     </dependency>
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-      <version>5.2.4</version>
-    </dependency>
+
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
@@ -238,7 +234,6 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>5.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
