@@ -100,14 +100,14 @@ public class MepmSyncHandler {
         // Synchronize added & updated records
         // Get dto records
         ResponseEntity<SyncUpdatedRulesDto> updateResponse =
-                syncService.syncRecords(getMepmSyncUrl(mepmIp, tenantId) + "/sync_updated",
+                syncService.syncRecords(getMepmAppRuleSyncUrl(mepmIp, tenantId) + "/sync_updated",
                         SyncUpdatedRulesDto.class, accessToken);
         SyncUpdatedRulesDto syncUpdatedRulesDto = updateResponse.getBody();
         updateAppdRuleRecord(syncUpdatedRulesDto, tenantId, finalStatus);
         // Synchronize deleted records
         // Get dto records
         ResponseEntity<SyncDeletedRulesDto> deleteResponse =
-                syncService.syncRecords(getMepmSyncUrl(mepmIp, tenantId) + "/sync_deleted",
+                syncService.syncRecords(getMepmAppRuleSyncUrl(mepmIp, tenantId) + "/sync_deleted",
                         SyncDeletedRulesDto.class, accessToken);
         SyncDeletedRulesDto syncDeletedRulesDto = deleteResponse.getBody();
         // Update table
@@ -164,7 +164,7 @@ public class MepmSyncHandler {
         // Synchronize added & updated records
         // Get dto records
         ResponseEntity<SyncUpdatedMecHostDto> updateResponse =
-                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_updated",
+                syncService.syncRecords(getMepmMecHostSyncUrl(mepmIp) + "/sync_updated",
                         SyncUpdatedMecHostDto.class, accessToken);
         SyncUpdatedMecHostDto syncUpdatedMecHostDto = updateResponse.getBody();
         // Update table
@@ -173,7 +173,7 @@ public class MepmSyncHandler {
         // Synchronize deleted records
         // Get dto records
         ResponseEntity<SyncDeletedMecHostDto> deleteResponse =
-                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_deleted",
+                syncService.syncRecords(getMepmMecHostSyncUrl(mepmIp) + "/sync_deleted",
                         SyncDeletedMecHostDto.class, accessToken);
         SyncDeletedMecHostDto syncDeletedMecHostDto = deleteResponse.getBody();
         // Update table
@@ -215,28 +215,28 @@ public class MepmSyncHandler {
         }
     }
 
-    private String getMepmSyncUrl(String mepmIp, String tenantId) {
+    private String getMepmAppRuleSyncUrl(String mepmIp, String tenantId) {
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         String mepmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + mepmPort + "/mepm/v1/tenants/" + tenantId
+            url = "https://" + mepmIp + ":" + mepmPort + "/apprulemgr/v1/tenants/" + tenantId
                     + "/app_instances/appd_configuration";
         } else {
-            url = "http://" + mepmIp + ":" + mepmPort + "/mepm/v1/tenants/" + tenantId
+            url = "http://" + mepmIp + ":" + mepmPort + "/apprulemgr/v1/tenants/" + tenantId
                     + "/app_instances/appd_configuration";
         }
         return url;
     }
 
-    private String getMecHostSyncUrl(String mepmIp) {
+    private String getMepmMecHostSyncUrl(String mepmIp) {
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         String mepmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + mepmPort + "/mepm/v1/hosts";
+            url = "https://" + mepmIp + ":" + mepmPort + "/lcmcontroller/v1/hosts";
         } else {
-            url = "http://" + mepmIp + ":" + mepmPort + "/mepm/v1/hosts";
+            url = "http://" + mepmIp + ":" + mepmPort + "/lcmcontroller/v1/hosts";
         }
         return url;
     }
