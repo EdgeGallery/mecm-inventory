@@ -1,25 +1,15 @@
 
-    create table applcminventory (
-        applcm_id varchar(255) not null,
-        applcm_name varchar(255) not null,
-        applcm_ip varchar(255) not null,
-        applcm_port varchar(255) not null,
+    create table mepminventory (
+        mepm_id varchar(255) not null,
+        mepm_name varchar(255) not null,
+        mepm_ip varchar(255) not null,
+        mepm_port varchar(255) not null,
         user_name varchar(255),
-        created_time varchar(200),
-        modified_time varchar(200),
-        primary key (applcm_id)
+        primary key (mepm_id)
     );
 
-    create table apprulemanagerinventory (
-        app_rule_manager_id varchar(255) not null,
-        apprule_name  varchar(255) not null,
-        app_rule_manager_ip varchar(255) not null,
-        app_rule_manager_port varchar(255) not null,
-        user_name varchar(255),
-        created_time varchar(200),
-        modified_time varchar(200),
-        primary key (app_rule_manager_id)
-    );
+    Drop table if exists applcminventory;
+    Drop table if exists apprulemanagerinventory;
 
     create table appstoreinventory (
         appstore_id varchar(255) not null,
@@ -45,11 +35,12 @@
         primary key (repo_id)
     );
 
+    Drop table if exists mechostinventory;
     create table mechostinventory (
         mechost_id varchar(255) not null,
         mechost_ip varchar(255) not null,
-        applcm_ip varchar(255) not null,
-        apprule_ip varchar(255),
+        mepm_ip varchar(255) not null,
+        mepm_id varchar(255),
         mechost_name varchar(255) not null,
         zip_code varchar(200),
         city varchar(255) not null,
@@ -95,8 +86,7 @@
 
     create table tenantinventory (
         tenant_id  varchar(255) not null,
-        applcm_count int,
-        app_rule_manager_count int,
+        mepm_count int,
         appstore_count int,
         mechost_count int,
         mechwcapability_count int,

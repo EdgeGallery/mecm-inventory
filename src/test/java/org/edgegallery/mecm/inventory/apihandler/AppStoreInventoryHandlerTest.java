@@ -18,7 +18,6 @@ package org.edgegallery.mecm.inventory.apihandler;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,7 +107,6 @@ public class AppStoreInventoryHandlerTest {
                         + "\"repouserName\", \"appstoreRepoPassword\": \"RepoPassowrd@123\", \"appstoreName\": "
                         + "\"TestStore\", \"producer\": "
                         + "\"TestProducer\" }"));
-
 
         // Update record
         ResultActions updateResult =

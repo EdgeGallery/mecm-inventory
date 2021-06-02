@@ -18,7 +18,6 @@ package org.edgegallery.mecm.inventory.apihandler;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,7 +121,6 @@ public class AppdRuleInventoryHandlerTest {
                 .andReturn();
         String postResponse = postMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
-
 
         ResultActions getResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId

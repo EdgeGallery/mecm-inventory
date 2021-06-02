@@ -19,12 +19,10 @@ import org.edgegallery.mecm.inventory.apihandler.filter.AccessTokenFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
-import sun.net.www.http.HttpClient;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -44,9 +42,6 @@ import static org.mockito.Mockito.mock;
 public class AccessTokenFilterTest {
 
     public static final String HEALTH_URI = "/inventory/v1/health";
-
-    @Mock
-    private HttpClient defaultHttpClient;
 
     AccessTokenFilter filter;
     HttpServletRequest mockReq;
@@ -71,10 +66,7 @@ public class AccessTokenFilterTest {
         Mockito.when(mockReq.getRequestURI()).thenReturn(HEALTH_URI);
         BufferedReader br = new BufferedReader(new StringReader("test"));
         Mockito.when(mockReq.getReader()).thenReturn(br);
-
-        // filter.init(mockFilterConfig);
         filter.doFilter(mockReq, mockResp, mockFilterChain);
-        //filter.destroy();
     }
 
     @Test(expected = Exception.class)
@@ -82,7 +74,6 @@ public class AccessTokenFilterTest {
         mockReq = Mockito.mock(HttpServletRequest.class);
         mockResp = Mockito.mock(HttpServletResponse.class);
         filter.doFilter(mockReq, mockResp, mockFilterChain);
-        //  filter.destroy();
         doThrow(new Exception("Error occurred because of : Access token is empty."))
                 .when(filter);
     }

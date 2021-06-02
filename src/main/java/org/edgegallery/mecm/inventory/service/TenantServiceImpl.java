@@ -61,7 +61,7 @@ class TenantServiceImpl implements TenantService {
         }
         Tenant ot = record.get();
         subtractCount(ot, type);
-        if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
+        if (ot.getMepms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
                 && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0
                 && ot.getAppdRules() == 0 && ot.getAppDnsRules() == 0
                 && ot.getAppTrafficRules() == 0 && ot.getAppTrafficFilterRules() == 0) {
@@ -92,7 +92,7 @@ class TenantServiceImpl implements TenantService {
         }
         Tenant ot = record.get();
         clearCountNumber(ot, type);
-        if (ot.getAppLcms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
+        if (ot.getMepms() == 0 && ot.getAppStores() == 0 && ot.getMecHosts() == 0
                 && ot.getMecHwCapabilities() == 0 && ot.getMecApplications() == 0
                 && ot.getAppdRules() == 0 && ot.getAppDnsRules() == 0
                 && ot.getAppTrafficRules() == 0 && ot.getAppTrafficFilterRules() == 0) {
@@ -106,11 +106,8 @@ class TenantServiceImpl implements TenantService {
 
     private void clearCountNumber(Tenant ot, ModelType type) {
         switch (type) {
-            case APP_LCM:
-                ot.setAppLcms(0);
-                break;
-            case APP_RULE_MANAGER:
-                ot.setAppRuleManagers(0);
+            case MEPM:
+                ot.setMepms(0);
                 break;
             case APP_STORE:
                 ot.setAppStores(0);
@@ -147,16 +144,9 @@ class TenantServiceImpl implements TenantService {
 
     private void addCount(Tenant t, ModelType type) {
         switch (type) {
-            case APP_LCM:
-                if (isNotOverflow(t.getAppLcms(), 1)) {
-                    t.setAppLcms(t.getAppLcms() + 1);
-                    break;
-                }
-                LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
-                break;
-            case APP_RULE_MANAGER:
-                if (isNotOverflow(t.getAppRuleManagers(), 1)) {
-                    t.setAppRuleManagers(t.getAppRuleManagers() + 1);
+            case MEPM:
+                if (isNotOverflow(t.getMepms(), 1)) {
+                    t.setMepms(t.getMepms() + 1);
                     break;
                 }
                 LOGGER.error(Constants.VAR_OVERFLOW_ERROR);
@@ -215,19 +205,12 @@ class TenantServiceImpl implements TenantService {
 
     private void subtractCount(Tenant t, ModelType type) {
         switch (type) {
-            case APP_LCM:
-                if (isNotUnderflow(t.getAppLcms(), 1)) {
-                    t.setAppLcms(t.getAppLcms() - 1);
+            case MEPM:
+                if (isNotUnderflow(t.getMepms(), 1)) {
+                    t.setMepms(t.getMepms() - 1);
                     break;
                 }
-                LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
-                break;
-            case APP_RULE_MANAGER:
-                if (isNotUnderflow(t.getAppRuleManagers(), 1)) {
-                    t.setAppRuleManagers(t.getAppRuleManagers() - 1);
-                    break;
-                }
-                LOGGER.error("{} for applcm count", Constants.VAR_UNDERFLOW_ERROR);
+                LOGGER.error("{} for mepm count", Constants.VAR_UNDERFLOW_ERROR);
                 break;
             case APP_STORE:
                 if (isNotUnderflow(t.getAppStores(), 1)) {

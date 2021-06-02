@@ -39,10 +39,10 @@ public interface RestService {
     /**
      * Send requests to desired end point.
      *
-     * @param url url of end point
+     * @param url    url of end point
      * @param method http method
-     * @param token access token
-     * @param data body
+     * @param token  access token
+     * @param data   body
      * @return response entity
      */
     ResponseEntity<String> sendRequest(String url, HttpMethod method, String token, String data);

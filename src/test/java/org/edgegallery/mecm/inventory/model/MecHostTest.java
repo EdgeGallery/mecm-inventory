@@ -30,7 +30,6 @@ public class MecHostTest {
     public void setUp() {
         mecHost.setAddress("address");
         mecHost.setAffinity("affinity");
-        mecHost.setApplcmIp("AppLcmIp");
         mecHost.setCity("city");
         mecHost.setMechostId("mechostId");
         mecHost.setMechostIp("mecHostIp");
@@ -43,7 +42,6 @@ public class MecHostTest {
     public void testAppoProcessFlowResponse() {
         assertEquals("address", mecHost.getAddress());
         assertEquals("affinity", mecHost.getAffinity());
-        assertEquals("AppLcmIp", mecHost.getApplcmIp());
         assertEquals("city", mecHost.getCity());
         assertEquals("mechostId", mecHost.getMechostId());
         assertEquals("mecHostIp", mecHost.getMechostIp());

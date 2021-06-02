@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Huawei Technologies Co., Ltd.
+ *  Copyright 2021 Huawei Technologies Co., Ltd.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,32 +14,33 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.apihandler.dto;
+package org.edgegallery.mecm.inventory.model;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class AppLcmDtoTest {
+public class MepmTest {
 
     @InjectMocks
-    AppLcmDto appLcmDto;
+    Mepm mepm = new Mepm();
 
     @Before
     public void setUp() {
-        appLcmDto.setApplcmIp("applcmIp");
-        appLcmDto.setApplcmPort("applcmPort");
-        appLcmDto.setUserName("userName");
+        mepm.setMepmId("mepmId");
+        mepm.setMepmIp("mepmIp");
+        mepm.setMepmPort("mepmPort");
+        mepm.setUserName("userName");
+        mepm.setMepmName("mepmName");
     }
 
     @Test
     public void testAppoProcessFlowResponse() {
-        Assert.assertEquals("applcmIp", appLcmDto.getApplcmIp());
-        Assert.assertEquals("applcmPort", appLcmDto.getApplcmPort());
-        Assert.assertEquals("userName", appLcmDto.getUserName());
+        Assert.assertEquals("mepmId", mepm.getMepmId());
+        Assert.assertEquals("mepmIp", mepm.getMepmIp());
+        Assert.assertEquals("mepmPort", mepm.getMepmPort());
+        Assert.assertEquals("userName", mepm.getUserName());
+        Assert.assertEquals("mepmName", mepm.getMepmName());
     }
 }

@@ -31,15 +31,13 @@ import org.edgegallery.mecm.inventory.apihandler.dto.SyncDeletedMecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncDeletedRulesDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncUpdatedMecHostDto;
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncUpdatedRulesDto;
-import org.edgegallery.mecm.inventory.model.AppLcm;
-import org.edgegallery.mecm.inventory.model.AppRuleManager;
 import org.edgegallery.mecm.inventory.model.MecHost;
+import org.edgegallery.mecm.inventory.model.Mepm;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.RestServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
-import org.edgegallery.mecm.inventory.service.repository.AppLcmRepository;
-import org.edgegallery.mecm.inventory.service.repository.AppRuleManagerRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
+import org.edgegallery.mecm.inventory.service.repository.MepmRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
@@ -66,28 +64,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MepmSyncHandler {
 
+    private static final String PARTIAL_FAILURE = "Partial Failure";
     @Autowired
     private RestServiceImpl syncService;
-
     @Autowired
     private InventoryServiceImpl service;
-
     @Autowired
     private AppDRuleRepository appDRuleRepository;
-
     @Autowired
     private MecHostRepository hostRepository;
-
     @Autowired
-    private AppRuleManagerRepository ruleManagerRepository;
-
-    @Autowired
-    private AppLcmRepository lcmRepository;
-
+    private MepmRepository mepmRepository;
     @Value("${server.ssl.enabled:false}")
     private String isSslEnabled;
-
-    private static final String PARTIAL_FAILURE = "Partial Failure";
 
     /**
      * Synchronizes application rules from a given edge to center.
@@ -111,14 +100,14 @@ public class MepmSyncHandler {
         // Synchronize added & updated records
         // Get dto records
         ResponseEntity<SyncUpdatedRulesDto> updateResponse =
-                syncService.syncRecords(getAppRuleMgrSyncUrl(mepmIp, tenantId) + "/sync_updated",
+                syncService.syncRecords(getMepmAppRuleSyncUrl(mepmIp, tenantId) + "/sync_updated",
                         SyncUpdatedRulesDto.class, accessToken);
         SyncUpdatedRulesDto syncUpdatedRulesDto = updateResponse.getBody();
         updateAppdRuleRecord(syncUpdatedRulesDto, tenantId, finalStatus);
         // Synchronize deleted records
         // Get dto records
         ResponseEntity<SyncDeletedRulesDto> deleteResponse =
-                syncService.syncRecords(getAppRuleMgrSyncUrl(mepmIp, tenantId) + "/sync_deleted",
+                syncService.syncRecords(getMepmAppRuleSyncUrl(mepmIp, tenantId) + "/sync_deleted",
                         SyncDeletedRulesDto.class, accessToken);
         SyncDeletedRulesDto syncDeletedRulesDto = deleteResponse.getBody();
         // Update table
@@ -157,20 +146,6 @@ public class MepmSyncHandler {
         }
     }
 
-    private String getAppRuleMgrSyncUrl(String mepmIp, String tenantId) {
-        AppRuleManager ruleManager = service.getRecord(mepmIp, ruleManagerRepository);
-        String rulePort = ruleManager.getAppRulePort();
-        String url;
-        if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + rulePort + "/apprulemgr/v1/tenants/" + tenantId
-                    + "/app_instances/appd_configuration";
-        } else {
-            url = "http://" + mepmIp + ":" + rulePort + "/apprulemgr/v1/tenants/" + tenantId
-                    + "/app_instances/appd_configuration";
-        }
-        return url;
-    }
-
     /**
      * Synchronize MEC host from a given MEPM to center.
      *
@@ -189,7 +164,7 @@ public class MepmSyncHandler {
         // Synchronize added & updated records
         // Get dto records
         ResponseEntity<SyncUpdatedMecHostDto> updateResponse =
-                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_updated",
+                syncService.syncRecords(getMepmMecHostSyncUrl(mepmIp) + "/sync_updated",
                         SyncUpdatedMecHostDto.class, accessToken);
         SyncUpdatedMecHostDto syncUpdatedMecHostDto = updateResponse.getBody();
         // Update table
@@ -198,7 +173,7 @@ public class MepmSyncHandler {
         // Synchronize deleted records
         // Get dto records
         ResponseEntity<SyncDeletedMecHostDto> deleteResponse =
-                syncService.syncRecords(getMecHostSyncUrl(mepmIp) + "/sync_deleted",
+                syncService.syncRecords(getMepmMecHostSyncUrl(mepmIp) + "/sync_deleted",
                         SyncDeletedMecHostDto.class, accessToken);
         SyncDeletedMecHostDto syncDeletedMecHostDto = deleteResponse.getBody();
         // Update table
@@ -219,8 +194,7 @@ public class MepmSyncHandler {
 
                 MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostDto.getMechostIp());
                 host.setApplications(new HashSet<>());
-                host.setApplcmIp(mepmIp);
-                host.setAppRuleIp(mepmIp);
+                host.setMepmIp(mepmIp);
                 Status addOrUpdateStatus = null;
 
                 try {
@@ -241,14 +215,28 @@ public class MepmSyncHandler {
         }
     }
 
-    private String getMecHostSyncUrl(String mepmIp) {
-        AppLcm lcm = service.getRecord(mepmIp, lcmRepository);
-        String port = lcm.getApplcmPort();
+    private String getMepmAppRuleSyncUrl(String mepmIp, String tenantId) {
+        Mepm mepm = service.getRecord(mepmIp, mepmRepository);
+        String mepmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + port + "/lcmcontroller/v1/hosts";
+            url = "https://" + mepmIp + ":" + mepmPort + "/apprulemgr/v1/tenants/" + tenantId
+                    + "/app_instances/appd_configuration";
         } else {
-            url = "http://" + mepmIp + ":" + port + "/lcmcontroller/v1/hosts";
+            url = "http://" + mepmIp + ":" + mepmPort + "/apprulemgr/v1/tenants/" + tenantId
+                    + "/app_instances/appd_configuration";
+        }
+        return url;
+    }
+
+    private String getMepmMecHostSyncUrl(String mepmIp) {
+        Mepm mepm = service.getRecord(mepmIp, mepmRepository);
+        String mepmPort = mepm.getMepmPort();
+        String url;
+        if (Boolean.parseBoolean(isSslEnabled)) {
+            url = "https://" + mepmIp + ":" + mepmPort + "/lcmcontroller/v1/hosts";
+        } else {
+            url = "http://" + mepmIp + ":" + mepmPort + "/lcmcontroller/v1/hosts";
         }
         return url;
     }

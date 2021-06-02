@@ -57,20 +57,20 @@ public class MecHostInventoryHandlerTest {
     public void validateMecHostInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-        // Add APPLCM record post
-        ResultActions postResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+        // Add mepm record post
+        ResultActions postResultMepm =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
+                        .content("{\"mepmName\": \"mepm123\", \"mepmIp\": \"1.1.1.1\", \"mepmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
 
-        MvcResult postMvcResultAppLcm = postResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult postMvcResultMepm = postResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String postResponseAppLcm = postMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppLcm);
+        String postResponseMepm = postMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMepm);
 
         // Prepare the mock REST server
         String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
@@ -85,8 +85,8 @@ public class MecHostInventoryHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                                + "\"affinity\":\"part1,part2\", \"appRuleIp\": \"1.1.1.1\","
+                                + "\"address\":\"Test Address\",\"zipCode\":\"1234\",\"userName\":\"User\", \"mepmIp\": \"1.1.1.1\", "
+                                + "\"affinity\":\"part1,part2\",\"vim\":\"k8s\","
                                 + " \"coordinates\": \"1,1\"}").with(csrf())
                         .header("access_token", "SampleToken"));
 
@@ -107,10 +107,10 @@ public class MecHostInventoryHandlerTest {
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
-                        + "\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null}", getByIdResponse);
+                "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":\"1234\",\"city\":\"TestCity\","
+                        + "\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":\"User\","
+                        + "\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
+                        + "\"hwcapabilities\":[],\"vim\":\"k8s\",\"configUploadStatus\":null}", getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
         // Prepare the mock REST server
@@ -132,17 +132,17 @@ public class MecHostInventoryHandlerTest {
         String deleteByIdResponse = deleteByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponse);
 
-        // Test APPLCM record delete by APPLCM ID
-        ResultActions deleteByIdResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
+        // Test Mepm record delete by Mepm ID
+        ResultActions deleteByIdResultMepm =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
-        MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult deleteByIdMvcResultMepm = deleteByIdResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String deleteByIdResponseAppLcm = deleteByIdMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppLcm);
+        String deleteByIdResponseMepm = deleteByIdMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMepm);
     }
 
     @Test
@@ -150,20 +150,19 @@ public class MecHostInventoryHandlerTest {
     public void validateMecHostInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-        // Add APPLCM record post
-        ResultActions postResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+        // Add Mepm record post
+        ResultActions postResultMepm =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
-                                + "\"10000\", "
+                        .content("{\"mepmName\": \"mepm123\", \"mepmIp\": \"1.1.1.1\", \"mepmPort\":\"10000\", "
                                 + "\"userName\": \"Test\" }"));
 
-        MvcResult postMvcResultAppLcm = postResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult postMvcResultMepm = postResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String postResponseAppLcm = postMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppLcm);
+        String postResponseMepm = postMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMepm);
 
         // Prepare the mock REST server
         String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
@@ -176,9 +175,9 @@ public class MecHostInventoryHandlerTest {
         mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON).with(csrf())
-                .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\","
-                        + "  \"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\"}").with(csrf())
+                .content("{\"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                        + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\","
+                        + "\"coordinates\":\"1,1\"}").with(csrf())
                 .header("access_token", "SampleToken"));
 
         // Update record
@@ -194,8 +193,8 @@ public class MecHostInventoryHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", \"appRuleIp\": \"1.1.1"
-                                + ".1\",\"coordinates\":\"1,1\",\"vim\":\"k8s\",\"configUploadStatus\":null}")
+                                + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\","
+                                + "\"coordinates\":\"1,1\",\"vim\":\"k8s\",\"configUploadStatus\":null}")
                         .with(csrf())
                         .header("access_token", "SampleToken"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
@@ -217,7 +216,7 @@ public class MecHostInventoryHandlerTest {
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
+                        + "\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
                         + "\"hwcapabilities\":[],\"vim\":\"k8s\",\"configUploadStatus\":null}]",
                 getAllResponse);
 
@@ -233,17 +232,17 @@ public class MecHostInventoryHandlerTest {
         String deleteAllResponse = deleteAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteAllResponse);
 
-        // Test APPLCM record delete by APPLCM ID
-        ResultActions deleteByIdResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
+        // Test Mepm record delete by Mepm ID
+        ResultActions deleteByIdResultMepm =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
-        MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult deleteByIdMvcResultMepm = deleteByIdResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String deleteByIdResponseAppLcm = deleteByIdMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppLcm);
+        String deleteByIdResponseMepm = deleteByIdMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMepm);
     }
 
     @Test
@@ -251,20 +250,19 @@ public class MecHostInventoryHandlerTest {
     public void validateMecHostHardwareCapabilityInventory() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-        // Add APPLCM record post
-        ResultActions postResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+        // Add Mepm record post
+        ResultActions postResultMepm =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
-                                + "\"10000\", "
+                        .content("{\"mepmName\": \"mepm123\", \"mepmIp\": \"1.1.1.1\", \"mepmPort\":\"10000\", "
                                 + "\"userName\": \"Test\" }"));
 
-        MvcResult postMvcResultAppLcm = postResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult postMvcResultMepm = postResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String postResponseAppLcm = postMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppLcm);
+        String postResponseMepm = postMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMepm);
 
         // Prepare the mock REST server
         String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
@@ -279,8 +277,8 @@ public class MecHostInventoryHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                                + "\"affinity\":\"part1,part2\",\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\", "
+                                + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\", "
+                                + "\"affinity\":\"part1,part2\",\"mepmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\", "
                                 + "\"hwcapabilities\":[{\"hwType\": \"GPU1\","
                                 + "\"hwVendor\": \"testvendor1\",\"hwModel\": \"testmodel1\"}]}").with(csrf())
                         .header("access_token", "SampleToken"));
@@ -302,7 +300,7 @@ public class MecHostInventoryHandlerTest {
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\",\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}],\"vim\":null,\"configUploadStatus\":null}",
+                "{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\",\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}],\"vim\":null,\"configUploadStatus\":null}",
                 getByIdResponse);
 
         // Test MecHost record delete by MecHost ID
@@ -325,17 +323,17 @@ public class MecHostInventoryHandlerTest {
         String deleteByIdResponse = deleteByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponse);
 
-        // Test APPLCM record delete by APPLCM ID
-        ResultActions deleteByIdResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
+        // Test Mepm record delete by Mepm ID
+        ResultActions deleteByIdResultMepm =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
-        MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult deleteByIdMvcResultMepm = deleteByIdResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String deleteByIdResponseAppLcm = deleteByIdMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppLcm);
+        String deleteByIdResponseMepm = deleteByIdMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMepm);
     }
 
     @Test
@@ -343,20 +341,20 @@ public class MecHostInventoryHandlerTest {
     public void validateMecHostHardwareCapabilityInventoryUpdate() throws Exception {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
 
-        // Add APPLCM record post
-        ResultActions postResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+        // Add Mepm record post
+        ResultActions postResultMepm =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
+                        .content("{\"mepmName\": \"mepm123\", \"mepmIp\": \"1.1.1.1\", \"mepmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
 
-        MvcResult postMvcResultAppLcm = postResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult postMvcResultMepm = postResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String postResponseAppLcm = postMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppLcm);
+        String postResponseMepm = postMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMepm);
 
         // Prepare the mock REST server
         String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
@@ -370,8 +368,8 @@ public class MecHostInventoryHandlerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON).with(csrf())
                 .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                        + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                        + "\"appRuleIp\": \"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\","
+                        + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\", "
+                        + "\"mepmIp\": \"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[{\"hwType\":\"GPU1\","
                         + "\"hwVendor\":\"testvendor1\",\"hwModel\":\"testmodel1\"}]}").with(csrf())
                 .header("access_token", "SampleToken"));
 
@@ -388,7 +386,7 @@ public class MecHostInventoryHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\",\"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\",\"appRuleIp\": \"1.1.1.1\","
+                                + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\","
                                 + "\"coordinates\":\"1,1\",\"hwcapabilities\":[]}").with(csrf())
                         .header("access_token", "SampleToken"));
         MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
@@ -410,7 +408,7 @@ public class MecHostInventoryHandlerTest {
         Assert.assertEquals(
                 "[{\"mechostIp\":\"1.1.1.1\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\","
                         + "\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,"
-                        + "\"applcmIp\":\"1.1.1.1\",\"appRuleIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
+                        + "\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\","
                         + "\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null}]",
                 getAllResponse);
 
@@ -426,18 +424,18 @@ public class MecHostInventoryHandlerTest {
         String deleteAllResponse = deleteAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteAllResponse);
 
-        // Test APPLCM record delete by APPLCM ID
-        ResultActions deleteByIdResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
+        // Test Mepm record delete by Mepm ID
+        ResultActions deleteByIdResultMepm =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .header("access_token", "SampleToken"));
 
-        MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult deleteByIdMvcResultMepm = deleteByIdResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String deleteByIdResponseAppLcm = deleteByIdMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppLcm);
+        String deleteByIdResponseMepm = deleteByIdMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMepm);
     }
 
     @Test
@@ -446,20 +444,20 @@ public class MecHostInventoryHandlerTest {
         String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b31";
         String hostIp = "1.1.1.1";
 
-        // Add APPLCM record post
-        ResultActions postResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/applcms")
+        // Add Mepm record post
+        ResultActions postResultMepm =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{\"applcmName\": \"applcm123\", \"applcmIp\": \"1.1.1.1\", \"applcmPort\": "
+                        .content("{\"mepmName\": \"mepm123\", \"mepmIp\": \"1.1.1.1\", \"mepmPort\": "
                                 + "\"10000\", "
                                 + "\"userName\": \"Test\" }"));
 
-        MvcResult postMvcResultAppLcm = postResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult postMvcResultMepm = postResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String postResponseAppLcm = postMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppLcm);
+        String postResponseMepm = postMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMepm);
 
         // Prepare the mock REST server
         String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
@@ -474,8 +472,8 @@ public class MecHostInventoryHandlerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
-                                + "\"address\":\"Test Address\", \"applcmIp\": \"1.1.1.1\", "
-                                + "\"appRuleIp\": \"1.1.1.1\", \"affinity\":\"part1,part2\",\"coordinates\":\"1,1\","
+                                + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\", "
+                                + "\"mepmIp\": \"1.1.1.1\", \"affinity\":\"part1,part2\",\"coordinates\":\"1,1\","
                                 + "\"hwcapabilities\":[{\"hwType\": \"GPU1\",\"hwVendor\": \"testvendor1\","
                                 + "\"hwModel\": \"testmodel1\"}]}").with(csrf())
                         .header("access_token", "SampleToken"));
@@ -552,16 +550,16 @@ public class MecHostInventoryHandlerTest {
         String deleteByIdResponse = deleteByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponse);
 
-        // Test APPLCM record delete by APPLCM ID
-        ResultActions deleteByIdResultAppLcm =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/applcms/1.1.1.1")
+        // Test Mepm record delete by Mepm ID
+        ResultActions deleteByIdResultMepm =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mepms/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf()));
 
-        MvcResult deleteByIdMvcResultAppLcm = deleteByIdResultAppLcm.andDo(MockMvcResultHandlers.print())
+        MvcResult deleteByIdMvcResultMepm = deleteByIdResultMepm.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        String deleteByIdResponseAppLcm = deleteByIdMvcResultAppLcm.getResponse().getContentAsString();
-        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppLcm);
+        String deleteByIdResponseMepm = deleteByIdMvcResultMepm.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseMepm);
     }
 }

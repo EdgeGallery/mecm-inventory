@@ -15,21 +15,20 @@
  */
 package org.edgegallery.mecm.inventory.service;
 
-import static org.edgegallery.mecm.inventory.model.ModelType.APP_LCM;
-import static org.edgegallery.mecm.inventory.model.ModelType.APP_STORE;
-import static org.edgegallery.mecm.inventory.model.ModelType.MEC_HOST;
-import static org.edgegallery.mecm.inventory.model.ModelType.APP_RULE_MANAGER;
-import static org.edgegallery.mecm.inventory.model.ModelType.APP_REPO;
-import static org.edgegallery.mecm.inventory.model.ModelType.MEC_HW_CAPABILITY;
-import static org.edgegallery.mecm.inventory.model.ModelType.MEC_APPLICATION;
 import static org.edgegallery.mecm.inventory.model.ModelType.APPD_RULE;
-import static org.edgegallery.mecm.inventory.model.ModelType.TENANT;
+import static org.edgegallery.mecm.inventory.model.ModelType.APP_REPO;
+import static org.edgegallery.mecm.inventory.model.ModelType.APP_STORE;
 import static org.edgegallery.mecm.inventory.model.ModelType.DNS_RULE;
-import static org.edgegallery.mecm.inventory.model.ModelType.TRAFFIC_RULE;
+import static org.edgegallery.mecm.inventory.model.ModelType.MEC_APPLICATION;
+import static org.edgegallery.mecm.inventory.model.ModelType.MEC_HOST;
+import static org.edgegallery.mecm.inventory.model.ModelType.MEC_HW_CAPABILITY;
+import static org.edgegallery.mecm.inventory.model.ModelType.MEPM;
+import static org.edgegallery.mecm.inventory.model.ModelType.TENANT;
 import static org.edgegallery.mecm.inventory.model.ModelType.TRAFFIC_FILTER;
+import static org.edgegallery.mecm.inventory.model.ModelType.TRAFFIC_RULE;
 
-import org.edgegallery.mecm.inventory.exception.InventoryException;
 import java.util.Optional;
+import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.model.Tenant;
 import org.edgegallery.mecm.inventory.service.repository.TenantRepository;
 import org.junit.Test;
@@ -43,7 +42,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class TenantServiceImplTest {
 
     public static final String MECHOST_ID = "Mec_Host_Id";
-    public static final String APPLCM_ID = "AppLcm_id";
+    public static final String MEPM_ID = "Mepm_id";
     public static final String APPSTORE_ID = "AppStore_id";
     @InjectMocks
     TenantServiceImpl tenantService;
@@ -52,15 +51,15 @@ public class TenantServiceImplTest {
     Tenant tenant = new Tenant();
 
     @Test
-    public void addTenantAppLcm() {
-        tenantService.addTenant(APPLCM_ID, APP_LCM);
+    public void addTenantMepm() {
+        tenantService.addTenant(MEPM_ID, MEPM);
     }
 
     @Test
-    public void addTenantAppLcmCount() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.addTenant(APPLCM_ID, APP_LCM);
+    public void addTenantMepmCount() {
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.addTenant(MEPM_ID, MEPM);
     }
 
     @Test
@@ -87,19 +86,19 @@ public class TenantServiceImplTest {
 
     @Test
     public void reduceCount() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, APP_LCM);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, MEPM);
     }
 
     @Test
     public void reduceCountSave() {
-        tenant.setTenantId(APPLCM_ID);
-        tenant.setAppLcms(1);
+        tenant.setTenantId(MEPM_ID);
+        tenant.setMepms(1);
         tenant.setAppStores(1);
         tenant.setMecHosts(1);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, APP_LCM);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, MEPM);
     }
 
     @Test
@@ -134,15 +133,15 @@ public class TenantServiceImplTest {
 
     @Test
     public void clearCount() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, APP_LCM);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, MEPM);
     }
 
     @Test
     public void deleteCount() {
         tenant.setTenantId(APPSTORE_ID);
-        tenant.setAppLcms(1);
+        tenant.setMepms(1);
         tenant.setAppStores(2);
         tenant.setMecHosts(3);
         Mockito.when(repository.findById(APPSTORE_ID)).thenReturn(Optional.of(tenant));
@@ -151,19 +150,19 @@ public class TenantServiceImplTest {
 
     @Test
     public void clearCountMecHost() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, MEC_HOST);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, MEC_HOST);
     }
 
     @Test(expected = RuntimeException.class)
     public void reduceCountNullId() {
-        tenantService.reduceCount(null, APP_LCM);
+        tenantService.reduceCount(null, MEPM);
     }
 
     @Test(expected = RuntimeException.class)
     public void clearCountNullId() {
-        tenantService.clearCount(null, APP_LCM);
+        tenantService.clearCount(null, MEPM);
     }
 
     @Test
@@ -172,113 +171,112 @@ public class TenantServiceImplTest {
     }
 
     @Test
-    public void addTenantAppRuleManager() {
-        tenantService.addTenant(APPLCM_ID, APP_RULE_MANAGER);
-    }
-
-    @Test
     public void addTenantMecHwCapability() {
-        tenantService.addTenant(APPLCM_ID, MEC_HW_CAPABILITY);
+        tenantService.addTenant(MEPM_ID, MEC_HW_CAPABILITY);
     }
 
     @Test
     public void addTenantRepo() {
-        tenantService.addTenant(APPLCM_ID, APP_REPO);
+        tenantService.addTenant(MEPM_ID, APP_REPO);
     }
 
     @Test
-    public void reduceCountAppRuleManager() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, APP_RULE_MANAGER);
+    public void reduceCountMepm() {
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, MEPM);
     }
 
     @Test
     public void reduceCountMecHwCapability() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, MEC_HW_CAPABILITY);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, MEC_HW_CAPABILITY);
     }
 
     @Test
     public void reduceCountMecApplication() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, MEC_APPLICATION);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, MEC_APPLICATION);
     }
 
     @Test
-    public void reduceCountAppRule() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, APPD_RULE);
+    public void reduceCountAppDRule() {
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, APPD_RULE);
     }
 
     @Test
     public void reduceCountAppRepo() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, APP_REPO);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, APP_REPO);
     }
 
     @Test
-    public void clearCountAppRuleManager() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, APP_RULE_MANAGER);
+    public void clearCountMepm() {
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, MEPM);
     }
+
     @Test
     public void clearCountMecHwCapability() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, MEC_HW_CAPABILITY);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, MEC_HW_CAPABILITY);
     }
+
     @Test
     public void clearCountMecApplication() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, MEC_APPLICATION);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, MEC_APPLICATION);
     }
+
     @Test
     public void clearCountAppdRule() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, APPD_RULE);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, APPD_RULE);
     }
+
     @Test
     public void clearCountDnsRule() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, DNS_RULE);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, DNS_RULE);
     }
 
     @Test
     public void clearCountTrafficRule() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, TRAFFIC_RULE);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, TRAFFIC_RULE);
     }
 
     @Test
     public void clearCountTrafficFilter() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, TRAFFIC_FILTER);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, TRAFFIC_FILTER);
     }
 
     @Test
     public void clearCountAppRepo() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, APP_REPO);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, APP_REPO);
     }
 
     @Test
-    public void subtractCountAppRuleManager() {
+    public void subtractCountMepm() {
         tenant.setTenantId(APPSTORE_ID);
-        tenant.setAppRuleManagers(1);
+        tenant.setMepms(1);
         Mockito.when(repository.findById(APPSTORE_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPSTORE_ID, APP_RULE_MANAGER);
+        tenantService.reduceCount(APPSTORE_ID, MEPM);
     }
 
     @Test
@@ -298,7 +296,7 @@ public class TenantServiceImplTest {
     }
 
     @Test
-    public void subtractCountAppRule() {
+    public void subtractCountAppDRule() {
         tenant.setTenantId(APPSTORE_ID);
         tenant.setAppdRules(-1);
         Mockito.when(repository.findById(APPSTORE_ID)).thenReturn(Optional.of(tenant));
@@ -314,19 +312,11 @@ public class TenantServiceImplTest {
     }
 
     @Test
-    public void addCountAppLcms() {
+    public void addCountMepms() {
         tenant.setTenantId(APPSTORE_ID);
-        tenant.setAppLcms(-1);
+        tenant.setMepms(-1);
         Mockito.when(repository.findById(APPSTORE_ID)).thenReturn(Optional.of(tenant));
-        tenantService.addTenant(APPSTORE_ID, APP_LCM);
-    }
-
-    @Test
-    public void addCountAppRManager() {
-        tenant.setTenantId(APPSTORE_ID);
-        tenant.setAppRuleManagers(-1);
-        Mockito.when(repository.findById(APPSTORE_ID)).thenReturn(Optional.of(tenant));
-        tenantService.addTenant(APPSTORE_ID, APP_RULE_MANAGER);
+        tenantService.addTenant(APPSTORE_ID, MEPM);
     }
 
     @Test
@@ -384,16 +374,16 @@ public class TenantServiceImplTest {
 
     @Test(expected = InventoryException.class)
     public void reduceCountInvalid() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.reduceCount(APPLCM_ID, TENANT);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.reduceCount(MEPM_ID, TENANT);
     }
 
     @Test(expected = InventoryException.class)
     public void clearCountInvalid() {
-        tenant.setTenantId(APPLCM_ID);
-        Mockito.when(repository.findById(APPLCM_ID)).thenReturn(Optional.of(tenant));
-        tenantService.clearCount(APPLCM_ID, TENANT);
+        tenant.setTenantId(MEPM_ID);
+        Mockito.when(repository.findById(MEPM_ID)).thenReturn(Optional.of(tenant));
+        tenantService.clearCount(MEPM_ID, TENANT);
     }
 
 }
