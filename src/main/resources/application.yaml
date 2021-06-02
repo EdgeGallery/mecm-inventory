@@ -38,7 +38,7 @@ server:
   port: 8093
 
   ssl:
-    enabled: true
+    enabled: ${SSL_ENABLED:true}
     protocol: TLS
     enabled-Protocols: [TLSv1.2]
     ciphers: [TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
@@ -49,8 +49,8 @@ server:
     key-store-password: ${SSL_KEY_STORE_PASSWORD:}
     key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}
     key-alias: ${SSL_KEY_ALIAS:edgegallery}
-#    trust-store: ${SSL_KEY_STORE_JKS_PATH:/usr/app/ssl/keystore.jks}
-#    trust-store-password: ${SSL_TRUST_PASSWORD:}
+    trust-store: ${SSL_KEY_STORE_JKS_PATH:/usr/app/ssl/keystore.jks}
+    trust-store-password: ${SSL_TRUST_PASSWORD:}
 
 spring:
   datasource:

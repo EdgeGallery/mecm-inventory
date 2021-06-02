@@ -46,11 +46,11 @@ public class InventoryApplication {
     @Value("${server.ssl.enabled:}")
     private String isSslEnabled;
 
-    // @Value("${server.ssl.trust-store:}")
-    // private String trustStorePath;
-    //
-    // @Value("${server.ssl.trust-store-password:}")
-    // private String trustStorePasswd;
+    @Value("${server.ssl.trust-store:}")
+    private String trustStorePath;
+
+    @Value("${server.ssl.trust-store-password:}")
+    private String trustStorePasswd;
 
     /**
      * External system Inventory entry function.
