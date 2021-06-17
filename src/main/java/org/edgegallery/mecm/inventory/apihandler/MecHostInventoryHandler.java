@@ -169,13 +169,12 @@ public class MecHostInventoryHandler {
     }
 
     /**
-     * Retrieves all MEC host records.
+     * Retrieves all MEC host records. offer mechost ip for health check.
      *
      * @return MEC host records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
     @GetMapping(path = "/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<List<MecHostDto>> getAllMecHostRecords() {
         List<MecHost> mecHosts = service.getTenantRecords(null, repository);
         List<MecHostDto> mecHostDtos = new LinkedList<>();
