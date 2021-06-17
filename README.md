@@ -1,15 +1,15 @@
-# mecm-inventory
+# mecm-库存
 
-#### Description
-MECM-Inventory modules provides common inventory of all system and host level resources of MEC system.
+＃＃＃＃ 描述
+MECM-Inventory 模块提供 MEC 系统的所有系统和主机级资源的公共清单。
 
-#### Compile and build
-The Inventory project is containerized based on docker, and it is divided into two steps during compilation and construction.
+####编译和构建
+Inventory项目基于docker容器化，在编译和构建过程中分为两个步骤。
 
-#### Compile
-Inventory is a Java program written based on jdk1.8 and maven. To compile, you only need to execute mvn install to compile and generate jar package
+####编译
+Inventory是一个基于jdk1.8和maven编写的Java程序。 编译只需执行 mvn install 即可编译生成jar包
 
-#### Build image
-The Inventory project provides a dockerfile file for mirroring. You can use the following commands when making a mirror
+#### 构建镜像
+Inventory 项目提供了一个用于镜像的 dockerfile 文件。 制作镜像时可以使用以下命令
 
-docker build -t edgegallery/mecm-inventory:latest -f docker/Dockerfile .
+docker build -t edgegallery/mecm-inventory:latest -f docker/Dockerfile 。
