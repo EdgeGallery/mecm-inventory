@@ -42,15 +42,6 @@ public class InventoryApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryApplication.class);
 
-    @Value("${server.ssl.enabled:}")
-    private String isSslEnabled;
-
-    @Value("${server.ssl.trust-store:}")
-    private String trustStorePath;
-
-    @Value("${server.ssl.trust-store-password:}")
-    private String trustStorePasswd;
-
     /**
      * External system Inventory entry function.
      *
