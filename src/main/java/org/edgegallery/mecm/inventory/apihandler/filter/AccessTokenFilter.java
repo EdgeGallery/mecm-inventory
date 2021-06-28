@@ -45,7 +45,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenFilter.class);
     private static final String INVALID_TOKEN_MESSAGE = "Invalid access token";
-    public static final String HEALTH_URI = "/inventory/v1/health";
+    public static final String[] HEALTH_URI = {"/inventory/v1/health", "/inventory/v1/mechosts"};
 
     @Autowired
     TokenStore jwtTokenStore;
@@ -54,7 +54,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         // Skip token check for health check URI
-        if (request.getRequestURI() != null && request.getRequestURI().equals(HEALTH_URI)) {
+        if (request.getRequestURI() != null && (Arrays.stream(HEALTH_URI).anyMatch(request.getRequestURI()::contains))){
             filterChain.doFilter(request, response);
             return;
         }
