@@ -45,7 +45,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenFilter.class);
     private static final String INVALID_TOKEN_MESSAGE = "Invalid access token";
-    public static final String[] HEALTH_URI = {"/inventory/v1/health", "/inventory/v1/mechosts"};
+    private static final String[] HEALTH_URI = {"/inventory/v1/health", "/inventory/v1/mechosts"};
 
     @Autowired
     TokenStore jwtTokenStore;
