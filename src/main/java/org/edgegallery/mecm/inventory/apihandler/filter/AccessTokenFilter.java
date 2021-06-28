@@ -52,9 +52,10 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         // Skip token check for health check URI
-        if (request.getRequestURI() != null && (Arrays.stream(HEALTH_URI).anyMatch(request.getRequestURI()::contains))){
+        if (request.getRequestURI() != null && (Arrays.stream(HEALTH_URI)
+            .anyMatch(request.getRequestURI()::contains))) {
             filterChain.doFilter(request, response);
             return;
         }
