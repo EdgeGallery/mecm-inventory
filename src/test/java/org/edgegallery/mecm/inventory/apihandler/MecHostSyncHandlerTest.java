@@ -16,7 +16,6 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
-import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_HOST_URL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -41,7 +40,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringRunner.class)
@@ -49,16 +47,13 @@ import org.springframework.web.client.RestTemplate;
 @AutoConfigureMockMvc
 public class MecHostSyncHandlerTest {
 
-    @Autowired
-    MockMvc mvc;
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    private MockRestServiceServer server;
-
     private static final String ACCESS_TOKEN = "access_token";
     private static final String SAMPLE_TOKEN = "SampleToken";
+    @Autowired
+    MockMvc mvc;
+    @Autowired
+    private RestTemplate restTemplate;
+    private MockRestServiceServer server;
 
     @Before
     public void setUp() {

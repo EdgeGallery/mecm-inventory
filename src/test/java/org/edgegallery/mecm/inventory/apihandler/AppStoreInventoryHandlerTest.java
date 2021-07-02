@@ -76,7 +76,7 @@ public class AppStoreInventoryHandlerTest {
                 .andReturn();
         String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"appstoreName\":\"TestStore\",\"appstoreRepoName\":null,\"appstoreRepo\":\"127.0.0.1:4443\",\"appstoreRepoUserName\":\"repouserName\",\"appstoreRepoPassword\":\"RepoPassowrd@123\",\"producer\":\"TestProducer\"}",
+                "{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"appstoreName\":\"TestStore\",\"appstoreRepoName\":null,\"appstoreRepo\":\"127.0.0.1:4443\",\"appstoreRepoUserName\":\"repouserName\",\"appstoreRepoPassword\":\"\",\"producer\":\"TestProducer\"}",
                 getByIdResponse);
 
         // Test AppStore record delete by AppStore ID
@@ -137,7 +137,7 @@ public class AppStoreInventoryHandlerTest {
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "[{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"appstoreName\":\"TestStore\",\"appstoreRepoName\":null,\"appstoreRepo\":\"127.0.0.1:4453\",\"appstoreRepoUserName\":\"repouserName\",\"appstoreRepoPassword\":\"RepoPassowrd@123\",\"producer\":\"TestProducer\"}]",
+                "[{\"appstoreIp\":\"1.1.1.1\",\"appstorePort\":\"10000\",\"appstoreName\":\"TestStore\",\"appstoreRepoName\":null,\"appstoreRepo\":\"127.0.0.1:4453\",\"appstoreRepoUserName\":\"repouserName\",\"appstoreRepoPassword\":\"\",\"producer\":\"TestProducer\"}]",
                 getAllResponse);
 
         // Test Delete all records
