@@ -116,11 +116,14 @@ public class AppStoreInventoryHandler {
     @ApiOperation(value = "Retrieves all application store records", response = List.class)
     @GetMapping(path = "/appstores", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
-    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords() {
+    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecords(boolean resetPasswd) {
         List<AppStore> appStores = service.getTenantRecords(null, repository);
         List<AppStoreDto> appStoreDtos = new LinkedList<>();
         for (AppStore store : appStores) {
             AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
+            if (!resetPasswd) {
+                appStoreDto.setAppstoreRepoPassword("");
+            }
             appStoreDtos.add(appStoreDto);
         }
         return new ResponseEntity<>(appStoreDtos, HttpStatus.OK);
@@ -138,9 +141,12 @@ public class AppStoreInventoryHandler {
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppStoreDto> getAppStoreRecord(
             @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
-            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp, boolean resetPasswd) {
         AppStore store = service.getRecord(appStoreIp, repository);
         AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
+        if (!resetPasswd) {
+            appStoreDto.setAppstoreRepoPassword("");
+        }
         return new ResponseEntity<>(appStoreDto, HttpStatus.OK);
     }
 
@@ -172,5 +178,33 @@ public class AppStoreInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
         Status status = service.deleteRecord(appStoreIp, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    /**
+     * Retrieves all application store records.
+     *
+     * @return application store records & status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Retrieves all application store records", response = List.class)
+    @GetMapping(path = "/appstore", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
+    public ResponseEntity<List<AppStoreDto>> getAllAppStoreRecordWithOutpasswd() {
+        return getAllAppStoreRecords(true);
+    }
+
+    /**
+     * Retrieves a specific application store record in the Inventory matching the given tenant ID & application store
+     * IP.
+     *
+     * @param appStoreIp application store IP
+     * @return application store record & status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Retrieves application store record", response = AppStoreDto.class)
+    @GetMapping(path = "/appstore/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
+    public ResponseEntity<AppStoreDto> getAppStoreRecordWithOutpasswd(
+            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
+        return getAppStoreRecord(appStoreIp, true);
     }
 }
