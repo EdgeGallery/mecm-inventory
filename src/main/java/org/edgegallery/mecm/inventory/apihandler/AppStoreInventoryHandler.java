@@ -121,7 +121,7 @@ public class AppStoreInventoryHandler {
         List<AppStoreDto> appStoreDtos = new LinkedList<>();
         for (AppStore store : appStores) {
             AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
-            if (resetPasswd) {
+            if (!resetPasswd) {
                 appStoreDto.setAppstoreRepoPassword("");
             }
             appStoreDtos.add(appStoreDto);
@@ -144,7 +144,7 @@ public class AppStoreInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp, boolean resetPasswd) {
         AppStore store = service.getRecord(appStoreIp, repository);
         AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
-        if (resetPasswd) {
+        if (!resetPasswd) {
             appStoreDto.setAppstoreRepoPassword("");
         }
         return new ResponseEntity<>(appStoreDto, HttpStatus.OK);
