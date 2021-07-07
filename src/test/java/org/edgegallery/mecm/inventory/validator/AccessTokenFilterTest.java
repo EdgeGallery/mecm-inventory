@@ -15,7 +15,6 @@
 
 package org.edgegallery.mecm.inventory.validator;
 
-import org.edgegallery.mecm.inventory.apihandler.filter.AccessTokenFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
