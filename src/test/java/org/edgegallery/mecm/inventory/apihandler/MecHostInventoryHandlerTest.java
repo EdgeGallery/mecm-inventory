@@ -471,7 +471,7 @@ public class MecHostInventoryHandlerTest {
                 mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
-                        .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost\",\"city\":\"TestCity\","
+                        .content("{ \"mechostIp\": \"1.1.1.1\", \"mechostName\":\"TestHost1\",\"city\":\"TestCity\","
                                 + "\"address\":\"Test Address\", \"mepmIp\": \"1.1.1.1\", "
                                 + "\"mepmIp\": \"1.1.1.1\", \"affinity\":\"part1,part2\",\"coordinates\":\"1,1\","
                                 + "\"hwcapabilities\":[{\"hwType\": \"GPU1\",\"hwVendor\": \"testvendor1\","
@@ -529,11 +529,54 @@ public class MecHostInventoryHandlerTest {
                         + "\"packageId\":\"ea339be5f1044dcf9f76b05db46f0a56\","
                         + "\"capabilities\":[\"GPU1\",\"GPU2\"],\"status\":\"Created\"}]}", getAllResponse);
 
+        // Test Updates application record entry into the Inventory.
+        //prepare mock rest server
+        String urlmepmPut = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL + "/" + "1.1.1.1";
+        MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
+        mockServer.expect(requestTo(urlmepmPut))
+                .andExpect(method(HttpMethod.PUT))
+                .andRespond(withSuccess());
+        // Update record
+        ResultActions updateResult =
+                mvc.perform(MockMvcRequestBuilders.put("/inventory/v1/tenants/" + tenantId + "/mechosts/"
+                        + hostIp + "/apps/4c6fb452-640d-4e73-9016-6ccec856080d")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
+                        .content("{\"appInstanceId\":\"4c6fb452-640d-4e73-9016-6ccec856080d\",\"appName\":\"app-name1\","
+                                + "\"packageId\":\"ea339be5f1044dcf9f76b05db46f0a56\","
+                                + "\"capabilities\":[\"GPU1\",\"GPU2\"],\"status\":\"Created\"}").with(csrf())
+                        .header("access_token", "SampleToken"));
+        MvcResult updateMvcResult = updateResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String updateResponse = updateMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Updated\"}",
+                updateResponse);
+
+        // Test Retrieves application record entry from the Inventory
+        String urlmepmGet = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL + "/" + "1.1.1.1";
+        mockServer.expect(requestTo(urlmepmGet))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess());
+
+        ResultActions getByIdResult =
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/" + tenantId + "/mechosts/"
+                        + hostIp + "/apps/4c6fb452-640d-4e73-9016-6ccec856080d")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
+                        .header("access_token", "SampleToken"));
+
+        MvcResult getByIdMvcResult = getByIdResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String getByIdResponse = getByIdMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"appInstanceId\":\"4c6fb452-640d-4e73-9016-6ccec856080d\",\"appName\":\"app-name1\","
+                + "\"packageId\":\"ea339be5f1044dcf9f76b05db46f0a56\","
+                + "\"capabilities\":[\"GPU1\",\"GPU2\"],\"status\":\"Created\"}", getByIdResponse);
+
         // Test MecApplication record delete by  application ID
-        // Prepare the mock REST server
         String urlmepmDelete = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL + "/" + "1.1.1.1";
-        MockRestServiceServer mockServerHostDelete = MockRestServiceServer.createServer(restTemplate);
-        mockServerHostDelete.expect(requestTo(urlmepmDelete))
+        mockServer.expect(requestTo(urlmepmDelete))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withSuccess());
 

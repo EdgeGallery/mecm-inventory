@@ -138,20 +138,6 @@ public class AppSourceRepoInventoryHandlerTest {
         Assert.assertEquals("{\"response\":\"Updated\"}",
                 updateResponse);
 
-        // Test Mechost to get all records
-        ResultActions getAllResults =
-                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprepos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
-        MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
-        Assert.assertEquals(
-                "[{\"repoEndPoint\":\"1.1.1.1\",\"repoName\":\"AppRepo1\",\"repoUserName\":\"admin\","
-                        + "\"repoPassword\":\"Harbor12346\"}]",
-                getAllResponse);
-
         // Test MEPM record delete by MEPM ID
         ResultActions deleteByIdResultAppRepos =
                 mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/apprepos/1.1.1.1")
@@ -164,4 +150,49 @@ public class AppSourceRepoInventoryHandlerTest {
         String deleteByIdResponseAppRepos = deleteByIdMvcResultAppRepos.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppRepos);
     }
+
+    @Test
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
+    public void validateAppReposInventoryUpdate2() throws Exception {
+        // Add MEPM record post
+        ResultActions postResultAppRepo =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/apprepos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
+                        .content("{\"repoEndPoint\": \"1.1.1.1\", \"repoName\": \"AppRepo1\","
+                                + " \"repoUserName\": \"admin\", \"repoPassword\": \"Harbor12345\" }"));
+
+        MvcResult postMvcResultAppRepo = postResultAppRepo.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String postResponseAppRepo = postMvcResultAppRepo.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponseAppRepo);
+
+        // Test Mechost to get all records
+        ResultActions getAllResults =
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/apprepos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
+        MvcResult getAllMvcResult = getAllResults.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
+        Assert.assertEquals(
+                "[{\"repoEndPoint\":\"1.1.1.1\",\"repoName\":\"AppRepo1\",\"repoUserName\":\"admin\","
+                        + "\"repoPassword\":\"Harbor12345\"}]",
+                getAllResponse);
+
+        ResultActions deleteByIdResultAppRepos1 =
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/apprepos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf()));
+
+        MvcResult deleteByIdMvcResultAppRepos1 = deleteByIdResultAppRepos1.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String deleteByIdResponseAppRepos1 = deleteByIdMvcResultAppRepos1.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Deleted\"}", deleteByIdResponseAppRepos1);
+
+    }
+
 }
