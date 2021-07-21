@@ -49,6 +49,7 @@ public class MecHostSyncHandlerTest {
 
     private static final String ACCESS_TOKEN = "access_token";
     private static final String SAMPLE_TOKEN = "SampleToken";
+    private  static String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
     @Autowired
     MockMvc mvc;
     @Autowired
@@ -106,6 +107,43 @@ public class MecHostSyncHandlerTest {
         // Sync app instance info
         ResultActions postResult =
                 mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/mepms/" + "1.1.1.1" + "/mechost/sync")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
+                        .header(ACCESS_TOKEN, SAMPLE_TOKEN));
+        MvcResult postMvcResult = postResult.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN"})
+    public void syncAppRuleTest() throws Exception {
+
+        String url = "http://1.1.1.3:10002/apprulemgr/v1/tenants/" + tenantId + "/app_instances/appd_configuration/sync_updated";
+        server.expect(requestTo(url))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess());
+
+        String url2 = "http://1.1.1.3:10002/apprulemgr/v1/tenants/" + tenantId + "/app_instances/appd_configuration/sync_deleted";
+        server.expect(requestTo(url2))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess());
+
+        // Test mepm record post
+        MvcResult result =
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mepms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON).with(csrf())
+                        .content("{ \"mepmIp\": \"1.1.1.3\", \"mepmPort\": \"10002\", \"userName\": \"Test2\", "
+                                + "\"mepmName\": \"mepm124\" }")).andDo(MockMvcResultHandlers.print()).andReturn();
+
+        String postResponse = result.getResponse().getContentAsString();
+        Assert.assertEquals("{\"response\":\"Saved\"}", postResponse);
+
+        // Sync app instance info
+        ResultActions postResult =
+                mvc.perform(MockMvcRequestBuilders.get("/inventory/v1/tenants/"+ tenantId +
+                        "/mepms/" + "1.1.1.3" + "/apprule/sync")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .header(ACCESS_TOKEN, SAMPLE_TOKEN));
