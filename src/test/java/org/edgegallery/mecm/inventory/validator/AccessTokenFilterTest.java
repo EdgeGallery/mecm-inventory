@@ -32,7 +32,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
@@ -59,7 +66,7 @@ public class AccessTokenFilterTest {
     }
 
     @Test
-    public void testDoFilter() throws ServletException, IOException {
+    public void testDoFilter() throws ServletException, IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         mockReq = Mockito.mock(HttpServletRequest.class);
         mockResp = Mockito.mock(HttpServletResponse.class);
 
@@ -67,6 +74,11 @@ public class AccessTokenFilterTest {
         BufferedReader br = new BufferedReader(new StringReader("test"));
         Mockito.when(mockReq.getReader()).thenReturn(br);
         filter.doFilter(mockReq, mockResp, mockFilterChain);
+
+        Object[] obj1={"ok/success/yes"};
+        Method method1 = AccessTokenFilter.class.getDeclaredMethod("getTenantId",String.class);
+        method1.setAccessible(true);
+        method1.invoke(filter,obj1);
     }
 
     @Test(expected = Exception.class)

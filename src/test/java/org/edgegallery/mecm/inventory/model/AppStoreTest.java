@@ -17,6 +17,7 @@ package org.edgegallery.mecm.inventory.model;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -46,5 +47,6 @@ public class AppStoreTest {
         assertEquals("producer", appLcmStore.getProducer());
         assertEquals("repousername", appLcmStore.getAppstoreRepoUserName());
         assertEquals("repoPassword@123", appLcmStore.getAppstoreRepoPassword());
+
     }
 }

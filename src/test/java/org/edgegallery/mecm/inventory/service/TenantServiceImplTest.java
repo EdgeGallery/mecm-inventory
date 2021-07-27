@@ -26,8 +26,13 @@ import static org.edgegallery.mecm.inventory.model.ModelType.MEPM;
 import static org.edgegallery.mecm.inventory.model.ModelType.TENANT;
 import static org.edgegallery.mecm.inventory.model.ModelType.TRAFFIC_FILTER;
 import static org.edgegallery.mecm.inventory.model.ModelType.TRAFFIC_RULE;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Optional;
+
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.edgegallery.mecm.inventory.apihandler.filter.AccessTokenFilter;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.model.Tenant;
 import org.edgegallery.mecm.inventory.service.repository.TenantRepository;
@@ -37,6 +42,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TenantServiceImplTest {
@@ -44,8 +50,13 @@ public class TenantServiceImplTest {
     public static final String MECHOST_ID = "Mec_Host_Id";
     public static final String MEPM_ID = "Mepm_id";
     public static final String APPSTORE_ID = "AppStore_id";
+
+    @Autowired
+    RestClientHelper restClientHelper;
+
     @InjectMocks
     TenantServiceImpl tenantService;
+
     @Mock
     TenantRepository repository;
     Tenant tenant = new Tenant();
@@ -386,4 +397,18 @@ public class TenantServiceImplTest {
         tenantService.clearCount(MEPM_ID, TENANT);
     }
 
+    @Test
+    public void buildHttpClient() {
+        restClientHelper = new RestClientHelper(true, "path", "trust");
+        assertThrows(InventoryException.class, () -> restClientHelper.buildHttpClient());
+        restClientHelper.setTrustStorePasswd("truststore");
+        restClientHelper.setSslEnabled(false);
+        restClientHelper.setTrustStorePath("text");
+        RestClientHelper restClientHelper2 = new RestClientHelper(restClientHelper.isSslEnabled(),
+                restClientHelper.getTrustStorePath(),
+                restClientHelper.getTrustStorePasswd());
+        CloseableHttpClient httpClient = restClientHelper2.buildHttpClient();
+        assertNotNull(httpClient);
+
+    }
 }
