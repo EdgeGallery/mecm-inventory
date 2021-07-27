@@ -10,15 +10,17 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class TrafficFilterTest {
 
+    @InjectMocks
+    TrafficFilter trafficFilter = new TrafficFilter();
+    AppTrafficRule trafficRule = new AppTrafficRule();
+
     @Before
     public void setUp() {
         trafficFilter.setTrafficFilterId("trafficFilterId");
         trafficFilter.setTenantId("tenantId");
+        trafficFilter.setTrafficRule(trafficRule);
 
     }
-
-    @InjectMocks
-    TrafficFilter trafficFilter = new TrafficFilter();
 
     @Test
     public void testTrafficFilterProcessFlowResponse() {
@@ -26,5 +28,6 @@ public class TrafficFilterTest {
         Assert.assertNotNull(trafficFilter.getIdentifier());
         Assert.assertNotNull(trafficFilter.getType());
         Assert.assertNotNull(trafficFilter.getTenantId());
+        Assert.assertEquals(trafficRule, trafficFilter.getTrafficRule());
     }
 }

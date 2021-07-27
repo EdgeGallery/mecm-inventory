@@ -46,5 +46,6 @@ public class AppStoreDtoTest {
         Assert.assertEquals("12345", appStoreDto.getAppstorePort());
         Assert.assertEquals("userName", appStoreDto.getAppstoreRepoUserName());
         Assert.assertEquals("acd33fN", appStoreDto.getAppstoreRepoPassword());
+        Assert.assertNotNull(appStoreDto.toString());
     }
 }

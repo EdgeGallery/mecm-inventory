@@ -12,6 +12,7 @@ public class DstInterfaceTest {
 
     @InjectMocks
     DstInterface dstInterface = new DstInterface();
+    AppTrafficRule trafficRule = new AppTrafficRule();
 
     @Before
     public void setUp() {
@@ -21,6 +22,7 @@ public class DstInterfaceTest {
         dstInterface.setSrcMacAddress("srcMacAddress");
         dstInterface.setDstMacAddress("dstMacAddress");
         dstInterface.setDstIpAddress("dstIpAddress");
+        dstInterface.setTrafficRule(trafficRule);
     }
 
     @Test
@@ -33,6 +35,7 @@ public class DstInterfaceTest {
         Assert.assertEquals("dstMacAddress", dstInterface.getDstMacAddress());
         Assert.assertNotNull(dstInterface.getIdentifier());
         Assert.assertNotNull(dstInterface.getType());
+        Assert.assertEquals(trafficRule, dstInterface.getTrafficRule());
 
     }
 

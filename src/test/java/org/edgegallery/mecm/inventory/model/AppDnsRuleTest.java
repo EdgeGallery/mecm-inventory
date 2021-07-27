@@ -27,6 +27,7 @@ public class AppDnsRuleTest {
 
     @InjectMocks
     AppDnsRule appDnsRule = new AppDnsRule();
+    AppdRule appDRule = new AppdRule();
 
     @Before
     public void setUp() {
@@ -37,6 +38,7 @@ public class AppDnsRuleTest {
         appDnsRule.setIpAddressType("ipAddressType");
         appDnsRule.setTenantId("tenantId");
         appDnsRule.setTtl(1);
+        appDnsRule.setAppDRule(appDRule);
     }
 
     @Test
@@ -50,5 +52,6 @@ public class AppDnsRuleTest {
         Assert.assertEquals(1, appDnsRule.getTtl());
         Assert.assertNotNull(appDnsRule.getIdentifier());
         Assert.assertNotNull(appDnsRule.getType());
+        Assert.assertEquals(appDRule, appDnsRule.getAppDRule());
     }
 }

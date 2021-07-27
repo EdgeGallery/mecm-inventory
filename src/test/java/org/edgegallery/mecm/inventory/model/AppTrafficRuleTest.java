@@ -12,6 +12,7 @@ public class AppTrafficRuleTest {
 
     @InjectMocks
     AppTrafficRule appTrafficRule = new AppTrafficRule();
+    AppdRule appDRule = new AppdRule();
 
     @Before
     public void setUp() {
@@ -21,6 +22,7 @@ public class AppTrafficRuleTest {
         appTrafficRule.setAction("action");
         appTrafficRule.setTenantId("tenantId");
         appTrafficRule.setAppInstanceId("appInstanceId");
+        appTrafficRule.setAppDRule(appDRule);
     }
 
     @Test
@@ -33,6 +35,7 @@ public class AppTrafficRuleTest {
         Assert.assertEquals("appInstanceId", appTrafficRule.getAppInstanceId());
         Assert.assertNotNull(appTrafficRule.getIdentifier());
         Assert.assertNotNull(appTrafficRule.getType());
+        Assert.assertEquals(appDRule, appTrafficRule.getAppDRule());
     }
 
 }

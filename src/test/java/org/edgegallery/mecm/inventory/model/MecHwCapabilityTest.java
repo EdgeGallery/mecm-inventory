@@ -12,6 +12,7 @@ public class MecHwCapabilityTest {
 
     @InjectMocks
     MecHwCapability mecHwCapability = new MecHwCapability();
+    MecHost mecHost = new MecHost();
 
     @Before
     public void setUp() {
@@ -19,6 +20,7 @@ public class MecHwCapabilityTest {
         mecHwCapability.setHwType("hwType");
         mecHwCapability.setHwVendor("hwVendor");
         mecHwCapability.setHwModel("hwModel");
+        //mecHwCapability.setMecHost(mecHost);
 
     }
 
@@ -30,5 +32,6 @@ public class MecHwCapabilityTest {
         Assert.assertEquals("hwModel", mecHwCapability.getHwModel());
         Assert.assertNotNull(mecHwCapability.getIdentifier());
         Assert.assertNotNull(mecHwCapability.getType());
+        //Assert.assertEquals(mecHost, mecHwCapability.getMecHost());
     }
 }

@@ -30,6 +30,7 @@ public class AppdRuleTest {
         Assert.assertEquals("appName", appdRule.getAppName());
         Assert.assertEquals("tenantId", appdRule.getTenantId());
         Assert.assertEquals("status", appdRule.getStatus());
+        Assert.assertNotNull(appdRule.toString());
 
     }
 }

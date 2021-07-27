@@ -77,5 +77,7 @@ public class RuleMecDtosTest {
         Assert.assertNotNull(trafficFilterDto.toString());
         Assert.assertNotNull(trafficRuleDto.toString());
         Assert.assertNotNull(tunnelInfoDto.toString());
+        Assert.assertNotNull(appdRuleConfigDto.toString());
+
     }
 }

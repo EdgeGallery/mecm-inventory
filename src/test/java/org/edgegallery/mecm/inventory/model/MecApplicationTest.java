@@ -12,6 +12,7 @@ public class MecApplicationTest {
 
     @InjectMocks
     MecApplication mecApplication = new MecApplication();
+    MecHost mecAppHost = new MecHost();
 
     @Before
     public void setUp() {
@@ -21,6 +22,7 @@ public class MecApplicationTest {
         mecApplication.setAppName("appName");
         mecApplication.setPackageId("packageId");
         mecApplication.setStatus("status");
+        mecApplication.setMecAppHost(mecAppHost);
     }
 
     @Test
@@ -31,6 +33,7 @@ public class MecApplicationTest {
         Assert.assertEquals("packageId", mecApplication.getPackageId());
         Assert.assertEquals("tenantId", mecApplication.getTenantId());
         Assert.assertEquals("status", mecApplication.getStatus());
+        Assert.assertEquals(mecAppHost, mecApplication.getMecAppHost());
 
     }
 }
