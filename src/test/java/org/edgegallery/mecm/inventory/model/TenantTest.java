@@ -18,6 +18,7 @@ package org.edgegallery.mecm.inventory.model;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -45,5 +46,6 @@ public class TenantTest {
         assertEquals(APP_STORE, tenant.getAppStores());
         assertEquals(MEC_HOST, tenant.getMecHosts());
         assertEquals(TENANT_ID, tenant.getTenantId());
+        Assert.assertNotNull(tenant.getType());
     }
 }

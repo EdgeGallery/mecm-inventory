@@ -36,6 +36,10 @@ public class MecHostTest {
         mecHost.setMechostName("mecHostName");
         mecHost.setUserName("UserName");
         mecHost.setZipCode("ZipCode");
+        mecHost.setMepmIp("mepmIp");
+        mecHost.setConfigUploadStatus("configUploadStatus");
+        mecHost.setCoordinates("coordinates");
+        mecHost.setVim("vim");
     }
 
     @Test
@@ -48,5 +52,9 @@ public class MecHostTest {
         assertEquals("mecHostName", mecHost.getMechostName());
         assertEquals("UserName", mecHost.getUserName());
         assertEquals("ZipCode", mecHost.getZipCode());
+        assertEquals("mepmIp", mecHost.getMepmIp());
+        assertEquals("configUploadStatus", mecHost.getConfigUploadStatus());
+        assertEquals("coordinates", mecHost.getCoordinates());
+        assertEquals("vim", mecHost.getVim());
     }
 }
