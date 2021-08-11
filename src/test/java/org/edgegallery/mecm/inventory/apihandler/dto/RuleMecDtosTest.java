@@ -1,7 +1,10 @@
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,16 +40,17 @@ public class RuleMecDtosTest {
         appdRuleConfigDto.setAppInstanceId("appInstanceId");
         mecHostDto.setMechostIp("mecHostIp");
 
-        List delList = new ArrayList<AppdRuleDeletedDto>();
-        delList.add(appdRuleDeletedDto.getAppInstanceId());
-        syncDeletedRulesDto.setAppdRuleDeletedRecs(delList);
-        syncDeletedMecHostDto.setMecHostStaleRecs(delList);
-
         List recList = new ArrayList<AppdRuleConfigDto>();
         recList.add(appdRuleConfigDto.getAppInstanceId());
+
         syncUpdatedRulesDto.setAppdRuleUpdatedRecs(recList);
 
-        List mecRecList = new ArrayList<MecHostDto>();
+        Set delList = new HashSet();
+        delList.add(appdRuleDeletedDto.getAppInstanceId());
+        syncDeletedMecHostDto.setMecHostStaleRecs(delList);
+        syncDeletedRulesDto.setAppdRuleDeletedRecs(delList);
+
+        Set mecRecList = new HashSet<MecHostDto>();
         recList.add(mecHostDto.getMechostIp());
         syncUpdatedMecHostDto.setMecHostUpdatedRecs(mecRecList);
     }

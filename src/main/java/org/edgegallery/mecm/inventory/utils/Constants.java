@@ -64,6 +64,8 @@ public final class Constants {
     public static final String VAR_OVERFLOW_ERROR = "Max count overflow";
     public static final String VAR_UNDERFLOW_ERROR = "Min count underflow";
     public static final String INVALID_MODEL_TYPE = "Model type not supported";
+    public static final String HTTPS_PROTO = "https://";
+    public static final String HTTP_PROTO = "http://";
 
     private Constants() {
     }

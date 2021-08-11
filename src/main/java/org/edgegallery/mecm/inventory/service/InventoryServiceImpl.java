@@ -104,6 +104,7 @@ public final class InventoryServiceImpl implements InventoryService {
         } else {
             Iterable<T> records = repository.findAll();
             if (!records.iterator().hasNext()) {
+                LOGGER.error(Constants.RECORD_NOT_FOUND_ERROR);
                 throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
             }
             record = Lists.newArrayList(repository.findAll());

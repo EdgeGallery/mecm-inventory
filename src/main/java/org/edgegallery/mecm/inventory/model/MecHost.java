@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * MEC host Inventory schema.
@@ -45,6 +46,7 @@ public final class MecHost implements BaseModel {
     @Column(name = "mechost_id")
     private String mechostId;
 
+    @CreationTimestamp
     @Column(name = "created_time")
     private LocalDateTime createTime;
 

@@ -25,6 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * App store Inventory schema.
@@ -65,6 +66,7 @@ public final class AppStore implements BaseModel {
     @Column(name = "producer")
     private String producer;
 
+    @CreationTimestamp
     @Column(name = "created_time")
     private LocalDateTime createTime;
 

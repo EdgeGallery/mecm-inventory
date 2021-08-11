@@ -107,7 +107,7 @@ public class InventoryExceptionHandler {
     public ResponseEntity<InventoryExceptionResponse> handleAccessDeniedException(AccessDeniedException ex) {
         InventoryExceptionResponse response = new InventoryExceptionResponse(LocalDateTime.now(),
                 "Forbidden", Collections.singletonList("User is not authorized to perform this operation"));
-        LOGGER.info("User is not authorized to perform this operation", response);
+        LOGGER.info("User is not authorized to perform this operation: {}", response);
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 

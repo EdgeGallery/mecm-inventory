@@ -14,17 +14,18 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.service;
+package org.edgegallery.mecm.inventory.service.impl;
 
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.model.Mepm;
+import org.edgegallery.mecm.inventory.service.ConfigService;
+import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.service.repository.MepmRepository;
+import org.edgegallery.mecm.inventory.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,12 +80,7 @@ public class ConfigServiceImpl implements ConfigService {
         // Preparing HTTP header
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
-        try {
-            httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
-            httpHeaders.set("access_token", token);
-        } catch (UnknownHostException e) {
-            throw new InventoryException(e.getLocalizedMessage());
-        }
+        httpHeaders.set("access_token", token);
 
         // Creating HTTP entity with header and parts
         HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
@@ -96,9 +92,11 @@ public class ConfigServiceImpl implements ConfigService {
         String mepmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + mepmPort + APPLCM_URI;
+            url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
+                    .append(mepmPort).append(APPLCM_URI).toString();
         } else {
-            url = "http://" + mepmIp + ":" + mepmPort + APPLCM_URI;
+            url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
+                    .append(mepmPort).append(APPLCM_URI).toString();
         }
 
         ResponseEntity<String> response;
@@ -127,9 +125,11 @@ public class ConfigServiceImpl implements ConfigService {
         String mecmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + mecmPort + APPLCM_URI;
+            url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
+                    .append(mecmPort).append(APPLCM_URI).toString();
         } else {
-            url = "http://" + mepmIp + ":" + mecmPort + APPLCM_URI;
+            url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
+                    .append(mecmPort).append(APPLCM_URI).toString();
         }
 
         // Preparing request parts.
@@ -138,12 +138,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         // Preparing HTTP header
         HttpHeaders httpHeaders = new HttpHeaders();
-        try {
-            httpHeaders.set("X-Real-IP", InetAddress.getLocalHost().getHostAddress());
-            httpHeaders.set("access_token", token);
-        } catch (UnknownHostException e) {
-            throw new InventoryException(e.getLocalizedMessage());
-        }
+        httpHeaders.set("access_token", token);
 
         // Creating HTTP entity with header and parts
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(parts, httpHeaders);

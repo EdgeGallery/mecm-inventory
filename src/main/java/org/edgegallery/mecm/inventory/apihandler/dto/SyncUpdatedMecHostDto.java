@@ -16,8 +16,8 @@
 
 package org.edgegallery.mecm.inventory.apihandler.dto;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -39,5 +39,5 @@ import org.springframework.validation.annotation.Validated;
 public final class SyncUpdatedMecHostDto implements SyncBaseDto {
 
     @Size(max = 20, message = "MEC host updated records exceeds max limit 20")
-    private List<@Valid MecHostDto> mecHostUpdatedRecs = new LinkedList<>();
+    private Set<@Valid MecHostDto> mecHostUpdatedRecs = new HashSet<>();
 }

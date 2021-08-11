@@ -30,11 +30,13 @@ import org.springframework.data.repository.query.Param;
 public interface AppTrafficRuleRepository extends CrudRepository<AppTrafficRule, String>,
         BaseRepository<AppTrafficRule> {
 
+    String TENANT_ID = "tenantId";
+
     @Transactional
     @Modifying
     @Query("delete from AppTrafficRule m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
+    void deleteByTenantId(@Param(TENANT_ID) String tenantId);
 
     @Query(value = "SELECT * FROM apptrafficruleinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<AppTrafficRule> findByTenantId(@Param("tenantId") String tenantId);
+    List<AppTrafficRule> findByTenantId(@Param(TENANT_ID) String tenantId);
 }

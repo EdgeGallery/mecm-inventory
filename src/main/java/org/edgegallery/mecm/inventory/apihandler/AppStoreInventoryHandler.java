@@ -60,6 +60,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AppStoreInventoryHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppStoreInventoryHandler.class);
+    private static final String APPSTORE_IP = "appstore_ip";
+
     @Autowired
     private InventoryServiceImpl service;
     @Autowired
@@ -94,7 +96,7 @@ public class AppStoreInventoryHandler {
     @PutMapping(path = "/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateAppStoreRecord(
-            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @ApiParam(value = "appstore IP") @PathVariable(APPSTORE_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp,
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
         if (!appStoreIp.equals(appStoreDto.getAppstoreIp())) {
@@ -140,7 +142,7 @@ public class AppStoreInventoryHandler {
     @GetMapping(path = "/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppStoreDto> getAppStoreRecord(
-            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @ApiParam(value = "appstore IP") @PathVariable(APPSTORE_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp, boolean resetPasswd) {
         AppStore store = service.getRecord(appStoreIp, repository);
         AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
@@ -174,7 +176,7 @@ public class AppStoreInventoryHandler {
     @DeleteMapping(path = "/appstores/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteAppStoreRecord(
-            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @ApiParam(value = "appstore IP") @PathVariable(APPSTORE_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
         Status status = service.deleteRecord(appStoreIp, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
@@ -203,7 +205,7 @@ public class AppStoreInventoryHandler {
     @GetMapping(path = "/appstore/{appstore_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<AppStoreDto> getAppStoreRecordWithOutpasswd(
-            @ApiParam(value = "appstore IP") @PathVariable("appstore_ip")
+            @ApiParam(value = "appstore IP") @PathVariable(APPSTORE_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String appStoreIp) {
         return getAppStoreRecord(appStoreIp, true);
     }

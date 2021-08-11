@@ -29,11 +29,12 @@ import org.springframework.data.repository.query.Param;
  */
 public interface AppDRuleRepository extends CrudRepository<AppdRule, String>, BaseRepository<AppdRule> {
 
+    String TENANT_ID = "tenantId";
     @Transactional
     @Modifying
     @Query("delete from AppdRule m where m.tenantId=:tenantId")
-    void deleteByTenantId(@Param("tenantId") String tenantId);
+    void deleteByTenantId(@Param(TENANT_ID) String tenantId);
 
     @Query(value = "SELECT * FROM appdruleinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
-    List<AppdRule> findByTenantId(@Param("tenantId") String tenantId);
+    List<AppdRule> findByTenantId(@Param(TENANT_ID) String tenantId);
 }
