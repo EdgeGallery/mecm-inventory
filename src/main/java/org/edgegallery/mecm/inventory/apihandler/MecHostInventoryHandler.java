@@ -120,6 +120,9 @@ public class MecHostInventoryHandler {
         MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostDto.getMechostIp());
         host.setApplications(new HashSet<>());
 
+        Mepm mepm = service.getRecord(host.getMepmIp(), mepmRepository);
+        host.setMepm(mepm);
+
         Status status = service.addRecord(host, repository);
 
         // Send record to MEPM
@@ -155,6 +158,9 @@ public class MecHostInventoryHandler {
         }
 
         MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostIp);
+
+        Mepm mepm = service.getRecord(host.getMepmIp(), mepmRepository);
+        host.setMepm(mepm);
 
         MecHost hostDb = service.getRecord(mecHostIp, repository);
         host.setApplications(hostDb.getApplications());

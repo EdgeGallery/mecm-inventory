@@ -104,6 +104,7 @@ public class MepmInventoryHandler {
         }
         Mepm mepm = InventoryUtilities.getModelMapper().map(mepmDto, Mepm.class);
         mepm.setMepmId(mepmIp);
+        mepm.setMecHosts(new LinkedList<>());
         Status status = service.updateRecord(mepm, mepmRepository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
