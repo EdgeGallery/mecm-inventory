@@ -23,12 +23,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * MEC host Inventory schema.
@@ -45,6 +48,7 @@ public final class MecHost implements BaseModel {
     @Column(name = "mechost_id")
     private String mechostId;
 
+    @CreationTimestamp
     @Column(name = "created_time")
     private LocalDateTime createTime;
 
@@ -86,6 +90,10 @@ public final class MecHost implements BaseModel {
 
     @OneToMany(mappedBy = "mecAppHost", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<MecApplication> applications;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "mepm_id", referencedColumnName = "mepm_id", nullable = false)
+    private Mepm mepm;
 
     @Override
     public String getIdentifier() {

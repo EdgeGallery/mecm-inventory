@@ -14,13 +14,14 @@
  *  limitations under the License.
  */
 
-package org.edgegallery.mecm.inventory.service;
+package org.edgegallery.mecm.inventory.service.impl;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.edgegallery.mecm.inventory.apihandler.dto.SyncBaseDto;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
+import org.edgegallery.mecm.inventory.service.RestService;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestServiceImpl implements RestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestServiceImpl.class);
+    private static final String STATUS_CODE_404 = "404";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -97,7 +99,7 @@ public class RestServiceImpl implements RestService {
                 responseEntity.getBody());
 
         HttpStatus statusCode = responseEntity.getStatusCode();
-        if (statusCode.toString().equals("404")) {
+        if (statusCode.toString().equals(STATUS_CODE_404)) {
             throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
         }
         if (!statusCode.is2xxSuccessful()) {

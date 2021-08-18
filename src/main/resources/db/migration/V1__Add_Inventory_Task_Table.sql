@@ -21,8 +21,8 @@
         appstore_repousername varchar(255) not null,
         appstore_repopassword varchar(255) not null,
         producer varchar(255),
-        created_time varchar(200),
-        modified_time varchar(200),
+        created_time timestamp default current_timestamp,
+        modified_time timestamp default current_timestamp,
         primary key (appstore_id)
     );
 
@@ -51,9 +51,13 @@
         coordinates varchar(128),
         vim varchar(128),
         -- config_file_path varchar(2000),
-        created_time varchar(200),
-        modified_time varchar(200),
-        primary key (mechost_id)
+        created_time timestamp default current_timestamp,
+        modified_time timestamp default current_timestamp,
+        primary key (mechost_id),
+        constraint fk_mepm
+          foreign key(mepm_id)
+              references mepminventory(mepm_id)
+              on delete cascade
     );
 
     create table mechwcapabilityinventory (
@@ -62,8 +66,8 @@
         hw_type varchar(200),
         hw_vendor varchar(255),
         hw_model varchar(255),
-        created_time varchar(200),
-        modified_time varchar(200),
+        created_time timestamp default current_timestamp,
+        modified_time timestamp default current_timestamp,
         primary key (capability_id),
         constraint fk_mechost
           foreign key(mechost_id)

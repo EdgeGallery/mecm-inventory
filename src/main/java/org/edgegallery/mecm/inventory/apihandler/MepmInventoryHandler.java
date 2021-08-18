@@ -60,6 +60,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MepmInventoryHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MepmInventoryHandler.class);
+    private static final String MEPM_IP = "mepm_ip";
     @Autowired
     private InventoryServiceImpl service;
     @Autowired
@@ -78,7 +79,6 @@ public class MepmInventoryHandler {
             @Valid @ApiParam(value = "mepm inventory information") @RequestBody MepmDto mepmDto) {
         Mepm mepm = InventoryUtilities.getModelMapper().map(mepmDto, Mepm.class);
         mepm.setMepmId(mepmDto.getMepmIp());
-        LOGGER.info("mepm object------------------{}", mepm.toString());
         Status status = service.addRecord(mepm, mepmRepository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -94,7 +94,7 @@ public class MepmInventoryHandler {
     @PutMapping(path = "/mepms/{mepm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateMepmRecord(
-            @ApiParam(value = "Mepm IP") @PathVariable("mepm_ip")
+            @ApiParam(value = "Mepm IP") @PathVariable(MEPM_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mepmIp,
             @Valid @ApiParam(value = "mepm inventory information") @RequestBody MepmDto mepmDto) {
         if (!mepmIp.equals(mepmDto.getMepmIp())) {
@@ -104,6 +104,7 @@ public class MepmInventoryHandler {
         }
         Mepm mepm = InventoryUtilities.getModelMapper().map(mepmDto, Mepm.class);
         mepm.setMepmId(mepmIp);
+        mepm.setMecHosts(new LinkedList<>());
         Status status = service.updateRecord(mepm, mepmRepository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -136,7 +137,7 @@ public class MepmInventoryHandler {
     @GetMapping(path = "/mepms/{mepm_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
     public ResponseEntity<MepmDto> getMepmRecord(
-            @ApiParam(value = "mepm IP") @PathVariable("mepm_ip")
+            @ApiParam(value = "mepm IP") @PathVariable(MEPM_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mepmIp) {
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         MepmDto mepmDto = InventoryUtilities.getModelMapper().map(mepm, MepmDto.class);
@@ -166,7 +167,7 @@ public class MepmInventoryHandler {
     @DeleteMapping(path = "/mepms/{mepm_ip}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteMepmRecord(
-            @ApiParam(value = "mepm IP") @PathVariable("mepm_ip")
+            @ApiParam(value = "mepm IP") @PathVariable(MEPM_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mepmIp) {
         Status status = service.deleteRecord(mepmIp, mepmRepository);
         return new ResponseEntity<>(status, HttpStatus.OK);

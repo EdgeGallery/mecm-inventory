@@ -34,13 +34,15 @@ import org.edgegallery.mecm.inventory.apihandler.dto.SyncUpdatedRulesDto;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.model.Mepm;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
-import org.edgegallery.mecm.inventory.service.RestServiceImpl;
+import org.edgegallery.mecm.inventory.service.impl.RestServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppDRuleRepository;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.service.repository.MepmRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -64,7 +66,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MepmSyncHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MepmSyncHandler.class);
     private static final String PARTIAL_FAILURE = "Partial Failure";
+    private static final String APPRULE_TENANTS = "/apprulemgr/v1/tenants/";
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String ACCESSTOKEN = "access token";
+
     @Autowired
     private RestServiceImpl syncService;
     @Autowired
@@ -93,7 +100,7 @@ public class MepmSyncHandler {
     public ResponseEntity<Status> syncAppdRecords(
             @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
-            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
+            @ApiParam(value = ACCESSTOKEN) @RequestHeader(ACCESS_TOKEN) String accessToken,
             @ApiParam(value = "mepm ip") @PathVariable("mepm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mepmIp) {
         Status finalStatus = new Status("Success");
@@ -132,10 +139,12 @@ public class MepmSyncHandler {
                     addOrUpdateStatus = service.addRecord(
                             InventoryUtilities.getAppdRule(tenantId, updatedRecord.getAppInstanceId(), updatedRecord),
                             appDRuleRepository);
+                    LOGGER.info("record added status {}", addOrUpdateStatus);
                 } catch (IllegalArgumentException e) {
                     if (e.getMessage().equals("Record already exist")) {
                         addOrUpdateStatus = service.updateRecord(InventoryUtilities.getAppdRule(tenantId,
                                 updatedRecord.getAppInstanceId(), updatedRecord), appDRuleRepository);
+                        LOGGER.info("record updated status {}", addOrUpdateStatus);
                     }
                 }
                 if (addOrUpdateStatus != null && !addOrUpdateStatus.getResponse().equals("Saved") && !addOrUpdateStatus
@@ -157,7 +166,7 @@ public class MepmSyncHandler {
     @GetMapping(path = "/mepms/{mepm_ip}/mechost/sync", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> syncMecHostsRecords(
-            @ApiParam(value = "access token") @RequestHeader("access_token") String accessToken,
+            @ApiParam(value = ACCESSTOKEN) @RequestHeader(ACCESS_TOKEN) String accessToken,
             @ApiParam(value = "mepm ip") @PathVariable("mepm_ip")
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mepmIp) {
         Status finalStatus = new Status("Success");
@@ -180,11 +189,14 @@ public class MepmSyncHandler {
         if (syncDeletedMecHostDto != null && syncDeletedMecHostDto.getMecHostStaleRecs() != null) {
             for (MecHostDeletedDto deletedRecord : syncDeletedMecHostDto.getMecHostStaleRecs()) {
                 Status deleteStatus = service.deleteRecord(deletedRecord.getMechostIp(), hostRepository);
+                LOGGER.info("Record deleted status {}", deleteStatus);
                 if (!deleteStatus.getResponse().equals("Deleted")) {
                     finalStatus.setResponse(PARTIAL_FAILURE);
+                    LOGGER.info("Record synced status {}", finalStatus);
                 }
             }
         }
+        LOGGER.info("Record synced status {}", finalStatus);
         return new ResponseEntity<>(finalStatus, HttpStatus.OK);
     }
 
@@ -199,11 +211,13 @@ public class MepmSyncHandler {
 
                 try {
                     addOrUpdateStatus = service.addRecord(host, hostRepository);
+                    LOGGER.info("Record added status {}", addOrUpdateStatus);
                 } catch (IllegalArgumentException e) {
                     if (e.getMessage().equals("Record already exist")) {
                         MecHost hostDb = service.getRecord(mecHostDto.getMechostIp(), hostRepository);
                         host.setApplications(hostDb.getApplications());
                         addOrUpdateStatus = service.updateRecord(host, hostRepository);
+                        LOGGER.info("Record updated status {}", addOrUpdateStatus);
                     }
                 }
 
@@ -220,11 +234,13 @@ public class MepmSyncHandler {
         String mepmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + mepmPort + "/apprulemgr/v1/tenants/" + tenantId
-                    + "/app_instances/appd_configuration";
+            url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
+                    .append(mepmPort).append(APPRULE_TENANTS).append(tenantId)
+                    .append("/app_instances/appd_configuration").toString();
         } else {
-            url = "http://" + mepmIp + ":" + mepmPort + "/apprulemgr/v1/tenants/" + tenantId
-                    + "/app_instances/appd_configuration";
+            url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
+                    .append(mepmPort).append(APPRULE_TENANTS).append(tenantId)
+                    .append("/app_instances/appd_configuration").toString();
         }
         return url;
     }
@@ -234,9 +250,11 @@ public class MepmSyncHandler {
         String mepmPort = mepm.getMepmPort();
         String url;
         if (Boolean.parseBoolean(isSslEnabled)) {
-            url = "https://" + mepmIp + ":" + mepmPort + "/lcmcontroller/v1/hosts";
+            url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
+                    .append(mepmPort).append("/lcmcontroller/v1/hosts").toString();
         } else {
-            url = "http://" + mepmIp + ":" + mepmPort + "/lcmcontroller/v1/hosts";
+            url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
+                    .append(mepmPort).append("/lcmcontroller/v1/hosts").toString();
         }
         return url;
     }

@@ -51,8 +51,9 @@ public final class FileChecker {
         String fileName = file.getName();
         ObjectMapper om = new ObjectMapper(new YAMLFactory());
 
-        // file name should not contains blank.
+        // file name should not contain blank.
         if (fileName != null && WHITE_SPACE_PATTERN.split(fileName).length > 1) {
+            LOGGER.error("file name contains blank");
             throw new IllegalArgumentException(fileName + " :fileName contain blank");
         }
 
@@ -61,6 +62,7 @@ public final class FileChecker {
         }
 
         if (file.length() > MAX_FILE_SIZE) {
+            LOGGER.error("file size is too big");
             throw new IllegalArgumentException(fileName + " :fileSize is too big");
         }
 

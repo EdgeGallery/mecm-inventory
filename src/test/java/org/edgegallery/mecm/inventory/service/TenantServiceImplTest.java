@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Optional;
 
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.edgegallery.mecm.inventory.apihandler.filter.AccessTokenFilter;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.model.Tenant;
 import org.edgegallery.mecm.inventory.service.repository.TenantRepository;

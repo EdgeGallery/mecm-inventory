@@ -56,6 +56,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppdRuleInventoryHandler {
 
+    private static final String APPD_INV_INFO = "appD rule inventory information";
+    private static final String APP_INST_IDENTIFIER = "app instance identifier";
+    private static final String APP_INSTANCE_ID = "app_instance_id";
+    private static final String TENANT_IDENTIFIER = "tenant identifier";
+    private static final String TENANT_ID = "tenant_id";
+
+
     @Autowired
     private InventoryServiceImpl service;
 
@@ -75,11 +82,11 @@ public class AppdRuleInventoryHandler {
             MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> addAppdRuleRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @ApiParam(value = TENANT_IDENTIFIER) @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
-            @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
+            @ApiParam(value = APP_INST_IDENTIFIER) @PathVariable(APP_INSTANCE_ID)
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
-            @Valid @ApiParam(value = "appD rule inventory information")
+            @Valid @ApiParam(value = APPD_INV_INFO)
             @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
         Status status = service.addRecord(InventoryUtilities.getAppdRule(tenantId, appInstanceId, appDRuleConfigDto),
                 repository);
@@ -99,11 +106,11 @@ public class AppdRuleInventoryHandler {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> updateAppdRuleRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @ApiParam(value = TENANT_IDENTIFIER) @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
-            @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
+            @ApiParam(value = APP_INST_IDENTIFIER) @PathVariable(APP_INSTANCE_ID)
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId,
-            @Valid @ApiParam(value = "appD rule inventory information")
+            @Valid @ApiParam(value = APPD_INV_INFO)
             @RequestBody AppdRuleConfigDto appDRuleConfigDto) {
         Status status = service.updateRecord(InventoryUtilities.getAppdRule(tenantId, appInstanceId,
                 appDRuleConfigDto), repository);
@@ -123,9 +130,9 @@ public class AppdRuleInventoryHandler {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_GUEST') || hasRole('MECM_ADMIN')")
     public ResponseEntity<AppdRuleConfigDto> getAppdRuleRecord(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @ApiParam(value = TENANT_IDENTIFIER) @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
-            @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
+            @ApiParam(value = APP_INST_IDENTIFIER) @PathVariable(APP_INSTANCE_ID)
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId) {
         AppdRule appDRule = service.getRecord(tenantId + appInstanceId, repository);
         AppdRuleConfigDto appDRuleConfigDto = InventoryUtilities.getModelMapper()
@@ -145,9 +152,9 @@ public class AppdRuleInventoryHandler {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN')")
     public ResponseEntity<Status> deleteAllAppdRecords(
-            @ApiParam(value = "tenant identifier") @PathVariable("tenant_id")
+            @ApiParam(value = TENANT_IDENTIFIER) @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
-            @ApiParam(value = "app instance identifier") @PathVariable("app_instance_id")
+            @ApiParam(value = APP_INST_IDENTIFIER) @PathVariable(APP_INSTANCE_ID)
             @Pattern(regexp = Constants.APP_INST_ID_REGX) @Size(max = 64) String appInstanceId) {
         Status status = service.deleteRecord(tenantId + appInstanceId, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);

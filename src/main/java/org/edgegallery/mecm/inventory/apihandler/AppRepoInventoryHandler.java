@@ -79,7 +79,7 @@ public class AppRepoInventoryHandler {
         LOGGER.info("Configure source repositories... {}", appSrcRepos);
         String[] reposInput = appSrcRepos.split("\\|");
         String[] srcRepo;
-        AppRepo appRepo = null;
+        AppRepo appRepo;
 
         if (reposInput.length > 20) {
             LOGGER.error("max source repo config limit exceeded");

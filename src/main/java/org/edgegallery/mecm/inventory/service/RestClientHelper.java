@@ -54,6 +54,7 @@ public class RestClientHelper {
     public static final int MAX_RETRY = 3;
     public static final int WAIT_PERIOD = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(RestClientHelper.class);
+    private static final String TLS_PROTOCOL = "TLSv1.2";
 
     private boolean isSslEnabled;
     private String trustStorePath;
@@ -108,7 +109,7 @@ public class RestClientHelper {
             if (isSslEnabled) {
                 KeyStore ks = getKeyStore(trustStorePath, trustStorePasswd);
                 SSLContext sslctx = SSLContexts.custom().loadTrustMaterial(ks, new TrustSelfSignedStrategy())
-                        .setProtocol("TLSv1.2").build();
+                        .setProtocol(TLS_PROTOCOL).build();
                 SSLConnectionSocketFactory sslFactory =
                         new SSLConnectionSocketFactory(sslctx, (s, sslSession) -> true);
 
