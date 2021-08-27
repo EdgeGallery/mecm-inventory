@@ -1,12 +1,8 @@
 package org.edgegallery.mecm.inventory.model;
 
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,9 +35,6 @@ public final class Mepm implements BaseModel {
 
     @Column(name = "user_name")
     private String userName;
-
-    @OneToMany(mappedBy = "mepm", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<MecHost> mecHosts;
 
     @Override
     public String getIdentifier() {
