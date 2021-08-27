@@ -53,11 +53,7 @@
         -- config_file_path varchar(2000),
         created_time timestamp default current_timestamp,
         modified_time timestamp default current_timestamp,
-        primary key (mechost_id),
-        constraint fk_mepm
-          foreign key(mepm_id)
-              references mepminventory(mepm_id)
-              on delete cascade
+        primary key (mechost_id)
     );
 
     create table mechwcapabilityinventory (
