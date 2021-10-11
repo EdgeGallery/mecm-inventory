@@ -29,12 +29,14 @@ import org.edgegallery.mecm.inventory.apihandler.dto.AppStoreDto;
 import org.edgegallery.mecm.inventory.model.AppStore;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppStoreRepository;
+import org.edgegallery.mecm.inventory.utils.AesUtil;
 import org.edgegallery.mecm.inventory.utils.Constants;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +69,9 @@ public class AppStoreInventoryHandler {
     @Autowired
     private AppStoreRepository repository;
 
+    @Value("${client.client-id:}")
+    private String clientId;
+
     /**
      * Adds a new application store record entry into the Inventory.
      *
@@ -79,6 +84,13 @@ public class AppStoreInventoryHandler {
     public ResponseEntity<Status> addAppStoreRecord(
             @Valid @ApiParam(value = "appstore inventory information") @RequestBody AppStoreDto appStoreDto) {
         AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
+
+        String passwordEncode = AesUtil.encode(clientId, store.getAppstoreRepoPassword());
+        store.setAppstoreRepoPassword(passwordEncode);
+
+        String usrEncode = AesUtil.encode(clientId, store.getAppstoreRepoUserName());
+        store.setAppstoreRepoUserName(usrEncode);
+
         store.setAppstoreId(appStoreDto.getAppstoreIp());
         Status status = service.addRecord(store, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
@@ -106,6 +118,16 @@ public class AppStoreInventoryHandler {
         }
         AppStore store = InventoryUtilities.getModelMapper().map(appStoreDto, AppStore.class);
         store.setAppstoreId(appStoreIp);
+
+        if (!store.getAppstoreRepoUserName().isEmpty()) {
+            String passwordEncode = AesUtil.encode(clientId, store.getAppstoreRepoUserName());
+            store.setAppstoreRepoUserName(passwordEncode);
+        }
+
+        if (!store.getAppstoreRepoPassword().isEmpty()) {
+            String passwordEncode = AesUtil.encode(clientId, store.getAppstoreRepoPassword());
+            store.setAppstoreRepoPassword(passwordEncode);
+        }
         Status status = service.updateRecord(store, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -123,6 +145,7 @@ public class AppStoreInventoryHandler {
         List<AppStoreDto> appStoreDtos = new LinkedList<>();
         for (AppStore store : appStores) {
             AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
+            appStoreDto.setAppstoreRepoUserName(AesUtil.decode(clientId, store.getAppstoreRepoUserName()));
             if (!resetPasswd) {
                 appStoreDto.setAppstoreRepoPassword("");
             }
@@ -147,7 +170,11 @@ public class AppStoreInventoryHandler {
         AppStore store = service.getRecord(appStoreIp, repository);
         AppStoreDto appStoreDto = InventoryUtilities.getModelMapper().map(store, AppStoreDto.class);
         if (!resetPasswd) {
+            appStoreDto.setAppstoreRepoUserName(AesUtil.decode(clientId, store.getAppstoreRepoUserName()));
             appStoreDto.setAppstoreRepoPassword("");
+        } else {
+            appStoreDto.setAppstoreRepoUserName(AesUtil.decode(clientId, store.getAppstoreRepoUserName()));
+            appStoreDto.setAppstoreRepoPassword(AesUtil.decode(clientId, store.getAppstoreRepoPassword()));
         }
         return new ResponseEntity<>(appStoreDto, HttpStatus.OK);
     }
