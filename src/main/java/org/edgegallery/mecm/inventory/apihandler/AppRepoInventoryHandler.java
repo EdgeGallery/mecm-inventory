@@ -29,6 +29,7 @@ import org.edgegallery.mecm.inventory.apihandler.dto.AppRepoDto;
 import org.edgegallery.mecm.inventory.model.AppRepo;
 import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.AppRepoRepository;
+import org.edgegallery.mecm.inventory.utils.AesUtil;
 import org.edgegallery.mecm.inventory.utils.InventoryUtilities;
 import org.edgegallery.mecm.inventory.utils.Status;
 import org.slf4j.Logger;
@@ -70,6 +71,9 @@ public class AppRepoInventoryHandler {
     @Value("${repository.appsource.repo:}")
     private String appSrcRepos;
 
+    @Value("${client.client-id:}")
+    private String clientId;
+
     @PostConstruct
     void postConstruct() {
         configureAppSourceRepos();
@@ -102,12 +106,14 @@ public class AppRepoInventoryHandler {
 
                 String[] userName = srcRepo[1].split("=");
                 if (userName.length > 1) {
-                    appRepo.setRepoUserName(userName[1]);
+                    String usrEncode = AesUtil.encode(clientId, userName[1]);
+                    appRepo.setRepoUserName(usrEncode);
                 }
 
                 String[] password = srcRepo[2].split("=");
                 if (password.length > 1) {
-                    appRepo.setRepoPassword(password[1]);
+                    String passEncode = AesUtil.encode(clientId, password[1]);
+                    appRepo.setRepoPassword(passEncode);
                 }
 
                 LOGGER.info("Adding source repo info {}", appRepo.getRepoId());
@@ -131,6 +137,13 @@ public class AppRepoInventoryHandler {
             @Valid @ApiParam(value = "app repo inventory information") @RequestBody AppRepoDto appRepoDto) {
         AppRepo repo = InventoryUtilities.getModelMapper().map(appRepoDto, AppRepo.class);
         repo.setRepoId(appRepoDto.getRepoEndPoint());
+
+        String passEncode = AesUtil.encode(clientId, appRepoDto.getRepoPassword());
+        repo.setRepoPassword(passEncode);
+
+        String usrEncode = AesUtil.encode(clientId, appRepoDto.getRepoUserName());
+        repo.setRepoUserName(usrEncode);
+        
         Status status = service.addRecord(repo, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
@@ -155,6 +168,17 @@ public class AppRepoInventoryHandler {
             throw new IllegalArgumentException("apprepo endpoint in body and url is different");
         }
         AppRepo repo = InventoryUtilities.getModelMapper().map(appRepoDto, AppRepo.class);
+
+        if (appRepoDto.getRepoPassword().isEmpty()) {
+            String passEncode = AesUtil.encode(clientId, appRepoDto.getRepoPassword());
+            repo.setRepoPassword(passEncode);    
+        }
+
+        if (appRepoDto.getRepoUserName().isEmpty()) {
+            String usrEncode = AesUtil.encode(clientId, appRepoDto.getRepoUserName());
+            repo.setRepoUserName(usrEncode);
+        }
+
         repo.setRepoId(appRepoDto.getRepoEndPoint());
         Status status = service.updateRecord(repo, repository);
         return new ResponseEntity<>(status, HttpStatus.OK);
@@ -174,6 +198,9 @@ public class AppRepoInventoryHandler {
         List<AppRepoDto> appRepoDtos = new LinkedList<>();
         for (AppRepo appRepo : appRepos) {
             AppRepoDto appRepoDto = InventoryUtilities.getModelMapper().map(appRepo, AppRepoDto.class);
+
+            appRepoDto.setRepoPassword(AesUtil.decode(clientId, appRepo.getRepoPassword()));
+            appRepoDto.setRepoUserName(AesUtil.decode(clientId, appRepo.getRepoUserName()));
             appRepoDtos.add(appRepoDto);
         }
         return new ResponseEntity<>(appRepoDtos, HttpStatus.OK);
@@ -193,6 +220,8 @@ public class AppRepoInventoryHandler {
             @Size(max = 255) String appRepoEndPoint) {
         AppRepo repo = service.getRecord(appRepoEndPoint, repository);
         AppRepoDto appRepoDto = InventoryUtilities.getModelMapper().map(repo, AppRepoDto.class);
+        appRepoDto.setRepoPassword(AesUtil.decode(clientId, repo.getRepoPassword()));
+        appRepoDto.setRepoUserName(AesUtil.decode(clientId, repo.getRepoUserName()));
         return new ResponseEntity<>(appRepoDto, HttpStatus.OK);
     }
 
