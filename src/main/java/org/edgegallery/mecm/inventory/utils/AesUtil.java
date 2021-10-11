@@ -25,10 +25,13 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-//import sun.misc.BASE64Decoder;
-//import sun.misc.BASE64Encoder;
+import org.edgegallery.mecm.inventory.exception.InventoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AesUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AesUtil.class);
 
     /**
      * AES encryption.
@@ -39,17 +42,15 @@ public class AesUtil {
             return null;
         }
         try {
-            //转换key
             Key key = new SecretKeySpec(thisKey.getBytes(StandardCharsets.UTF_8), "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] result = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(result);
-            //return new BASE64Encoder().encode(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to encode");
+            throw new InventoryException(e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -67,9 +68,9 @@ public class AesUtil {
             byte[] result = cipher.doFinal(Base64.getDecoder().decode(data));
             return new String(result, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to decode");
+            throw new InventoryException(e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -84,11 +85,10 @@ public class AesUtil {
             SecretKey secretKey = keyGenerator.generateKey();
             byte[] byteKey = secretKey.getEncoded();
             return Base64.getEncoder().encodeToString(byteKey);
-            //return new BASE64Encoder().encode(byteKey);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to generate encryption key");
+            throw new InventoryException(e.getMessage());
         }
-        return null;
     }
 
 }
