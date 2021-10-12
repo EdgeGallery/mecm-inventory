@@ -26,6 +26,8 @@ import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.service.repository.MepmRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +93,7 @@ public class ConfigServiceImpl implements ConfigService {
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         String mepmPort = mepm.getMepmPort();
         String url;
+        String msg;
         if (Boolean.parseBoolean(isSslEnabled)) {
             url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
                     .append(mepmPort).append(APPLCM_URI).toString();
@@ -103,7 +106,10 @@ public class ConfigServiceImpl implements ConfigService {
         // Sending request
         try {
             response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        } catch (RestClientException e) {
+            JSONObject json = new JSONObject(response.getBody());
+            msg = json.getString("message");
+            LOGGER.info("msg is : {}", msg);
+        } catch (RestClientException | JSONException e) {
             throw new InventoryException("Failure while uploading file to mepm with error message: "
                     + e.getLocalizedMessage());
         }
@@ -113,7 +119,7 @@ public class ConfigServiceImpl implements ConfigService {
         service.updateRecord(host, hostRepository);
 
         LOGGER.info("Upload status code {}, value {} ", response.getStatusCodeValue(), response.getBody());
-        return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(response.getStatusCodeValue()));
+        return new ResponseEntity<>(msg, HttpStatus.valueOf(response.getStatusCodeValue()));
     }
 
     @Override
