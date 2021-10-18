@@ -18,6 +18,8 @@ package org.edgegallery.mecm.inventory.service.impl;
 
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.edgegallery.mecm.inventory.exception.InventoryException;
 import org.edgegallery.mecm.inventory.model.MecHost;
 import org.edgegallery.mecm.inventory.model.Mepm;
@@ -26,8 +28,6 @@ import org.edgegallery.mecm.inventory.service.InventoryServiceImpl;
 import org.edgegallery.mecm.inventory.service.repository.MecHostRepository;
 import org.edgegallery.mecm.inventory.service.repository.MepmRepository;
 import org.edgegallery.mecm.inventory.utils.Constants;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,10 +106,9 @@ public class ConfigServiceImpl implements ConfigService {
         // Sending request
         try {
             response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-            JSONObject json = new JSONObject(response.getBody());
-            msg = json.getString("message");
-            LOGGER.info("msg is : {}", msg);
-        } catch (RestClientException | JSONException e) {
+            JsonObject json = new JsonParser().parse(response.getBody()).getAsJsonObject();
+            msg = json.get("message").toString();
+        } catch (RestClientException e) {
             throw new InventoryException("Failure while uploading file to mepm with error message: "
                     + e.getLocalizedMessage());
         }
