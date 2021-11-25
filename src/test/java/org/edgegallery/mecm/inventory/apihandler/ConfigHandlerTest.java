@@ -16,8 +16,8 @@
 
 package org.edgegallery.mecm.inventory.apihandler;
 
-import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_HOST_URL;
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
+import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_V2_URI;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -78,9 +78,8 @@ public class ConfigHandlerTest {
         String postResponseMepm = postMvcResultMepm.getResponse().getContentAsString();
         Assert.assertEquals("{\"response\":\"Saved\"}", postResponseMepm);
 
-
         // Prepare the mock REST server
-        String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL;
+        String urlmepmPost = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_URI + "/tenants/" + tenantId + "/hosts";
         MockRestServiceServer mockServerHostPost = MockRestServiceServer.createServer(restTemplate);
         mockServerHostPost.expect(requestTo(urlmepmPost))
                 .andExpect(method(HttpMethod.POST))
@@ -88,7 +87,7 @@ public class ConfigHandlerTest {
 
         // Add MecHost record
         ResultActions postResultMecHost =
-                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/mechosts")
+                mvc.perform(MockMvcRequestBuilders.post("/inventory/v1/tenants/" + tenantId + "/mechosts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .content("{ \"mechostIp\": \"1.1.1.1\", \"edgerepoIp\": \"1.1.1.1\", "
@@ -105,7 +104,7 @@ public class ConfigHandlerTest {
 
         // Begin test for file upload
         // Prepare the mock REST server
-        String url = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_URI;
+        String url = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_V2_URI + "/tenants/" + tenantId + "/configuration";
         MockRestServiceServer mockServerUpload = MockRestServiceServer.createServer(restTemplate);
         mockServerUpload.expect(requestTo(url))
                 .andExpect(method(HttpMethod.POST))
@@ -113,13 +112,14 @@ public class ConfigHandlerTest {
         // Test file upload
         File file = ResourceUtils.getFile("classpath:TestFile");
         ResultActions resultActions =
-                mvc.perform(MockMvcRequestBuilders.multipart("/inventory/v1/mechosts/1.1.1.1/k8sconfig")
+                mvc.perform(MockMvcRequestBuilders.multipart("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1"
+                        + ".1/k8sconfig")
                         .file(new MockMultipartFile("file", "TestFile", MediaType.TEXT_PLAIN_VALUE,
                                 FileUtils.openInputStream(file)))
                         .with(csrf())
                         .header("access_token", "SampleToken"));
-        resultActions.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().is5xxServerError()).andReturn();
-
+        resultActions.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                .andReturn();
 
         // Begin test for file removal
         // Prepare the mock REST server
@@ -130,7 +130,8 @@ public class ConfigHandlerTest {
 
         // Test file removal
         ResultActions deleteByIdResultConfig =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1/k8sconfig")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1"
+                        + ".1/k8sconfig")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -141,14 +142,15 @@ public class ConfigHandlerTest {
 
         // Test MecHost record delete by MecHost ID
         // Prepare the mock REST server
-        String urlmepmDelete = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_HOST_URL + "/" + "1.1.1.1";
+        String urlmepmDelete = "http://" + "1.1.1.1" + ":" + "10000" + APPLCM_URI + "/tenants/" + tenantId + "/hosts/" +
+                "1.1.1.1";
         MockRestServiceServer mockServerHostDelete = MockRestServiceServer.createServer(restTemplate);
         mockServerHostDelete.expect(requestTo(urlmepmDelete))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withSuccess());
 
         ResultActions deleteByIdResultMecHost =
-                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/mechosts/1.1.1.1")
+                mvc.perform(MockMvcRequestBuilders.delete("/inventory/v1/tenants/" + tenantId + "/mechosts/1.1.1.1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON).with(csrf())
                         .header("access_token", "SampleToken"));
