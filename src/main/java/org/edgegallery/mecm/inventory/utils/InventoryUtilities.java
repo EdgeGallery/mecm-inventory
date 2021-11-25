@@ -16,6 +16,7 @@
 
 package org.edgegallery.mecm.inventory.utils;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -32,10 +33,30 @@ import org.edgegallery.mecm.inventory.model.TrafficFilter;
 import org.edgegallery.mecm.inventory.model.TunnelInfo;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class InventoryUtilities {
 
     private InventoryUtilities() {
+    }
+
+    /**
+     * Checks is role exist.
+     *
+     * @param role user role
+     * @return true if role exist, otherwise false
+     */
+    public static boolean hasRole(String role) {
+        if ((SecurityContextHolder.getContext() == null)
+                || (SecurityContextHolder.getContext().getAuthentication() == null)
+                || (SecurityContextHolder.getContext().getAuthentication().getAuthorities() == null)) {
+            return false;
+        }
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext()
+                .getAuthentication().getAuthorities();
+        return authorities.contains(new SimpleGrantedAuthority(role));
     }
 
     /**
