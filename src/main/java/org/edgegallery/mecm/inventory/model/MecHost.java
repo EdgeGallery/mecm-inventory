@@ -50,6 +50,9 @@ public final class MecHost implements BaseModel {
     @Column(name = "created_time")
     private LocalDateTime createTime;
 
+    @Column(name = "tenant_id")
+    private String tenantId;
+
     @Column(name = "mechost_ip")
     private String mechostIp;
 
@@ -96,7 +99,7 @@ public final class MecHost implements BaseModel {
 
     @Override
     public String getTenantId() {
-        return null;
+        return tenantId;
     }
 
     @Override

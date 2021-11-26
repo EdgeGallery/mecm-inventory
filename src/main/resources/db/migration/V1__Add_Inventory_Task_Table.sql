@@ -39,6 +39,7 @@
     create table mechostinventory (
         mechost_id varchar(255) not null,
         mechost_ip varchar(255) not null,
+        tenant_id varchar(255) not null,
         mepm_ip varchar(255) not null,
         mepm_id varchar(255),
         mechost_name varchar(255) not null,

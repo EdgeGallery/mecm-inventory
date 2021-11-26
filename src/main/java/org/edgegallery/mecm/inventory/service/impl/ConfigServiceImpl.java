@@ -16,7 +16,7 @@
 
 package org.edgegallery.mecm.inventory.service.impl;
 
-import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
+import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_V2_URI;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -71,7 +71,7 @@ public class ConfigServiceImpl implements ConfigService {
     private String isSslEnabled;
 
     @Override
-    public ResponseEntity<String> uploadConfig(String hostIp, MultipartFile file, String token) {
+    public ResponseEntity<String> uploadConfig(String tenantId, String hostIp, MultipartFile file, String token) {
 
         // Preparing request parts.
         Resource resource = file.getResource();
@@ -88,7 +88,7 @@ public class ConfigServiceImpl implements ConfigService {
         HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
         // Preparing URL
-        MecHost host = service.getRecord(hostIp, hostRepository);
+        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String mepmIp = host.getMepmIp();
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         String mepmPort = mepm.getMepmPort();
@@ -96,10 +96,12 @@ public class ConfigServiceImpl implements ConfigService {
         String msg;
         if (Boolean.parseBoolean(isSslEnabled)) {
             url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
-                    .append(mepmPort).append(APPLCM_URI).toString();
+                    .append(mepmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
+                    .append("/configuration").toString();
         } else {
             url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
-                    .append(mepmPort).append(APPLCM_URI).toString();
+                    .append(mepmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
+                    .append("/configuration").toString();
         }
 
         ResponseEntity<String> response;
@@ -122,19 +124,22 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public ResponseEntity<String> deleteConfig(String hostIp, String token) {
+    public ResponseEntity<String> deleteConfig(String tenantId, String hostIp, String token) {
         // Preparing URL
-        MecHost host = service.getRecord(hostIp, hostRepository);
+        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
         String mepmIp = host.getMepmIp();
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         String mecmPort = mepm.getMepmPort();
         String url;
+
         if (Boolean.parseBoolean(isSslEnabled)) {
             url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
-                    .append(mecmPort).append(APPLCM_URI).toString();
+                    .append(mecmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
+                    .append("/configuration").toString();
         } else {
             url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
-                    .append(mecmPort).append(APPLCM_URI).toString();
+                    .append(mecmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
+                    .append("/configuration").toString();
         }
 
         // Preparing request parts.

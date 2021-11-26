@@ -46,6 +46,10 @@ public final class MecHostDto {
     @Pattern(regexp = Constants.IP_REGEX, message = "mechost IP is invalid")
     private String mechostIp;
 
+    @Size(max = 64, message = "tenant ID length exceeds max size")
+    @Pattern(regexp = Constants.TENANT_ID_REGEX, message = "tenant is invalid")
+    private String tenantId;
+
     @NotEmpty(message = "mechost name is empty")
     @Size(max = 128, message = "mechost name length exceeds max size")
     @Pattern(regexp = Constants.NAME_REGEX, message = "mechost name is invalid. It must start and end with alpha "
