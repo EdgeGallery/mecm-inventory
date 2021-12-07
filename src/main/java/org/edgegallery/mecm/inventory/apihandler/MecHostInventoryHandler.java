@@ -186,12 +186,29 @@ public class MecHostInventoryHandler {
     /**
      * Retrieves all MEC host records. offer mechost ip for health check.
      *
+     * @return MEC host records & status code 200 on success, error code on failure
+     */
+    @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
+    @GetMapping(path = "/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MecHostDto>> getAllMecHostRecords() {
+        List<MecHost> mecHosts = service.getTenantRecords(null, repository);
+        List<MecHostDto> mecHostDtos = new LinkedList<>();
+        for (MecHost host : mecHosts) {
+            MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
+            mecHostDtos.add(mecHostDto);
+        }
+        return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
+    }
+
+    /**
+     * Retrieves all MEC host records. offer mechost ip for health check.
+     *
      * @param tenantId tenant ID
      * @return MEC host records & status code 200 on success, error code on failure
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MecHostDto>> getAllMecHostRecords(
+    public ResponseEntity<List<MecHostDto>> getAllMecHostRecordsByTenantId(
             @ApiParam(value = "tenant identifier") @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         if (InventoryUtilities.hasRole(ROLE_ADMIN)) {
