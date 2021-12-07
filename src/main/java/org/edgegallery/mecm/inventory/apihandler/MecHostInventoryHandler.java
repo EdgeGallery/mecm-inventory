@@ -255,7 +255,7 @@ public class MecHostInventoryHandler {
     public ResponseEntity<MecHostDto> getMecHostRecordById(
         @ApiParam(value = MECHOSTIP) @PathVariable(MECHOST_IP)
         @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        MecHost host = service.getRecord(mecHostIp , repository);
+        MecHost host = service.getRecord(mecHostIp, repository);
         MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
         return new ResponseEntity<>(mecHostDto, HttpStatus.OK);
     }
