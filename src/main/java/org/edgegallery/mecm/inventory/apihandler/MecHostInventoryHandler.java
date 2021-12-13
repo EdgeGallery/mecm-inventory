@@ -191,7 +191,7 @@ public class MecHostInventoryHandler {
      */
     @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MecHostDto>> getAllMecHostRecordsByTenantId(
+    public ResponseEntity<List<MecHostDto>> getAllMecHostRecords(
             @ApiParam(value = "tenant identifier") @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
         if (InventoryUtilities.hasRole(ROLE_ADMIN)) {
@@ -225,6 +225,7 @@ public class MecHostInventoryHandler {
         MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
         return new ResponseEntity<>(mecHostDto, HttpStatus.OK);
     }
+
 
     /**
      * Retrieves MEC host specific capabilities records in the Inventory matching the given tenant ID & mec host IP.
