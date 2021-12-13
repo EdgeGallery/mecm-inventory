@@ -182,24 +182,7 @@ public class MecHostInventoryHandler {
 
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
-
-    /**
-     * Retrieves all MEC host records. offer mechost ip for health check.
-     *
-     * @return MEC host records & status code 200 on success, error code on failure
-     */
-    @ApiOperation(value = "Retrieves all MEC host records", response = List.class)
-    @GetMapping(path = "/mechosts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MecHostDto>> getAllMecHostRecords() {
-        List<MecHost> mecHosts = service.getTenantRecords(null, repository);
-        List<MecHostDto> mecHostDtos = new LinkedList<>();
-        for (MecHost host : mecHosts) {
-            MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
-            mecHostDtos.add(mecHostDto);
-        }
-        return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
-    }
-
+    
     /**
      * Retrieves all MEC host records. offer mechost ip for health check.
      *
@@ -242,24 +225,6 @@ public class MecHostInventoryHandler {
         MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
         return new ResponseEntity<>(mecHostDto, HttpStatus.OK);
     }
-
-    /**
-     * Retrieves a specific MEC host record in the Inventory matching the given mec host IP.
-     *
-     * @param mecHostIp MEC host IP
-     * @return MEC host record & status code 200 on success, error code on failure
-     */
-    @ApiOperation(value = "Retrieves MEC host record", response = MecHostDto.class)
-    @GetMapping(path = "/mechosts/{mechost_ip}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
-    public ResponseEntity<MecHostDto> getMecHostRecordById(
-        @ApiParam(value = MECHOSTIP) @PathVariable(MECHOST_IP)
-        @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        MecHost host = service.getRecord(mecHostIp, repository);
-        MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
-        return new ResponseEntity<>(mecHostDto, HttpStatus.OK);
-    }
-
 
     /**
      * Retrieves MEC host specific capabilities records in the Inventory matching the given tenant ID & mec host IP.
