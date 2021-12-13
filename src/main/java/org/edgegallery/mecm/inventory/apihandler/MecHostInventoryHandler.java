@@ -182,7 +182,7 @@ public class MecHostInventoryHandler {
 
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
-    
+
     /**
      * Retrieves all MEC host records. offer mechost ip for health check.
      *
