@@ -290,4 +290,4 @@ fi
 echo "Running Inventory"
 umask 0027
 cd /usr/app || exit
-java -jar bin/inventory-0.0.1-SNAPSHOT.jar
+java -Dlog4j2.formatMsgNoLookups=true -jar bin/inventory-0.0.1-SNAPSHOT.jar
