@@ -19,6 +19,7 @@ package org.edgegallery.mecmNorth.controller;
 
 import io.swagger.annotations.*;
 import org.apache.servicecomb.provider.rest.common.RestSchema;
+import org.edgegallery.mecmNorth.controller.advice.RequestCheckBody;
 import org.edgegallery.mecmNorth.controller.advice.RequestPkgBody;
 import org.edgegallery.mecmNorth.controller.advice.ResponseObject;
 import org.edgegallery.mecmNorth.facade.MecmPackageServiceFacade;
@@ -64,7 +65,7 @@ public class MecMPackageController {
      * @param tenantId      path variable tenantId
      */
 
-    @PostMapping(value = "/tenants/{tenantId}/mecmPackage", produces = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/tenants/{tenantId}/package", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Upload and Instantiate package", response = ResponseObject.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "microservice not found", response = String.class),
@@ -74,15 +75,63 @@ public class MecMPackageController {
     public ResponseEntity<ResponseObject> uploadAndInsPackge(
             @ApiParam(value = "appPkgName", required = true) @RequestParam("appPkgName") String appPkgName,
             @ApiParam(value = "appPkgVersion", required = true) @RequestParam("appPkgVersion") String appPkgVersion,
+            @ApiParam(value = "appClass", required = true) @RequestParam("appClass") String appClass,
             @ApiParam(value = "file", required = true) @RequestPart("file") MultipartFile file,
             @ApiParam(value = "hostList", required = true) @RequestBody String[] hostList,
-            @ApiParam(value = "params", required = true) @RequestBody Map<String, String> paramsMap,
+            @ApiParam(value = "params", required = true) @RequestBody Map<String, Object> paramsMap,
             @ApiParam(value = "tenantId") @PathVariable("tenantId") String tenantId, HttpServletRequest request) {
         LOGGER.info("begin to upload and instantiate package to MecM");
-        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appPkgName).appPkgVersion(appPkgVersion).file(file).
-                hostList(hostList).paramsMap(paramsMap).tenantId(tenantId).build();
+        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appPkgName).appPkgVersion(appPkgVersion).
+                appClass(appClass).file(file).hostList(hostList).paramsMap(paramsMap).tenantId(tenantId).build();
         return mecmPackageServiceFacade.uploadAndInstantiatePkg(body,request.getHeader(Constant.ACCESS_TOKEN));
     }
+
+    /**
+     * get package Upload and Instantiate status from MecM
+     *
+     * @param mecmPackageId     mecmPackageId
+     * @param tenantId      path variable tenantId
+     */
+
+    @PostMapping(value = "/tenants/{tenantId}/packages/{mecmPackageId}", produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "get package Upload and Instantiate status", response = ResponseObject.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "microservice not found", response = String.class),
+            @ApiResponse(code = 500, message = "resource grant error", response = String.class)
+    })
+    @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
+    public ResponseEntity<ResponseObject> getPackageDisAndInsStatus(
+            @ApiParam(value = "tenantId") @PathVariable("tenantId") String tenantId,
+            @ApiParam(value = "mecmPackageId") @PathVariable("mecmPackageId") String mecmPackageId, HttpServletRequest request) {
+        LOGGER.info("begin to get package Upload and Instantiate status");
+        RequestCheckBody body = RequestCheckBody.builder().tenantId(tenantId).mecmPackageId(mecmPackageId).build();
+        return mecmPackageServiceFacade.getPkgDisAndInsStatus(body,request.getHeader(Constant.ACCESS_TOKEN));
+    }
+
+    /**
+     *delete package from MecM
+     *
+     * @param mecmPackageId     mecmPackageId
+     * @param tenantId      path variable tenantId
+     */
+
+    @PostMapping(value = "/tenants/{tenantId}/packages/{mecmPackageId}", produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "get package Upload and Instantiate status", response = ResponseObject.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "microservice not found", response = String.class),
+            @ApiResponse(code = 500, message = "resource grant error", response = String.class)
+    })
+    @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
+    public ResponseEntity<ResponseObject> deletePackageDisAndInsStatus(
+            @ApiParam(value = "tenantId") @PathVariable("tenantId") String tenantId,
+            @ApiParam(value = "mecmPackageId") @PathVariable("mecmPackageId") String mecmPackageId, HttpServletRequest request) {
+        LOGGER.info("begin to delete package Upload and Instantiate status");
+        RequestCheckBody body = RequestCheckBody.builder().tenantId(tenantId).mecmPackageId(mecmPackageId).build();
+        return mecmPackageServiceFacade.deletePackageDisAndInsStatus(body,request.getHeader(Constant.ACCESS_TOKEN));
+    }
+
+
+
 
 
 }

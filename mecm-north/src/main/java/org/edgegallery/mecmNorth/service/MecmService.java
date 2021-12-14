@@ -222,12 +222,12 @@ public class MecmService {
     /**
      * get package from apm.
      *
-     * @param context context
+     * @param context   context
      * @param packageId packageId
-     * @param hostIp hostIp
+     * @param hostIp    hostIp
      * @return
      */
-    private boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
+    public boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -287,10 +287,10 @@ public class MecmService {
      *
      * @param context context info
      * @param appName appName
-     * @param hostIp mec host ip
+     * @param hostIp  mec host ip
      * @return create app instance sucess or not.s
      */
-    private String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp) {
+    public String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp, Map<String, Object> parameters) {
         Map<String, Object> body = new HashMap<>();
         body.put("appInstanceDescription", UUID.randomUUID().toString());
         body.put("appName", appName);
@@ -316,7 +316,7 @@ public class MecmService {
                 if (null != responseBody) {
                     String appInstanceId = responseBody.get("app_instance_id").getAsString();
                     LOGGER.info("appInstanceId: {}", appInstanceId);
-                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context,
+                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context, parameters,
                             appInstanceId)) {
                         if (getApplicationInstance(context, appInstanceId, INSTANTIATED)) {
                             return appInstanceId;
@@ -335,9 +335,9 @@ public class MecmService {
     /**
      * get application instance from appo.
      *
-     * @param context context
+     * @param context       context
      * @param appInstanceId appInstanceId
-     * @param status status
+     * @param status        status
      * @return
      */
     private boolean getApplicationInstance(Map<String, String> context, String appInstanceId, String status) {
@@ -395,11 +395,12 @@ public class MecmService {
     /**
      * instantiate application by appo.
      *
-     * @param context context info.
+     * @param context       context info.
      * @param appInstanceId appInstanceId
      * @return instantiate app successful
      */
-    private boolean instantiateAppFromAppo(Map<String, String> context, String appInstanceId) {
+    private boolean instantiateAppFromAppo(Map<String, String> context, Map<String, Object> parameters,
+                                           String appInstanceId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         headers.set(CONTENT_TYPE, APPLICATION_JSON);
@@ -409,8 +410,6 @@ public class MecmService {
             Map<String, Object> body = new HashMap<String, Object>();
             // if package is vm, need parameters body
             LOGGER.info("package is vm.");
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            setBody(parameters, context);
             body.put("parameters", parameters);
             request = new HttpEntity<>(body, headers);
         } else {
@@ -442,7 +441,7 @@ public class MecmService {
      * @param body body
      * @param context context
      */
-    private void setBody(Map<String, Object> body, Map<String, String> context) {
+/*    private void setBody(Map<String, Object> body, Map<String, String> context) {
         String configParam = context.get("configParamList");
         String[] configList = configParam.split(",");
         for (String config : configList) {
@@ -453,8 +452,7 @@ public class MecmService {
                 body.put(configItem[0].trim(), 1 == configItem.length ? "" : configItem[1].trim());
             }
         }
-    }
-
+    }*/
 
 
 }

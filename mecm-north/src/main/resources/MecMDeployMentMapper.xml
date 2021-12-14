@@ -21,20 +21,24 @@
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="mecm_package_id" property="mecmPackageId" jdbcType="VARCHAR"/>
         <result column="mecm_pkg_name" property="mecmPkgName" jdbcType="VARCHAR"/>
+        <result column="app_id_from_apm" property="appIdFromApm" jdbcType="VARCHAR"/>
+        <result column="app_pkg_id_from_apm" property="appPkgIdFromApm" jdbcType="VARCHAR"/>
+
         <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Deployment_Column_List">
         id
-        , mecm_package_id, host_ip, status
+        , mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm, host_ip, status
     </sql>
 
     <insert id="insertPkgDeploymentInfo" parameterType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
-        insert into pkg_deployment_table (id, mecm_package_id, mecm_pkg_name, host_ip, status)
+        insert into pkg_deployment_table (id, mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm,
+                                          host_ip, status)
         values (#{id,jdbcType=VARCHAR}, #{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR},
-                #{hostIp,jdbcType=VARCHAR},
-                #{status,jdbcType=VARCHAR})
+                #{appIdFromApm,jdbcType=VARCHAR},
+                #{appPkgIdFromApm,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
     </insert>
 
     <delete id="deletePkgDeploymentInfoByPkgId" parameterType="String">
@@ -46,10 +50,12 @@
     <update id="updateMecmPkgDeploymentInfo"
             parameterType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
         update pkg_deployment_table
-        set mecm_package_id = #{mecmPkgId,jdbcType=VARCHAR},
-            mecm_pkg_name = #{mecmPkgName,jdbcType=VARCHAR},
-            host_ip         = #{hostIp,jdbcType=VARCHAR},
-            status          = #{status,jdbcType=VARCHAR}
+        set mecm_package_id     = #{mecmPkgId,jdbcType=VARCHAR},
+            mecm_pkg_name       = #{mecmPkgName,jdbcType=VARCHAR},
+            app_id_from_apm     = #{appIdFromApm,jdbcType=VARCHAR},
+            app_pkg_id_from_apm = #{appPkgIdFromApm,jdbcType=VARCHAR},
+            host_ip             = #{hostIp,jdbcType=VARCHAR},
+            status              = #{status,jdbcType=VARCHAR}
         where id = #{id,jdbcType=VARCHAR}
     </update>
 

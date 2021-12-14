@@ -15,7 +15,10 @@
 
 package org.edgegallery.mecmNorth.facade;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.lang3.StringUtils;
+import org.edgegallery.mecmNorth.controller.advice.RequestCheckBody;
 import org.edgegallery.mecmNorth.controller.advice.RequestPkgBody;
 import org.edgegallery.mecmNorth.controller.advice.ResponseObject;
 import org.edgegallery.mecmNorth.domain.ResponseConst;
@@ -59,6 +62,10 @@ public class MecmPackageServiceFacade {
 
     private static final String FAILED_TO_INSTANTIATE_STATUS = "failed to instantiate";
 
+    private static final String APP_INSTANCE_ID = "appInstanceId";
+
+    private static final String APP_CLASS = "app_class";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MecmPackageServiceFacade.class);
 
     @Autowired
@@ -73,6 +80,10 @@ public class MecmPackageServiceFacade {
     @Value("${serveraddress.apm}")
     private String apmServerAddress;
 
+    @Value("${serveraddress.appo}")
+    private String appoServerAddress;
+
+
     public ResponseEntity<ResponseObject> uploadAndInstantiatePkg(RequestPkgBody pkgBody, String access_token) {
 
         if (!foreCheck(pkgBody)) {
@@ -83,23 +94,19 @@ public class MecmPackageServiceFacade {
         String pkgName = pkgBody.getAppPkgName();
         String pkgVersion = pkgBody.getAppPkgVersion();
         String[] hostList = pkgBody.getHostList();
-        Map<String, String> paramsMap = pkgBody.getParamsMap();
+        String appClass = pkgBody.getAppClass();
+        Map<String, Object> paramsMap = pkgBody.getParamsMap();
         String tenantId = pkgBody.getTenantId();
 
         String mecmPackageId = UUID.randomUUID().toString();
         String saveFilePath = mecmService.saveFileToLocal(pkgBody.getFile(), mecmPackageId);
 
         MecMPackageInfo mecMPackageInfo = MecMPackageInfo.builder().mecmPackageId(mecmPackageId).
-                mecmPkgName(pkgName).mecmPkgVersion(pkgVersion).tenantId(tenantId).hostIps(listToIps(hostList)).
-                status(DISTRIBUTING_STATUS).build();
+                mecmPkgName(pkgName).mecmPkgVersion(pkgVersion).mecmAppClass(appClass).tenantId(tenantId).
+                hostIps(listToIps(hostList)).status(DISTRIBUTING_STATUS).build();
 
         mecMPackageMapper.insertMecmPkgInfo(mecMPackageInfo);
         LOGGER.info("create package info in database");
-
-        Map<String, String> context = new HashMap<>();
-        context.put("apmServerAddress", apmServerAddress);
-        context.put(ACCESS_TOKEN, access_token);
-        context.put(TENANT_ID, pkgBody.getTenantId());
 
         Map<String, String> packageInfo = new HashMap<>();
         packageInfo.put(APP_NAME, pkgName);
@@ -107,6 +114,14 @@ public class MecmPackageServiceFacade {
 
         for (String ip : hostList) {
             String deploymentId = UUID.randomUUID().toString();
+
+            Map<String, String> context = new HashMap<>();
+            context.put("apmServerAddress", apmServerAddress);
+            context.put("appoServerAddress", appoServerAddress);
+            context.put(ACCESS_TOKEN, access_token);
+            context.put(TENANT_ID, pkgBody.getTenantId());
+            context.put(APP_CLASS, appClass);
+
             ResponseEntity<String> response = mecmService.uploadFileToAPM(saveFilePath, context, ip, packageInfo);
             if (null == response || !(HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
                     .equals(response.getStatusCode()))) {
@@ -116,17 +131,63 @@ public class MecmPackageServiceFacade {
                         mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).status(FAIL_TO_DISTRIBUTE_STATUS).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
             }
+            JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
+            String appIdFromApm = jsonObject.get("appId").getAsString();
+            String appPkgIdFromApm = jsonObject.get("appPackageId").getAsString();
+
             MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                    mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).status(DISTRIBUTING_STATUS).build();
+                    mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
+                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(DISTRIBUTING_STATUS).build();
             mecMDeploymentMapper.insertPkgDeploymentInfo(info);
+
+            context.put(APP_ID, appIdFromApm);
+            context.put(PACKAGE_ID, appPkgIdFromApm);
+
+            // get distribution status from apm
+            if (!mecmService.getApmPackage(context, context.get(PACKAGE_ID), ip)) {
+                MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(deploymentId).
+                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
+                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(FAIL_TO_DISTRIBUTE_STATUS).build();
+                mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
+                LOGGER.error("fail to distribute package, the mecm package id is:{}", mecmPackageId);
+                LOGGER.error("fail to distribute this package to ip:{}", ip);
+            }
+
+            MecMPackageDeploymentInfo infoGetFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
+                    mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
+                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(INSTANTIATING_STATUS).build();
+            mecMDeploymentMapper.insertPkgDeploymentInfo(infoGetFromAppo);
+
+            // instantiate original app
+            String appInstanceId = mecmService.createInstanceFromAppo(context, pkgName, ip, paramsMap);
+            context.put(APP_INSTANCE_ID, appInstanceId);
+            if (appInstanceId != null) {
+                LOGGER.info("instantiate finished, original appInstanceId: {}", appInstanceId);
+                MecMPackageDeploymentInfo infoFinishedFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
+                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
+                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(FINISHED_STATUS).build();
+                mecMDeploymentMapper.insertPkgDeploymentInfo(infoFinishedFromAppo);
+            }else {
+                LOGGER.error("instantiate failed, original appInstanceId: {}", appInstanceId);
+                MecMPackageDeploymentInfo infoFinishedFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
+                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
+                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(FAILED_TO_INSTANTIATE_STATUS).build();
+                mecMDeploymentMapper.insertPkgDeploymentInfo(infoFinishedFromAppo);
+            }
         }
-
-
-
-
+        //TODO:异步执行，是不是应该放在上面，直接返回mecmPackageId
         ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
-        return ResponseEntity.ok(new ResponseObject("upload success", errMsg, "deactivate order success."));
+        return ResponseEntity.ok(new ResponseObject("upload and instantiate success", errMsg, "upload and instantiate success"));
     }
+
+    public ResponseEntity<ResponseObject> getPkgDisAndInsStatus(RequestCheckBody checkBody, String access_token){
+
+    }
+
+    public ResponseEntity<ResponseObject> deletePackageDisAndInsStatus(RequestCheckBody checkBody, String access_token){
+
+    }
+
 
     private boolean foreCheck(RequestPkgBody pkgBody) {
         LOGGER.info("begin to fore check pkgBody");
@@ -134,7 +195,7 @@ public class MecmPackageServiceFacade {
         String pkgName = pkgBody.getAppPkgName();
         String pkgVersion = pkgBody.getAppPkgVersion();
         String[] hostList = pkgBody.getHostList();
-        Map<String, String> paramsMap = pkgBody.getParamsMap();
+        Map<String, Object> paramsMap = pkgBody.getParamsMap();
         String tenantId = pkgBody.getTenantId();
         MultipartFile file = pkgBody.getFile();
 
