@@ -70,6 +70,13 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
+    <select id="getMecMPkgDeploymentInfos" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Deployment_Column_List"/>
+        from pkg_deployment_table
+        where status != 'Finished' order by start_time desc limit 5;
+    </select>
+
     <select id="getMecMPkgDeploymentInfoByPkgId" resultType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo"
             parameterType="java.util.List">
         select

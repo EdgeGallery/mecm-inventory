@@ -22,8 +22,8 @@ import org.edgegallery.mecmNorth.controller.advice.*;
 import org.edgegallery.mecmNorth.domain.ResponseConst;
 import org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo;
 import org.edgegallery.mecmNorth.model.MecMPackageInfo;
-import org.edgegallery.mecmNorth.model.mapper.MecMDeploymentMapper;
-import org.edgegallery.mecmNorth.model.mapper.MecMPackageMapper;
+import org.edgegallery.mecmNorth.repository.mapper.MecMDeploymentMapper;
+import org.edgegallery.mecmNorth.repository.mapper.MecMPackageMapper;
 import org.edgegallery.mecmNorth.service.MecmService;
 import org.edgegallery.mecmNorth.utils.exception.ErrorMessage;
 import org.slf4j.Logger;
@@ -115,7 +115,7 @@ public class MecmPackageServiceFacade {
         packageInfo.put(APP_NAME, pkgName);
         packageInfo.put(APP_VERSION, pkgVersion);
 
-        //TODO:异步执行，这段代码
+
         for (String ip : hostList) {
             String deploymentId = UUID.randomUUID().toString();
 
@@ -143,41 +143,6 @@ public class MecmPackageServiceFacade {
                     mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
                     appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(0).status(DISTRIBUTING_STATUS).build();
             mecMDeploymentMapper.insertPkgDeploymentInfo(info);
-
-            context.put(APP_ID, appIdFromApm);
-            context.put(PACKAGE_ID, appPkgIdFromApm);
-
-            // get distribution status from apm
-            if (!mecmService.getApmPackage(context, context.get(PACKAGE_ID), ip)) {
-                MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(5).status(FAIL_TO_DISTRIBUTE_STATUS).build();
-                mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
-                LOGGER.error("fail to distribute package, the mecm package id is:{}", mecmPackageId);
-                LOGGER.error("fail to distribute this package to ip:{}", ip);
-            }
-
-            MecMPackageDeploymentInfo infoGetFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                    mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(3).status(INSTANTIATING_STATUS).build();
-            mecMDeploymentMapper.insertPkgDeploymentInfo(infoGetFromAppo);
-
-            // instantiate original app
-            String appInstanceId = mecmService.createInstanceFromAppo(context, pkgName, ip, paramsMap);
-            context.put(APP_INSTANCE_ID, appInstanceId);
-            if (appInstanceId != null) {
-                LOGGER.info("instantiate finished, original appInstanceId: {}", appInstanceId);
-                MecMPackageDeploymentInfo infoFinishedFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).appInstanceId(appInstanceId).statusCode(4).status(FINISHED_STATUS).build();
-                mecMDeploymentMapper.insertPkgDeploymentInfo(infoFinishedFromAppo);
-            } else {
-                LOGGER.error("instantiate failed, original appInstanceId: {}", appInstanceId);
-                MecMPackageDeploymentInfo infoFinishedFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(6).status(FAILED_TO_INSTANTIATE_STATUS).build();
-                mecMDeploymentMapper.insertPkgDeploymentInfo(infoFinishedFromAppo);
-            }
         }
 
         ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);

@@ -17,7 +17,18 @@
 
 package org.edgegallery.mecmNorth.service;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.edgegallery.mecmNorth.domain.ResponseConst;
 import org.edgegallery.mecmNorth.utils.constant.Constant;
 import org.edgegallery.mecmNorth.utils.exception.AppException;
@@ -25,17 +36,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 @Service("mecmService")
 public class MecmService {
@@ -61,7 +73,6 @@ public class MecmService {
     private static final String INSTANTIATE_APP_FAILED = "instantiate app from appo failed.";
 
     private static final String APPO_DELETE_APPLICATION_INSTANCE = "/appo/v1/tenants/%s/app_instances/%s";
-
 
     private static final String APP_NAME = "app_product_name";
 
@@ -95,7 +106,6 @@ public class MecmService {
 
     private static final String CREATED = "Created";
 
-
     private static final String APPO_GET_INSTANCE = "/appo/v1/tenants/%s/app_instance_infos/%s";
 
     private static final String APPO_GET_KPI_INSTANCE = "/appo/v1/tenants/%s/hosts/%s/kpi";
@@ -107,7 +117,6 @@ public class MecmService {
     private static final String ARCHITECTURE = "app_architecture";
 
     private static final String LOCAL_FILE_PATH = "/usr/app/NorthSystem/";
-
 
     private static final String VM = "vm";
 
@@ -125,7 +134,7 @@ public class MecmService {
     /**
      * save file to local file path.
      *
-     * @param uploadFile    uploadFile
+     * @param uploadFile uploadFile
      * @param mecmPackageId mecmPackageId
      * @return save File Path
      */
@@ -156,17 +165,16 @@ public class MecmService {
         return LOCAL_FILE_PATH + mecmPackageId + "/" + fileName;
     }
 
-
     /**
      * upload file to apm service.
      *
      * @param filePath file path
-     * @param context  context info
-     * @param hostIp   host ip
+     * @param context context info
+     * @param hostIp host ip
      * @return response from atp
      */
     public ResponseEntity<String> uploadFileToAPM(String filePath, Map<String, String> context, String hostIp,
-                                                  Map<String, String> packageInfo) {
+        Map<String, String> packageInfo) {
         //context 需要ACCESS_TOKEN、apmServerAddress、TENANT_ID
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", new FileSystemResource(filePath));
@@ -193,7 +201,6 @@ public class MecmService {
         return null;
     }
 
-
     /**
      * get all mecm hosts.
      *
@@ -209,9 +216,9 @@ public class MecmService {
             ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
                 LOGGER.error("Failed to get mechosts from mecm inventory, The status code is {}",
-                        response.getStatusCode());
+                    response.getStatusCode());
                 throw new AppException("Failed to get mechosts from mecm inventory.",
-                        ResponseConst.RET_GET_MECMHOST_FAILED);
+                    ResponseConst.RET_GET_MECMHOST_FAILED);
             }
 
             return new Gson().fromJson(response.getBody(), List.class);
@@ -225,9 +232,9 @@ public class MecmService {
     /**
      * get package from apm.
      *
-     * @param context   context
+     * @param context context
      * @param packageId packageId
-     * @param hostIp    hostIp
+     * @param hostIp hostIp
      * @return
      */
     public boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
@@ -235,7 +242,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
         String url = context.get("apmServerAddress")
-                .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
+            .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
         LOGGER.warn("getApmPackage URL: " + url);
 
         long startTime = System.currentTimeMillis();
@@ -250,7 +257,7 @@ public class MecmService {
                 ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
                 if (!HttpStatus.OK.equals(response.getStatusCode())) {
                     LOGGER
-                            .error("get package from apm reponse failed. The status code is {}", response.getStatusCode());
+                        .error("get package from apm reponse failed. The status code is {}", response.getStatusCode());
                     return false;
                 }
 
@@ -276,7 +283,7 @@ public class MecmService {
                 Thread.sleep(9000);
             } catch (RestClientException e) {
                 LOGGER.error("Failed to get package from apm which packageId is {} exception {}", packageId,
-                        e.getMessage());
+                    e.getMessage());
                 return false;
             } catch (InterruptedException e) {
                 LOGGER.error("thead sleep exception.");
@@ -286,14 +293,68 @@ public class MecmService {
     }
 
     /**
+     * get package from apm.
+     *
+     * @param context context
+     * @param packageId packageId
+     * @param hostIp hostIp
+     * @return
+     */
+    public boolean getApmPackageOnce(Map<String, String> context, String packageId, String hostIp) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        String url = context.get("apmServerAddress")
+            .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
+        LOGGER.warn("getApmPackage URL: " + url);
+
+        long startTime = System.currentTimeMillis();
+
+        try {
+
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            if (!HttpStatus.OK.equals(response.getStatusCode())) {
+                LOGGER.error("get package from apm reponse failed. The status code is {}", response.getStatusCode());
+                return false;
+            }
+
+            JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
+            JsonArray mecHostInfo = jsonObject.get("mecHostInfo").getAsJsonArray();
+            for (JsonElement mecHost : mecHostInfo) {
+                JsonObject mecHostObject = mecHost.getAsJsonObject();
+                String status = mecHostObject.get("status").getAsString();
+                String hostIpReq = mecHostObject.get("hostIp").getAsString();
+                if (hostIp.equals(hostIpReq)) {
+                    LOGGER.info("status: {}", status);
+                    if ("Distributed".equalsIgnoreCase(status) || "uploaded".equalsIgnoreCase(status)) {
+                        return true;
+                    } else {
+                        if ("Error".equalsIgnoreCase(status)) {
+                            return false;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (RestClientException e) {
+            LOGGER
+                .error("Failed to get package from apm which packageId is {} exception {}", packageId, e.getMessage());
+            return false;
+        }
+        return false;
+    }
+
+    /**
      * create app instance from appo.
      *
      * @param context context info
      * @param appName appName
-     * @param hostIp  mec host ip
+     * @param hostIp mec host ip
      * @return create app instance sucess or not.s
      */
-    public String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp, Map<String, Object> parameters) {
+    public String createInstanceFromAppoOnce(Map<String, String> context, String appName, String hostIp,
+        Map<String, Object> parameters) {
         Map<String, Object> body = new HashMap<>();
         body.put("appInstanceDescription", UUID.randomUUID().toString());
         body.put("appName", appName);
@@ -307,20 +368,107 @@ public class MecmService {
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         String url = context.get("appoServerAddress")
-                .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
+            .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
             LOGGER.info("response is: {}", response.getStatusCode());
             if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
-                    .equals(response.getStatusCode())) {
+                .equals(response.getStatusCode())) {
+                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
+                JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
+                if (null != responseBody) {
+                    String appInstanceId = responseBody.get("app_instance_id").getAsString();
+                    return appInstanceId;
+                }
+            }
+        } catch (RestClientException e) {
+            LOGGER.error("Failed to create app instance from appo which appId is {} exception {}", context.get(APP_ID),
+                e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * get application instance from appo.
+     *
+     * @param context context
+     * @param appInstanceId appInstanceId
+     * @param status status
+     * @return
+     */
+    public String getApplicationInstanceOnce(Map<String, String> context, String appInstanceId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        String url = context.get("appoServerAddress")
+            .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
+        LOGGER.warn("getApplicationInstance URL: " + url);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            if (!HttpStatus.OK.equals(response.getStatusCode())) {
+                LOGGER.error("get application instance from appo reponse failed. The status code is {}",
+                    response.getStatusCode());
+                return "";
+            }
+
+            JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
+            JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
+            LOGGER
+                .info("status: {}, operationalStatus: {}", responseBody.get("operationalStatus").getAsString());
+
+            String responseStatus = responseBody.get("operationalStatus").getAsString();
+            if ("Instantiation failed".equalsIgnoreCase(responseStatus) || "Create failed"
+                .equalsIgnoreCase(responseStatus)) {
+                LOGGER.error("instantiate or create app failed. The status  is {}", responseStatus);
+
+            }
+            return responseStatus;
+        } catch (RestClientException e) {
+            LOGGER.error("Failed to get application instance from appo which app_instance_id is {} exception {}",
+                appInstanceId, e.getMessage());
+        }
+        return "";
+    }
+
+    /**
+     * create app instance from appo.
+     *
+     * @param context context info
+     * @param appName appName
+     * @param hostIp mec host ip
+     * @return create app instance sucess or not.s
+     */
+    public String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp,
+        Map<String, Object> parameters) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("appInstanceDescription", UUID.randomUUID().toString());
+        body.put("appName", appName);
+        body.put("appPackageId", context.get(PACKAGE_ID));
+        body.put("appId", context.get(APP_ID));
+        body.put("mecHost", hostIp);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        headers.set(CONTENT_TYPE, APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        String url = context.get("appoServerAddress")
+            .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            LOGGER.info("response is: {}", response.getStatusCode());
+            if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
+                .equals(response.getStatusCode())) {
                 JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
                 JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
                 if (null != responseBody) {
                     String appInstanceId = responseBody.get("app_instance_id").getAsString();
                     LOGGER.info("appInstanceId: {}", appInstanceId);
-                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context, parameters,
-                            appInstanceId)) {
+                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context,
+                        parameters, appInstanceId)) {
                         if (getApplicationInstance(context, appInstanceId, INSTANTIATED)) {
                             return appInstanceId;
                         }
@@ -330,7 +478,7 @@ public class MecmService {
             }
         } catch (RestClientException e) {
             LOGGER.error("Failed to create app instance from appo which appId is {} exception {}", context.get(APP_ID),
-                    e.getMessage());
+                e.getMessage());
         }
         return null;
     }
@@ -338,9 +486,9 @@ public class MecmService {
     /**
      * get application instance from appo.
      *
-     * @param context       context
+     * @param context context
      * @param appInstanceId appInstanceId
-     * @param status        status
+     * @param status status
      * @return
      */
     private boolean getApplicationInstance(Map<String, String> context, String appInstanceId, String status) {
@@ -348,7 +496,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
         String url = context.get("appoServerAddress")
-                .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
+            .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("getApplicationInstance URL: " + url);
 
         long startTime = System.currentTimeMillis();
@@ -357,18 +505,18 @@ public class MecmService {
                 ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
                 if (!HttpStatus.OK.equals(response.getStatusCode())) {
                     LOGGER.error("get application instance from appo reponse failed. The status code is {}",
-                            response.getStatusCode());
+                        response.getStatusCode());
                     return false;
                 }
 
                 JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
                 JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
                 LOGGER.info("status: {}, operationalStatus: {}", status,
-                        responseBody.get("operationalStatus").getAsString());
+                    responseBody.get("operationalStatus").getAsString());
 
                 String responseStatus = responseBody.get("operationalStatus").getAsString();
                 if ("Instantiation failed".equalsIgnoreCase(responseStatus) || "Create failed"
-                        .equalsIgnoreCase(responseStatus)) {
+                    .equalsIgnoreCase(responseStatus)) {
                     LOGGER.error("instantiate or create app failed. The status  is {}", responseStatus);
                     return false;
                 }
@@ -385,7 +533,7 @@ public class MecmService {
                 Thread.sleep(5000);
             } catch (RestClientException e) {
                 LOGGER.error("Failed to get application instance from appo which app_instance_id is {} exception {}",
-                        appInstanceId, e.getMessage());
+                    appInstanceId, e.getMessage());
                 return false;
             } catch (InterruptedException e) {
                 LOGGER.error("thead sleep exception.");
@@ -398,12 +546,12 @@ public class MecmService {
     /**
      * instantiate application by appo.
      *
-     * @param context       context info.
+     * @param context context info.
      * @param appInstanceId appInstanceId
      * @return instantiate app successful
      */
     private boolean instantiateAppFromAppo(Map<String, String> context, Map<String, Object> parameters,
-                                           String appInstanceId) {
+        String appInstanceId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         headers.set(CONTENT_TYPE, APPLICATION_JSON);
@@ -420,19 +568,19 @@ public class MecmService {
         }
 
         String url = context.get("appoServerAddress")
-                .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
+            .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
         LOGGER.info("instantiateAppFromAppo URL : {}", url);
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
             if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
                 LOGGER.error("instantiate application from appo reponse failed. The status code is {}",
-                        response.getStatusCode());
+                    response.getStatusCode());
                 return false;
             }
             LOGGER.info("instantiateAppFromAppo: {}", response.getStatusCode());
         } catch (RestClientException e) {
             LOGGER.error("Failed to instantiate application from appo which app_instance_id is {} exception {}",
-                    appInstanceId, e.getMessage());
+                appInstanceId, e.getMessage());
             return false;
         }
         return true;
@@ -470,7 +618,7 @@ public class MecmService {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         String url = context.get("apmServerAddress")
-                .concat(String.format(APM_DELETE_EDGE_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID), hostIp));
+            .concat(String.format(APM_DELETE_EDGE_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID), hostIp));
         LOGGER.warn("deleteEdgePkg URL: {}", url);
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
@@ -497,7 +645,7 @@ public class MecmService {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         String url = context.get("apmServerAddress")
-                .concat(String.format(APM_DELETE_APM_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID)));
+            .concat(String.format(APM_DELETE_APM_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID)));
         LOGGER.warn("deleteApmPkg URL: {}", url);
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
@@ -542,19 +690,19 @@ public class MecmService {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         String url = context.get("appoServerAddress")
-                .concat(String.format(APPO_DELETE_APPLICATION_INSTANCE, context.get(TENANT_ID), appInstanceId));
+            .concat(String.format(APPO_DELETE_APPLICATION_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("deleteAppInstance URL: {}", url);
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
             if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
-                    .equals(response.getStatusCode())) {
+                .equals(response.getStatusCode())) {
                 return true;
             }
             LOGGER
-                    .error("delete app instance from appo reponse failed. The status code is {}", response.getStatusCode());
+                .error("delete app instance from appo reponse failed. The status code is {}", response.getStatusCode());
         } catch (RestClientException e) {
             LOGGER.error("delete app instance from appo failed, appInstanceId is {} exception {}", appInstanceId,
-                    e.getMessage());
+                e.getMessage());
         }
 
         return false;
@@ -570,4 +718,19 @@ public class MecmService {
         }
     }
 
+    public String getPackageFile(String mecmPackageId) {
+        File filePath = new File(LOCAL_FILE_PATH + mecmPackageId + "/");
+        String result = "";
+        try {
+            File[] allfiles = filePath.listFiles();
+            for (File file : allfiles) {
+                if (file.getCanonicalPath().endsWith(".csar")) {
+                    result = file.getCanonicalPath();
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.info("exception occurs");
+        }
+        return result;
+    }
 }

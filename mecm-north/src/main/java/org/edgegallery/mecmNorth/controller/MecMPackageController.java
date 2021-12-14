@@ -81,7 +81,7 @@ public class MecMPackageController {
         LOGGER.info("begin to upload and instantiate package to MecM");
         RequestPkgBody body = RequestPkgBody.builder().appPkgName(appPkgName).appPkgVersion(appPkgVersion).
                 appClass(appClass).file(file).hostList(hostList).paramsMap(paramsMap).tenantId(tenantId).build();
-        return mecmPackageServiceFacade.uploadAndInstantiatePkg(body,request.getHeader(Constant.ACCESS_TOKEN));
+        return mecmPackageServiceFacade.uploadAndInstantiatePkg(body, request.getHeader(Constant.ACCESS_TOKEN));
     }
 
     /**

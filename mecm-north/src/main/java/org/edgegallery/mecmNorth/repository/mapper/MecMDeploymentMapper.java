@@ -1,7 +1,7 @@
 package org.edgegallery.mecmNorth.repository.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.edgegallery.mecmNorth.repository.MecMPackageDeploymentInfo;
+import org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +18,8 @@ public interface MecMDeploymentMapper {
 
     MecMPackageDeploymentInfo getMecMPkgDeploymentInfoById(String id);
 
-    List<String> getMecMPkgDeploymentInfoByPkgId(String mecmPkgId);
+    List<MecMPackageDeploymentInfo> getMecMPkgDeploymentInfos();
+
+    List<MecMPackageDeploymentInfo> getMecMPkgDeploymentInfoByPkgId(String mecmPkgId);
 
 }

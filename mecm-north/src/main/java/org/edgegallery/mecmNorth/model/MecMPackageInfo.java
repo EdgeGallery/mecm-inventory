@@ -50,4 +50,8 @@ public class MecMPackageInfo {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "token")
+    private String token;
+
+
 }
