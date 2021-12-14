@@ -25,9 +25,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ResponseObject {
-
-    private Object data;
+public class ResponsePkgPost {
+    private String mecmPackageId;
 
     private int retCode;
 
@@ -38,8 +37,9 @@ public class ResponseObject {
     /**
      * construct.
      */
-    public ResponseObject( Object result, ErrorMessage errorMsg, String detailMsg) {
-        this.data = result;
+    public ResponsePkgPost(String mecmPackageId, int retCode, ErrorMessage errorMsg, String detailMsg) {
+        this.mecmPackageId = mecmPackageId;
+        this.retCode = retCode;
         this.retCode = errorMsg.getRetCode();
         this.params = errorMsg.getParams();
         this.message = detailMsg;

@@ -60,6 +60,8 @@ public class MecmService {
 
     private static final String INSTANTIATE_APP_FAILED = "instantiate app from appo failed.";
 
+    private static final String APPO_DELETE_APPLICATION_INSTANCE = "/appo/v1/tenants/%s/app_instances/%s";
+
 
     private static final String APP_NAME = "app_product_name";
 
@@ -105,6 +107,7 @@ public class MecmService {
     private static final String ARCHITECTURE = "app_architecture";
 
     private static final String LOCAL_FILE_PATH = "/usr/app/NorthSystem/";
+
 
     private static final String VM = "vm";
 
@@ -222,12 +225,12 @@ public class MecmService {
     /**
      * get package from apm.
      *
-     * @param context context
+     * @param context   context
      * @param packageId packageId
-     * @param hostIp hostIp
+     * @param hostIp    hostIp
      * @return
      */
-    private boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
+    public boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -287,10 +290,10 @@ public class MecmService {
      *
      * @param context context info
      * @param appName appName
-     * @param hostIp mec host ip
+     * @param hostIp  mec host ip
      * @return create app instance sucess or not.s
      */
-    private String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp) {
+    public String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp, Map<String, Object> parameters) {
         Map<String, Object> body = new HashMap<>();
         body.put("appInstanceDescription", UUID.randomUUID().toString());
         body.put("appName", appName);
@@ -316,7 +319,7 @@ public class MecmService {
                 if (null != responseBody) {
                     String appInstanceId = responseBody.get("app_instance_id").getAsString();
                     LOGGER.info("appInstanceId: {}", appInstanceId);
-                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context,
+                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context, parameters,
                             appInstanceId)) {
                         if (getApplicationInstance(context, appInstanceId, INSTANTIATED)) {
                             return appInstanceId;
@@ -335,9 +338,9 @@ public class MecmService {
     /**
      * get application instance from appo.
      *
-     * @param context context
+     * @param context       context
      * @param appInstanceId appInstanceId
-     * @param status status
+     * @param status        status
      * @return
      */
     private boolean getApplicationInstance(Map<String, String> context, String appInstanceId, String status) {
@@ -395,11 +398,12 @@ public class MecmService {
     /**
      * instantiate application by appo.
      *
-     * @param context context info.
+     * @param context       context info.
      * @param appInstanceId appInstanceId
      * @return instantiate app successful
      */
-    private boolean instantiateAppFromAppo(Map<String, String> context, String appInstanceId) {
+    private boolean instantiateAppFromAppo(Map<String, String> context, Map<String, Object> parameters,
+                                           String appInstanceId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         headers.set(CONTENT_TYPE, APPLICATION_JSON);
@@ -409,8 +413,6 @@ public class MecmService {
             Map<String, Object> body = new HashMap<String, Object>();
             // if package is vm, need parameters body
             LOGGER.info("package is vm.");
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            setBody(parameters, context);
             body.put("parameters", parameters);
             request = new HttpEntity<>(body, headers);
         } else {
@@ -442,7 +444,7 @@ public class MecmService {
      * @param body body
      * @param context context
      */
-    private void setBody(Map<String, Object> body, Map<String, String> context) {
+/*    private void setBody(Map<String, Object> body, Map<String, String> context) {
         String configParam = context.get("configParamList");
         String[] configList = configParam.split(",");
         for (String config : configList) {
@@ -453,8 +455,119 @@ public class MecmService {
                 body.put(configItem[0].trim(), 1 == configItem.length ? "" : configItem[1].trim());
             }
         }
+    }*/
+
+    /**
+     * delete edge package.
+     *
+     * @param context context
+     * @param hostIp hostIp
+     * @return delete successfully
+     */
+    public boolean deleteEdgePackage(Map<String, String> context, String hostIp) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        String url = context.get("apmServerAddress")
+                .concat(String.format(APM_DELETE_EDGE_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID), hostIp));
+        LOGGER.warn("deleteEdgePkg URL: {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            if (HttpStatus.OK.equals(response.getStatusCode())) {
+                return true;
+            }
+            LOGGER.error("deleteEdgePkg reponse failed. The status code is {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("deleteEdgePkg failed, exception {}", e.getMessage());
+        }
+
+        return false;
     }
 
+    /**
+     * delete apm package.
+     *
+     * @param context context
+     * @return delete successfully
+     */
+    public boolean deleteApmPackage(Map<String, String> context) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
 
+        String url = context.get("apmServerAddress")
+                .concat(String.format(APM_DELETE_APM_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID)));
+        LOGGER.warn("deleteApmPkg URL: {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            if (HttpStatus.OK.equals(response.getStatusCode())) {
+                return true;
+            }
+            LOGGER.error("deleteApmPkg reponse failed. The status code is {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("deleteApmPkg failed, aexception {}", e.getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * get app instantiate ip from context.
+     *
+     * @param context context info
+     * @return instantiate mec host
+     */
+/*
+    private String getMecHostAppInstantiated(Map<String, String> context) {
+        String mecHostIpList = context.get("mecHostIpList");
+        if (null == mecHostIpList) {
+            return null;
+        }
+        String[] hostArray = mecHostIpList.split(",");
+        return hostArray[0];
+    }
+*/
+
+    /**
+     * delete app instance from appo
+     *
+     * @param appInstanceId appInstanceId
+     * @param context context info
+     * @return response success or not.
+     */
+    public boolean deleteAppInstance(String appInstanceId, Map<String, String> context) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        String url = context.get("appoServerAddress")
+                .concat(String.format(APPO_DELETE_APPLICATION_INSTANCE, context.get(TENANT_ID), appInstanceId));
+        LOGGER.warn("deleteAppInstance URL: {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
+                    .equals(response.getStatusCode())) {
+                return true;
+            }
+            LOGGER
+                    .error("delete app instance from appo reponse failed. The status code is {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("delete app instance from appo failed, appInstanceId is {} exception {}", appInstanceId,
+                    e.getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * delay some time.
+     */
+    public void delay() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+        }
+    }
 
 }

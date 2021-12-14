@@ -22,11 +22,20 @@ public class MecMPackageDeploymentInfo {
     @Column(name = "mecm_pkg_name")
     private String mecmPkgName;
 
-    @Column(name = "app_id")
-    private String appId;
+    @Column(name = "app_id_from_apm")
+    private String appIdFromApm;
+
+    @Column(name = "app_pkg_id_from_apm")
+    private String appPkgIdFromApm;
+
+    @Column(name = "app_instance_id")
+    private String appInstanceId;
 
     @Column(name = "host_ip")
     private String hostIp;
+
+    @Column(name = "status_code")
+    private int statusCode;
 
     @Column(name = "status")
     private String status;

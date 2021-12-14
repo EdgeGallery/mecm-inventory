@@ -18,6 +18,6 @@ public interface MecMDeploymentMapper {
 
     MecMPackageDeploymentInfo getMecMPkgDeploymentInfoById(String id);
 
-    List<String> getMecMPkgDeploymentInfoByPkgId(String mecmPkgId);
+    List<MecMPackageDeploymentInfo> getMecMPkgDeploymentInfoByPkgId(String mecmPkgId);
 
 }

@@ -14,40 +14,19 @@
  *    limitations under the License.
  */
 
-package org.edgegallery.mecmNorth.model;
+package org.edgegallery.mecmNorth.controller.advice;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 @Getter
 @Setter
 @Builder
-public class MecMPackageInfo {
+public class RequestCheckBody {
 
-    @Id
-    @Column(name = "mecm_package_id")
-    private String mecmPackageId;
+    String tenantId;
 
-    @Column(name = "mecm_pkg_name")
-    private String mecmPkgName;
-
-    @Column(name = "mecm_pkg_version")
-    private String mecmPkgVersion;
-
-    @Column(name = "mecm_app_class")
-    private String mecmAppClass;
-
-    @Column(name = "tenant_id")
-    private String tenantId;
-
-    @Column(name = "host_ips")
-    private String hostIps;
-
-    @Column(name = "status")
-    private String status;
+    String mecmPackageId;
 
 }

@@ -17,31 +17,25 @@
 
 package org.edgegallery.mecmNorth.controller.advice;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.edgegallery.mecmNorth.utils.exception.ErrorMessage;
 
 import java.util.List;
 
 @Getter
 @Setter
-public class ResponseObject {
+@Builder
+public class ResponseOfStatus {
 
-    private Object data;
+    private String mecmPackageId;
 
     private int retCode;
 
     private String message;
 
+    private Object data;
+
     private List<String> params;
 
-    /**
-     * construct.
-     */
-    public ResponseObject( Object result, ErrorMessage errorMsg, String detailMsg) {
-        this.data = result;
-        this.retCode = errorMsg.getRetCode();
-        this.params = errorMsg.getParams();
-        this.message = detailMsg;
-    }
 }
