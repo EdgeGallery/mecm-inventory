@@ -23,22 +23,24 @@
         <result column="mecm_pkg_name" property="mecmPkgName" jdbcType="VARCHAR"/>
         <result column="app_id_from_apm" property="appIdFromApm" jdbcType="VARCHAR"/>
         <result column="app_pkg_id_from_apm" property="appPkgIdFromApm" jdbcType="VARCHAR"/>
-
+        <result column="app_instance_id" property="appInstanceId" jdbcType="VARCHAR"/>
         <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
+        <result column="status_code" property="statusCode" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Deployment_Column_List">
         id
-        , mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm, host_ip, status
+        , mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm, app_instance_id, host_ip,status_code, status
     </sql>
 
     <insert id="insertPkgDeploymentInfo" parameterType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
         insert into pkg_deployment_table (id, mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm,
-                                          host_ip, status)
+                                          app_instance_id, host_ip, status_code, status)
         values (#{id,jdbcType=VARCHAR}, #{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR},
-                #{appIdFromApm,jdbcType=VARCHAR},
-                #{appPkgIdFromApm,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+                #{appIdFromApm,jdbcType=VARCHAR}, #{appPkgIdFromApm,jdbcType=VARCHAR},
+                #{appInstanceId,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR}, #{statusCode,jdbcType=INTEGER},
+                #{status,jdbcType=VARCHAR})
     </insert>
 
     <delete id="deletePkgDeploymentInfoByPkgId" parameterType="String">
@@ -54,7 +56,9 @@
             mecm_pkg_name       = #{mecmPkgName,jdbcType=VARCHAR},
             app_id_from_apm     = #{appIdFromApm,jdbcType=VARCHAR},
             app_pkg_id_from_apm = #{appPkgIdFromApm,jdbcType=VARCHAR},
+            app_instance_id     = #{appInstanceId,jdbcType=VARCHAR},
             host_ip             = #{hostIp,jdbcType=VARCHAR},
+            status_code         = #{statusCode,jdbcType=INTEGER},
             status              = #{status,jdbcType=VARCHAR}
         where id = #{id,jdbcType=VARCHAR}
     </update>
@@ -66,8 +70,10 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="getMecMPkgDeploymentInfoByPkgId" resultType="String" parameterType="java.util.List">
-        select id
+    <select id="getMecMPkgDeploymentInfoByPkgId" resultType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo"
+            parameterType="java.util.List">
+        select
+        <include refid="Deployment_Column_List"/>
         from pkg_deployment_table
         where mecm_package_id = #{mecmPkgId,jdbcType=VARCHAR}
     </select>

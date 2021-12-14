@@ -60,6 +60,8 @@ public class MecmService {
 
     private static final String INSTANTIATE_APP_FAILED = "instantiate app from appo failed.";
 
+    private static final String APPO_DELETE_APPLICATION_INSTANCE = "/appo/v1/tenants/%s/app_instances/%s";
+
 
     private static final String APP_NAME = "app_product_name";
 
@@ -105,6 +107,7 @@ public class MecmService {
     private static final String ARCHITECTURE = "app_architecture";
 
     private static final String LOCAL_FILE_PATH = "/usr/app/NorthSystem/";
+
 
     private static final String VM = "vm";
 
@@ -454,5 +457,117 @@ public class MecmService {
         }
     }*/
 
+    /**
+     * delete edge package.
+     *
+     * @param context context
+     * @param hostIp hostIp
+     * @return delete successfully
+     */
+    public boolean deleteEdgePackage(Map<String, String> context, String hostIp) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        String url = context.get("apmServerAddress")
+                .concat(String.format(APM_DELETE_EDGE_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID), hostIp));
+        LOGGER.warn("deleteEdgePkg URL: {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            if (HttpStatus.OK.equals(response.getStatusCode())) {
+                return true;
+            }
+            LOGGER.error("deleteEdgePkg reponse failed. The status code is {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("deleteEdgePkg failed, exception {}", e.getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * delete apm package.
+     *
+     * @param context context
+     * @return delete successfully
+     */
+    public boolean deleteApmPackage(Map<String, String> context) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        String url = context.get("apmServerAddress")
+                .concat(String.format(APM_DELETE_APM_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID)));
+        LOGGER.warn("deleteApmPkg URL: {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            if (HttpStatus.OK.equals(response.getStatusCode())) {
+                return true;
+            }
+            LOGGER.error("deleteApmPkg reponse failed. The status code is {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("deleteApmPkg failed, aexception {}", e.getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * get app instantiate ip from context.
+     *
+     * @param context context info
+     * @return instantiate mec host
+     */
+/*
+    private String getMecHostAppInstantiated(Map<String, String> context) {
+        String mecHostIpList = context.get("mecHostIpList");
+        if (null == mecHostIpList) {
+            return null;
+        }
+        String[] hostArray = mecHostIpList.split(",");
+        return hostArray[0];
+    }
+*/
+
+    /**
+     * delete app instance from appo
+     *
+     * @param appInstanceId appInstanceId
+     * @param context context info
+     * @return response success or not.
+     */
+    public boolean deleteAppInstance(String appInstanceId, Map<String, String> context) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        String url = context.get("appoServerAddress")
+                .concat(String.format(APPO_DELETE_APPLICATION_INSTANCE, context.get(TENANT_ID), appInstanceId));
+        LOGGER.warn("deleteAppInstance URL: {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
+                    .equals(response.getStatusCode())) {
+                return true;
+            }
+            LOGGER
+                    .error("delete app instance from appo reponse failed. The status code is {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("delete app instance from appo failed, appInstanceId is {} exception {}", appInstanceId,
+                    e.getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * delay some time.
+     */
+    public void delay() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+        }
+    }
 
 }

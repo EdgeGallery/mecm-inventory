@@ -18,16 +18,13 @@ package org.edgegallery.mecmNorth.facade;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang3.StringUtils;
-import org.edgegallery.mecmNorth.controller.advice.RequestCheckBody;
-import org.edgegallery.mecmNorth.controller.advice.RequestPkgBody;
-import org.edgegallery.mecmNorth.controller.advice.ResponseObject;
+import org.edgegallery.mecmNorth.controller.advice.*;
 import org.edgegallery.mecmNorth.domain.ResponseConst;
 import org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo;
 import org.edgegallery.mecmNorth.model.MecMPackageInfo;
 import org.edgegallery.mecmNorth.model.mapper.MecMDeploymentMapper;
 import org.edgegallery.mecmNorth.model.mapper.MecMPackageMapper;
 import org.edgegallery.mecmNorth.service.MecmService;
-import org.edgegallery.mecmNorth.utils.exception.AppException;
 import org.edgegallery.mecmNorth.utils.exception.ErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +35,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-import static org.edgegallery.mecmNorth.constant.ResponseConst.RET_PKG_FILED_EMPTY_FAILED;
 import static org.edgegallery.mecmNorth.utils.constant.Constant.*;
 
 @Service("MecmPackageServiceFacade")
@@ -66,6 +60,13 @@ public class MecmPackageServiceFacade {
 
     private static final String APP_CLASS = "app_class";
 
+    private static final String UNINSTANTIATE_APP_FAILED
+            = "delete instantiate app from appo failed, the appInstanceId is: ";
+
+    private static final String DELETE_EDGE_PKG_FAILED = "delete edge package from apm failed.";
+
+    private static final String DELETE_APM_PKG_FAILED = "delete apm package from apm failed.";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MecmPackageServiceFacade.class);
 
     @Autowired
@@ -84,11 +85,13 @@ public class MecmPackageServiceFacade {
     private String appoServerAddress;
 
 
-    public ResponseEntity<ResponseObject> uploadAndInstantiatePkg(RequestPkgBody pkgBody, String access_token) {
+    public ResponseEntity<ResponsePkgPost> uploadAndInstantiatePkg(RequestPkgBody pkgBody, String access_token) {
 
         if (!foreCheck(pkgBody)) {
             LOGGER.error("pkgBody has empty field, pls check pkgBody");
-            throw new AppException("pkgBody has empty field, pls check pkgBody", RET_PKG_FILED_EMPTY_FAILED);
+            ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_FAIL, null);
+            return ResponseEntity.ok(new ResponsePkgPost("", 1, errMsg, "Failed to create server"));
+            // throw new AppException("pkgBody has empty field, pls check pkgBody", RET_PKG_FILED_EMPTY_FAILED);
         }
 
         String pkgName = pkgBody.getAppPkgName();
@@ -112,6 +115,7 @@ public class MecmPackageServiceFacade {
         packageInfo.put(APP_NAME, pkgName);
         packageInfo.put(APP_VERSION, pkgVersion);
 
+        //TODO:异步执行，这段代码
         for (String ip : hostList) {
             String deploymentId = UUID.randomUUID().toString();
 
@@ -128,7 +132,7 @@ public class MecmPackageServiceFacade {
                 LOGGER.error("fail to upload file with ip: " + ip);
                 LOGGER.error("uploadFileToAPM failed to , response: {}", response);
                 MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).status(FAIL_TO_DISTRIBUTE_STATUS).build();
+                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(5).status(FAIL_TO_DISTRIBUTE_STATUS).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
             }
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
@@ -137,7 +141,7 @@ public class MecmPackageServiceFacade {
 
             MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId).
                     mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(DISTRIBUTING_STATUS).build();
+                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(0).status(DISTRIBUTING_STATUS).build();
             mecMDeploymentMapper.insertPkgDeploymentInfo(info);
 
             context.put(APP_ID, appIdFromApm);
@@ -147,7 +151,7 @@ public class MecmPackageServiceFacade {
             if (!mecmService.getApmPackage(context, context.get(PACKAGE_ID), ip)) {
                 MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(deploymentId).
                         mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(FAIL_TO_DISTRIBUTE_STATUS).build();
+                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(5).status(FAIL_TO_DISTRIBUTE_STATUS).build();
                 mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
                 LOGGER.error("fail to distribute package, the mecm package id is:{}", mecmPackageId);
                 LOGGER.error("fail to distribute this package to ip:{}", ip);
@@ -155,7 +159,7 @@ public class MecmPackageServiceFacade {
 
             MecMPackageDeploymentInfo infoGetFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
                     mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(INSTANTIATING_STATUS).build();
+                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(3).status(INSTANTIATING_STATUS).build();
             mecMDeploymentMapper.insertPkgDeploymentInfo(infoGetFromAppo);
 
             // instantiate original app
@@ -165,27 +169,68 @@ public class MecmPackageServiceFacade {
                 LOGGER.info("instantiate finished, original appInstanceId: {}", appInstanceId);
                 MecMPackageDeploymentInfo infoFinishedFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
                         mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(FINISHED_STATUS).build();
+                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).appInstanceId(appInstanceId).statusCode(4).status(FINISHED_STATUS).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(infoFinishedFromAppo);
-            }else {
+            } else {
                 LOGGER.error("instantiate failed, original appInstanceId: {}", appInstanceId);
                 MecMPackageDeploymentInfo infoFinishedFromAppo = MecMPackageDeploymentInfo.builder().id(deploymentId).
                         mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).status(FAILED_TO_INSTANTIATE_STATUS).build();
+                        appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(6).status(FAILED_TO_INSTANTIATE_STATUS).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(infoFinishedFromAppo);
             }
         }
-        //TODO:异步执行，是不是应该放在上面，直接返回mecmPackageId
+
         ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
-        return ResponseEntity.ok(new ResponseObject("upload and instantiate success", errMsg, "upload and instantiate success"));
+        return ResponseEntity.ok(new ResponsePkgPost(mecmPackageId, 0, errMsg, "create server in progress"));
     }
 
-    public ResponseEntity<ResponseObject> getPkgDisAndInsStatus(RequestCheckBody checkBody, String access_token){
-
+    public ResponseEntity<ResponseOfStatus> getPkgDisAndInsStatus(RequestCheckBody checkBody, String access_token) {
+        String mecmPackageId = checkBody.getMecmPackageId();
+        List<MecMPackageDeploymentInfo> statusList = mecMDeploymentMapper.getMecMPkgDeploymentInfoByPkgId(mecmPackageId);
+/*        List<StatusResponseBody> resList = new LinkedList<>();
+        for (MecMPackageDeploymentInfo info:statusList) {
+            StatusResponseBody res = new StatusResponseBody();
+            res.setHostIp(info.getHostIp());
+            res.setRetCode();
+        }*/
+        return ResponseEntity.ok(ResponseOfStatus.builder().mecmPackageId(mecmPackageId).message("Query server success").
+                retCode(0).data(statusList).build());
     }
 
-    public ResponseEntity<ResponseObject> deletePackageDisAndInsStatus(RequestCheckBody checkBody, String access_token){
+    public ResponseEntity<ResponseOfStatus> deletePackageDisAndInsStatus(RequestCheckBody checkBody, String access_token) {
 
+        String mecmPackageId = checkBody.getMecmPackageId();
+        List<MecMPackageDeploymentInfo> statusList = mecMDeploymentMapper.getMecMPkgDeploymentInfoByPkgId(mecmPackageId);
+    //    String[] hostList = mecMPackageMapper.getMecMPkgInfoByPkgId(mecmPackageId).getHostIps().split(",");
+        Map<String, String> context = new HashMap<>();
+        context.put("apmServerAddress", apmServerAddress);
+        context.put("appoServerAddress", appoServerAddress);
+        context.put(ACCESS_TOKEN, access_token);
+        context.put(TENANT_ID, checkBody.getTenantId());
+        List<StatusResponseBody> dataList = new LinkedList<>();
+
+        for (MecMPackageDeploymentInfo deployment: statusList) {
+            String appInstanceId = deployment.getAppInstanceId();
+            String ip = deployment.getHostIp();
+            context.put(PACKAGE_ID,deployment.getAppIdFromApm());
+
+            mecmService.delay();
+            String res = deleteDeployment(appInstanceId,ip,context);
+
+           if (SUCCESS.equals(res)){
+               StatusResponseBody tmpRes= StatusResponseBody.builder().hostIp(ip).retCode(0).message("Delete server success").build();
+               dataList.add(tmpRes);
+           }else if(UNINSTANTIATE_APP_FAILED.equals(res)){
+               StatusResponseBody tmpRes= StatusResponseBody.builder().hostIp(ip).retCode(2).message("fail to delete instantiation").build();
+               dataList.add(tmpRes);
+           }else {
+               StatusResponseBody tmpRes= StatusResponseBody.builder().hostIp(ip).retCode(1).message("fail to delete package").build();
+               dataList.add(tmpRes);
+           }
+        }
+
+        return ResponseEntity.ok(ResponseOfStatus.builder().mecmPackageId(mecmPackageId).message("Delete server success").
+                retCode(0).data(dataList).build());
     }
 
 
@@ -234,6 +279,30 @@ public class MecmPackageServiceFacade {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * execute test case.
+     *
+     * @param context context info
+     * @return execute result
+     */
+    public String deleteDeployment(String appInstanceId, String hostIp, Map<String, String> context) {
+        mecmService.delay();
+        if (null == appInstanceId) {
+            LOGGER.info("appInstanceId is null, return success.");
+            return SUCCESS;
+        }
+        if (!mecmService.deleteAppInstance(appInstanceId, context)) {
+            return UNINSTANTIATE_APP_FAILED;
+        }
+        if (!mecmService.deleteEdgePackage(context, hostIp)) {
+            return DELETE_EDGE_PKG_FAILED;
+        }
+        if (!mecmService.deleteApmPackage(context)) {
+            return DELETE_APM_PKG_FAILED;
+        }
+        return SUCCESS;
     }
 
 
