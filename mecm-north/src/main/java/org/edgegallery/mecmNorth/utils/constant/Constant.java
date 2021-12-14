@@ -43,6 +43,28 @@ public interface Constant {
 
     String TENANT_ID = "tenantId";
 
+    String APP_INSTANCE_ID = "appInstanceId";
+
+    String APP_CLASS = "app_class";
+
+    String FAIL_TO_DISTRIBUTE_STATUS = "failed to distribute";
+
+    String UPLOADED_STATUS = "Uploaded";
+
+    String DISTRIBUTING_STATUS = "Distributing";
+
+    String DISTRIBUTED_STATUS = "Distributed";
+
+    String DISTRIBUTE_ERROR_STATUS = "Distribute Error";
+
+    String INSTANTIATING_STATUS = "Instantiating";
+
+    String INSTANTIATED_STATUS = "Instantiated";
+
+    String INSTANTIATE_ERROR_STATUS = "Instantiate Error";
+
+    String FINISHED_STATUS = "Finished";
+
     String DOT = ".";
 
     String COLON = ":";

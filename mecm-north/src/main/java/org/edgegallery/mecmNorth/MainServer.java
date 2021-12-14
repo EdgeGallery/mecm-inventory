@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -33,6 +35,7 @@ import javax.net.ssl.X509TrustManager;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @SpringBootApplication(scanBasePackages = "org.edgegallery.mecmNorth", exclude = {SecurityAutoConfiguration.class})
 @EnableScheduling
@@ -65,5 +68,19 @@ public class MainServer {
         HttpsURLConnection.setDefaultHostnameVerifier(NoopHostnameVerifier.INSTANCE);
         SpringApplication.run(MainServer.class, args);
 
+    }
+
+    /**
+     * taskScheduler.
+     *
+     * @return
+     */
+    @Bean
+    public TaskScheduler taskScheduler() {
+
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(10);
+        taskScheduler.initialize();
+        return taskScheduler;
     }
 }

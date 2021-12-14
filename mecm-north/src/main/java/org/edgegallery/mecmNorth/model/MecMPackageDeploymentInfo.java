@@ -40,5 +40,9 @@ public class MecMPackageDeploymentInfo {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "start_time")
+    private String startTime;
 
+    @Column(name = "params")
+    private String params;
 }

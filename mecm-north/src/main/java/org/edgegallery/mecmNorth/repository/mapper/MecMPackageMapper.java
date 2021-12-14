@@ -1,7 +1,7 @@
 package org.edgegallery.mecmNorth.repository.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.edgegallery.mecmNorth.repository.MecMPackageInfo;
+import org.edgegallery.mecmNorth.model.MecMPackageInfo;
 import org.springframework.stereotype.Component;
 
 @Component
