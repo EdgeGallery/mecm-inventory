@@ -17,10 +17,7 @@
 
 package org.edgegallery.mecmNorth.service;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.edgegallery.mecmNorth.domain.ResponseConst;
 import org.edgegallery.mecmNorth.utils.constant.Constant;
 import org.edgegallery.mecmNorth.utils.exception.AppException;
@@ -36,14 +33,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 @Service("mecmService")
 public class MecmService {
@@ -198,101 +190,6 @@ public class MecmService {
         return null;
     }
 
-    /**
-     * get package info from csar file.
-     *
-     * @param filePath file path
-     * @return package info
-     */
-    private Map<String, String> getPackageInfo(String filePath) {
-        Map<String, String> packageInfo = new HashMap<String, String>();
-        try (ZipFile zipFile = new ZipFile(filePath)) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                if (entry.getName().split("/").length == 1 && fileSuffixValidate("mf", entry.getName())) {
-                    analysizeMfFile(zipFile, entry, packageInfo);
-                }
-                if (2 == entry.getName().split("/").length && "SwImageDesc.json"
-                        .equals(entry.getName().substring(entry.getName().lastIndexOf("/") + 1))) {
-                    analysizeSwImageDescFile(zipFile, entry, packageInfo);
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error("getPackageInfo failed. {}", e.getMessage());
-        }
-        return packageInfo;
-    }
-
-    /**
-     * analysize SwImageDesc.json and get app info.
-     *
-     * @param zipFile     zipFile
-     * @param entry       entry
-     * @param packageInfo packageInfo
-     * @throws IOException IOException
-     */
-    private void analysizeSwImageDescFile(ZipFile zipFile, ZipEntry entry, Map<String, String> packageInfo)
-            throws IOException {
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(zipFile.getInputStream(entry), StandardCharsets.UTF_8))) {
-            String line = "";
-            StringBuffer fileContentFile = new StringBuffer();
-            while ((line = br.readLine()) != null) {
-                fileContentFile.append(line).append("\n");
-            }
-            JsonParser parser = new JsonParser();
-            JsonArray fileContent = parser.parse(fileContentFile.toString()).getAsJsonArray();
-            for (JsonElement element : fileContent) {
-                String architecture = null == element.getAsJsonObject().get("architecture")
-                        ? null
-                        : element.getAsJsonObject().get("architecture").getAsString();
-                packageInfo.put(ARCHITECTURE, architecture);
-            }
-        }
-    }
-
-    /**
-     * analysize mf file and get app info.
-     *
-     * @param zipFile     zipFile
-     * @param entry       entry
-     * @param packageInfo packageInfo
-     * @throws IOException IOException
-     */
-    private void analysizeMfFile(ZipFile zipFile, ZipEntry entry, Map<String, String> packageInfo) throws IOException {
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(zipFile.getInputStream(entry), StandardCharsets.UTF_8))) {
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                // prefix: path
-                if (line.trim().startsWith(APP_NAME)) {
-                    packageInfo.put(APP_NAME, line.split(":")[1].trim());
-                }
-                if (line.trim().startsWith(APP_VERSION)) {
-                    packageInfo.put(APP_VERSION, line.split(":")[1].trim());
-                }
-                if (line.trim().startsWith(PROVIDER_ID)) {
-                    packageInfo.put(PROVIDER_ID, line.split(":")[1].trim());
-                }
-                if (line.trim().startsWith(APP_CLASS)) {
-                    packageInfo.put(APP_CLASS, line.split(":")[1].trim());
-                }
-            }
-        }
-    }
-
-    /**
-     * validate fileName is .pattern.
-     *
-     * @param pattern  filePattern
-     * @param fileName fileName
-     * @return
-     */
-    private boolean fileSuffixValidate(String pattern, String fileName) {
-        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-        return null != suffix && "" != suffix && suffix.equals(pattern);
-    }
 
     /**
      * get all mecm hosts.
@@ -321,6 +218,243 @@ public class MecmService {
 
         return Collections.emptyList();
     }
+
+    /**
+     * get package from apm.
+     *
+     * @param context context
+     * @param packageId packageId
+     * @param hostIp hostIp
+     * @return
+     */
+    private boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        String url = context.get("apmServerAddress")
+                .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
+        LOGGER.warn("getApmPackage URL: " + url);
+
+        long startTime = System.currentTimeMillis();
+        while (true) {
+            try {
+                // time out limit
+                if ((System.currentTimeMillis() - startTime) > 180000) {
+                    LOGGER.error("get package {} from apm time out", packageId);
+                    return false;
+                }
+
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+                if (!HttpStatus.OK.equals(response.getStatusCode())) {
+                    LOGGER
+                            .error("get package from apm reponse failed. The status code is {}", response.getStatusCode());
+                    return false;
+                }
+
+                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
+                JsonArray mecHostInfo = jsonObject.get("mecHostInfo").getAsJsonArray();
+                for (JsonElement mecHost : mecHostInfo) {
+                    JsonObject mecHostObject = mecHost.getAsJsonObject();
+                    String status = mecHostObject.get("status").getAsString();
+                    String hostIpReq = mecHostObject.get("hostIp").getAsString();
+                    if (hostIp.equals(hostIpReq)) {
+                        LOGGER.info("status: {}", status);
+                        if ("Distributed".equalsIgnoreCase(status) || "uploaded".equalsIgnoreCase(status)) {
+                            return true;
+                        } else {
+                            if ("Error".equalsIgnoreCase(status)) {
+                                return false;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+                Thread.sleep(9000);
+            } catch (RestClientException e) {
+                LOGGER.error("Failed to get package from apm which packageId is {} exception {}", packageId,
+                        e.getMessage());
+                return false;
+            } catch (InterruptedException e) {
+                LOGGER.error("thead sleep exception.");
+                return false;
+            }
+        }
+    }
+
+    /**
+     * create app instance from appo.
+     *
+     * @param context context info
+     * @param appName appName
+     * @param hostIp mec host ip
+     * @return create app instance sucess or not.s
+     */
+    private String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("appInstanceDescription", UUID.randomUUID().toString());
+        body.put("appName", appName);
+        body.put("appPackageId", context.get(PACKAGE_ID));
+        body.put("appId", context.get(APP_ID));
+        body.put("mecHost", hostIp);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        headers.set(CONTENT_TYPE, APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        String url = context.get("appoServerAddress")
+                .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            LOGGER.info("response is: {}", response.getStatusCode());
+            if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
+                    .equals(response.getStatusCode())) {
+                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
+                JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
+                if (null != responseBody) {
+                    String appInstanceId = responseBody.get("app_instance_id").getAsString();
+                    LOGGER.info("appInstanceId: {}", appInstanceId);
+                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context,
+                            appInstanceId)) {
+                        if (getApplicationInstance(context, appInstanceId, INSTANTIATED)) {
+                            return appInstanceId;
+                        }
+                    }
+                    return null;
+                }
+            }
+        } catch (RestClientException e) {
+            LOGGER.error("Failed to create app instance from appo which appId is {} exception {}", context.get(APP_ID),
+                    e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * get application instance from appo.
+     *
+     * @param context context
+     * @param appInstanceId appInstanceId
+     * @param status status
+     * @return
+     */
+    private boolean getApplicationInstance(Map<String, String> context, String appInstanceId, String status) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        String url = context.get("appoServerAddress")
+                .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
+        LOGGER.warn("getApplicationInstance URL: " + url);
+
+        long startTime = System.currentTimeMillis();
+        while (true) {
+            try {
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+                if (!HttpStatus.OK.equals(response.getStatusCode())) {
+                    LOGGER.error("get application instance from appo reponse failed. The status code is {}",
+                            response.getStatusCode());
+                    return false;
+                }
+
+                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
+                JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
+                LOGGER.info("status: {}, operationalStatus: {}", status,
+                        responseBody.get("operationalStatus").getAsString());
+
+                String responseStatus = responseBody.get("operationalStatus").getAsString();
+                if ("Instantiation failed".equalsIgnoreCase(responseStatus) || "Create failed"
+                        .equalsIgnoreCase(responseStatus)) {
+                    LOGGER.error("instantiate or create app failed. The status  is {}", responseStatus);
+                    return false;
+                }
+
+                if (status.equalsIgnoreCase(responseStatus)) {
+                    LOGGER.info("{} is {}.", appInstanceId, status);
+                    break;
+                }
+
+                if ((System.currentTimeMillis() - startTime) > 40000) {
+                    LOGGER.error("get instance {} from appo time out", appInstanceId);
+                    return false;
+                }
+                Thread.sleep(5000);
+            } catch (RestClientException e) {
+                LOGGER.error("Failed to get application instance from appo which app_instance_id is {} exception {}",
+                        appInstanceId, e.getMessage());
+                return false;
+            } catch (InterruptedException e) {
+                LOGGER.error("thead sleep exception.");
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * instantiate application by appo.
+     *
+     * @param context context info.
+     * @param appInstanceId appInstanceId
+     * @return instantiate app successful
+     */
+    private boolean instantiateAppFromAppo(Map<String, String> context, String appInstanceId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        headers.set(CONTENT_TYPE, APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> request;
+        if (VM.equalsIgnoreCase(context.get(APP_CLASS))) {
+            Map<String, Object> body = new HashMap<String, Object>();
+            // if package is vm, need parameters body
+            LOGGER.info("package is vm.");
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            setBody(parameters, context);
+            body.put("parameters", parameters);
+            request = new HttpEntity<>(body, headers);
+        } else {
+            request = new HttpEntity<>(headers);
+        }
+
+        String url = context.get("appoServerAddress")
+                .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
+        LOGGER.info("instantiateAppFromAppo URL : {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+            if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
+                LOGGER.error("instantiate application from appo reponse failed. The status code is {}",
+                        response.getStatusCode());
+                return false;
+            }
+            LOGGER.info("instantiateAppFromAppo: {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("Failed to instantiate application from appo which app_instance_id is {} exception {}",
+                    appInstanceId, e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * set request parameters.
+     *
+     * @param body body
+     * @param context context
+     */
+    private void setBody(Map<String, Object> body, Map<String, String> context) {
+        String configParam = context.get("configParamList");
+        String[] configList = configParam.split(",");
+        for (String config : configList) {
+            String[] params = config.split(";");
+            for (String param : params) {
+                String[] configItem = param.split("=");
+                // param patter: key = value or key = ;
+                body.put(configItem[0].trim(), 1 == configItem.length ? "" : configItem[1].trim());
+            }
+        }
+    }
+
 
 
 }
