@@ -16,10 +16,11 @@
   ~
   -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.edgegallery.mecmNorth.repository.mapper.MecMDeploymentMapper">
-    <resultMap id="BaseResultMap" type="org.edgegallery.mecmNorth.repository.MecMPackageDeploymentInfo">
+<mapper namespace="org.edgegallery.mecmNorth.model.mapper.MecMDeploymentMapper">
+    <resultMap id="BaseResultMap" type="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="mecm_package_id" property="mecmPackageId" jdbcType="VARCHAR"/>
+        <result column="mecm_pkg_name" property="mecmPkgName" jdbcType="VARCHAR"/>
         <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
     </resultMap>
@@ -29,9 +30,10 @@
         , mecm_package_id, host_ip, status
     </sql>
 
-    <insert id="insertPkgDeploymentInfo" parameterType="org.edgegallery.mecmNorth.repository.MecMPackageDeploymentInfo">
-        insert into pkg_deployment_table (id, mecm_package_id, host_ip, status)
-        values (#{id,jdbcType=VARCHAR}, #{mecmPackageId,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR},
+    <insert id="insertPkgDeploymentInfo" parameterType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
+        insert into pkg_deployment_table (id, mecm_package_id, mecm_pkg_name, host_ip, status)
+        values (#{id,jdbcType=VARCHAR}, #{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR},
+                #{hostIp,jdbcType=VARCHAR},
                 #{status,jdbcType=VARCHAR})
     </insert>
 
@@ -42,9 +44,10 @@
     </delete>
 
     <update id="updateMecmPkgDeploymentInfo"
-            parameterType="org.edgegallery.mecmNorth.repository.MecMPackageDeploymentInfo">
+            parameterType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
         update pkg_deployment_table
         set mecm_package_id = #{mecmPkgId,jdbcType=VARCHAR},
+            mecm_pkg_name = #{mecmPkgName,jdbcType=VARCHAR},
             host_ip         = #{hostIp,jdbcType=VARCHAR},
             status          = #{status,jdbcType=VARCHAR}
         where id = #{id,jdbcType=VARCHAR}
