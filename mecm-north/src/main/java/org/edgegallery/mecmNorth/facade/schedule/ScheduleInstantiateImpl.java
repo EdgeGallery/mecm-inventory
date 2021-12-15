@@ -1,4 +1,4 @@
-package org.edgegallery.mecmNorth.facade.scheduleiml;
+package org.edgegallery.mecmNorth.facade.schedule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +36,7 @@ public class ScheduleInstantiateImpl {
 
     /**
      * Execute Instantiate.
+     *
      * @param subJob object of job
      */
     public void executeInstantiate(MecMPackageDeploymentInfo subJob) {
@@ -43,9 +44,7 @@ public class ScheduleInstantiateImpl {
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
 
-        MecMPackageInfo mecmPkg = mecMPackageMapper
-            .getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
-
+        MecMPackageInfo mecmPkg = mecMPackageMapper.getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
 
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
@@ -54,19 +53,20 @@ public class ScheduleInstantiateImpl {
         Map<String, Object> paramsMap = InitParamsUtil.handleParams(subJob.getParams());
 
         // instantiate original app
-        String appInstanceId = mecmService.createInstanceFromAppoOnce(context, subJob.getMecmPkgName(),
-            subJob.getHostIp(), paramsMap);
+        String appInstanceId = mecmService
+            .createInstanceFromAppoOnce(context, subJob.getMecmPkgName(), subJob.getHostIp(), paramsMap);
         context.put(Constant.APP_INSTANCE_ID, appInstanceId);
 
         MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
-            .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
-            .getHostIp()).statusCode(Constant.STATUS_INSTANTIATING).appInstanceId(appInstanceId).status(Constant
-            .INSTANTIATING_STATUS).build();
+            .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob.getHostIp())
+            .statusCode(Constant.STATUS_INSTANTIATING).appInstanceId(appInstanceId)
+            .status(Constant.INSTANTIATING_STATUS).build();
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
     }
 
     /**
      * Query Instantiate.
+     *
      * @param subJob object of job
      */
     public void queryInstantiate(MecMPackageDeploymentInfo subJob) {
@@ -74,8 +74,7 @@ public class ScheduleInstantiateImpl {
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
 
-        MecMPackageInfo mecmPkg = mecMPackageMapper
-            .getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
+        MecMPackageInfo mecmPkg = mecMPackageMapper.getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
 
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
@@ -89,16 +88,16 @@ public class ScheduleInstantiateImpl {
             LOGGER.error("Error happens when instantiating.");
             status = Constant.INSTANTIATE_ERROR_STATUS;
             infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
-                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
-                .getHostIp()).statusCode(Constant.STATUS_ERROR).appInstanceId(subJob.getAppInstanceId())
+                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
+                .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_ERROR).appInstanceId(subJob.getAppInstanceId())
                 .status(status).build();
         } else {
             LOGGER.error("package status finished. package id is: " + subJob.getMecmPackageId());
             status = Constant.FINISHED_STATUS;
             infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
-                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
-                .getHostIp()).statusCode(Constant.STATUS_FINISHED).appInstanceId(subJob.getAppInstanceId())
-                .status(status).build();
+                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
+                .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_FINISHED)
+                .appInstanceId(subJob.getAppInstanceId()).status(status).build();
         }
 
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
