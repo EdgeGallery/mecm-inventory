@@ -82,7 +82,7 @@ public class ScheduleDistributeImpl {
 
         MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
             mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
-            .getHostIp()).statusCode(5).status(Constant.DISTRIBUTING_STATUS).build();
+            .getHostIp()).statusCode(Constant.STATUS_DISTRIBUTING).status(Constant.DISTRIBUTING_STATUS).build();
 
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(info);
     }
@@ -106,16 +106,21 @@ public class ScheduleDistributeImpl {
         packageInfo.put(APP_NAME, mecmPkg.getMecmPkgName());
         packageInfo.put(APP_VERSION, mecmPkg.getMecmPkgVersion());
         // get distribution status from apm
-        String status = Constant.DISTRIBUTING_STATUS;
-        if (mecmService.getApmPackage(context, context.get(PACKAGE_ID), subJob.getHostIp())) {
-            status = Constant.DISTRIBUTED_STATUS;
+
+        MecMPackageDeploymentInfo infoGetFromApm;
+        String status = mecmService.getApmPackageOnce(context, context.get(PACKAGE_ID), subJob.getHostIp());
+        if (status.equals(Constant.DISTRIBUTED_STATUS)) {
             LOGGER.error("fail to distribute package, the mecm package id is:{}", subJob.getMecmPackageId());
             LOGGER.error("fail to distribute this package to ip:{}", subJob.getHostIp());
+            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
+                mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
+                .getHostIp()).statusCode(Constant.STATUS_DISTRIBUTED).status(Constant.DISTRIBUTED_STATUS).build();
+        } else {
+            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
+                mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
+                .getHostIp()).statusCode(Constant.STATUS_DISTRIBUTING).status(Constant.INSTANTIATING_STATUS).build();
         }
 
-        MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
-            mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
-            .getHostIp()).statusCode(5).status(Constant.INSTANTIATING_STATUS).build();
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
     }
 }

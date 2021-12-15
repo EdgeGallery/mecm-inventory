@@ -300,7 +300,7 @@ public class MecmService {
      * @param hostIp hostIp
      * @return
      */
-    public boolean getApmPackageOnce(Map<String, String> context, String packageId, String hostIp) {
+    public String getApmPackageOnce(Map<String, String> context, String packageId, String hostIp) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -308,14 +308,11 @@ public class MecmService {
             .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
         LOGGER.warn("getApmPackage URL: " + url);
 
-        long startTime = System.currentTimeMillis();
-
         try {
 
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
                 LOGGER.error("get package from apm reponse failed. The status code is {}", response.getStatusCode());
-                return false;
             }
 
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
@@ -327,22 +324,18 @@ public class MecmService {
                 if (hostIp.equals(hostIpReq)) {
                     LOGGER.info("status: {}", status);
                     if ("Distributed".equalsIgnoreCase(status) || "uploaded".equalsIgnoreCase(status)) {
-                        return true;
+                        return "Distributed";
                     } else {
-                        if ("Error".equalsIgnoreCase(status)) {
-                            return false;
-                        } else {
-                            break;
-                        }
+                        return status;
                     }
                 }
             }
         } catch (RestClientException e) {
             LOGGER
                 .error("Failed to get package from apm which packageId is {} exception {}", packageId, e.getMessage());
-            return false;
+            return "Error";
         }
-        return false;
+        return "";
     }
 
     /**

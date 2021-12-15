@@ -187,4 +187,16 @@ public interface Constant {
 
     String TEST_CASE_ID = "test case id";
 
+    int STATUS_ERROR = 1;
+
+    int STATUS_FINISHED = 0;
+
+    int STATUS_DISTRIBUTING = 2;
+
+    int STATUS_DISTRIBUTED = 3;
+
+    int STATUS_INSTANTIATING = 4;
+
+    int STATUS_INSTANTIATED = 5;
+
 }

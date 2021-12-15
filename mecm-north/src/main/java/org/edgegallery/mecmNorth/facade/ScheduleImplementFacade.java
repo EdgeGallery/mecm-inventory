@@ -50,6 +50,7 @@ public class ScheduleImplementFacade {
             if(subJob.getStatus().equals(Constant.DISTRIBUTED_STATUS)) {
                 scheduleInstantiate.executeInstatiate(subJob);
             }
+
             if(subJob.getStatus().equals(Constant.INSTANTIATING_STATUS)) {
                 scheduleInstantiate.queryInstantiate(subJob);
             }
