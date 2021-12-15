@@ -37,7 +37,10 @@ public class ScheduleDistributeImpl {
     @Value("${serveraddress.appo}")
     private String appoServerAddress;
 
-
+    /**
+     * Query Distribute status.
+     * @param subJob object of job
+     */
     public void queryDistribute(MecMPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
@@ -46,15 +49,9 @@ public class ScheduleDistributeImpl {
         MecMPackageInfo mecmPkg = mecMPackageMapper
             .getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
 
-
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
-
-
-        Map<String, String> packageInfo = new HashMap<>();
-        packageInfo.put(APP_NAME, mecmPkg.getMecmPkgName());
-        packageInfo.put(APP_VERSION, mecmPkg.getMecmPkgVersion());
 
         MecMPackageDeploymentInfo infoGetFromApm;
         String status = mecmService.getApmPackageOnce(context, context.get(PACKAGE_ID), subJob.getHostIp());

@@ -36,7 +36,7 @@ public class ScheduleInstantiateImpl {
 
     /**
      * Execute Instantiate.
-     * @param subJob
+     * @param subJob object of job
      */
     public void executeInstantiate(MecMPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
@@ -54,8 +54,8 @@ public class ScheduleInstantiateImpl {
         Map<String, Object> paramsMap = InitParamsUtil.handleParams(subJob.getParams());
 
         // instantiate original app
-        String appInstanceId = mecmService.createInstanceFromAppoOnce(context, subJob.getMecmPkgName()
-            , subJob.getHostIp(), paramsMap);
+        String appInstanceId = mecmService.createInstanceFromAppoOnce(context, subJob.getMecmPkgName(),
+            subJob.getHostIp(), paramsMap);
         context.put(Constant.APP_INSTANCE_ID, appInstanceId);
 
         MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
@@ -66,8 +66,8 @@ public class ScheduleInstantiateImpl {
     }
 
     /**
-     * queryInstantiate.
-     * @param subJob
+     * Query Instantiate.
+     * @param subJob object of job
      */
     public void queryInstantiate(MecMPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
