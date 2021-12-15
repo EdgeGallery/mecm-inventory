@@ -45,47 +45,6 @@ public class ScheduleDistributeImpl {
     @Value("${serveraddress.appo}")
     private String appoServerAddress;
 
-    public void executeDistribute(MecMPackageDeploymentInfo subJob) {
-
-        String saveFilePath = mecmService.getPackageFile(subJob.getMecmPackageId());
-        Map<String, String> context = new HashMap<>();
-        context.put("apmServerAddress", apmServerAddress);
-        context.put("appoServerAddress", appoServerAddress);
-
-        MecMPackageInfo mecmPkg = mecMPackageMapper
-            .getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
-
-
-        context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
-        context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
-        context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
-
-
-        Map<String, String> packageInfo = new HashMap<>();
-        packageInfo.put(APP_NAME, mecmPkg.getMecmPkgName());
-        packageInfo.put(APP_VERSION, mecmPkg.getMecmPkgVersion());
-
-        ResponseEntity<String> response = mecmService.uploadFileToAPM(saveFilePath, context, subJob.getHostIp()
-            , packageInfo);
-        if (null == response || !(HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
-            .equals(response.getStatusCode()))) {
-            LOGGER.error("fail to upload file with ip: " + subJob.getHostIp());
-            LOGGER.error("uploadFileToAPM failed to , response: {}", response);
-            MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
-                mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
-                .getHostIp()).statusCode(5).status(Constant.FAIL_TO_DISTRIBUTE_STATUS).build();
-            mecMDeploymentMapper.insertPkgDeploymentInfo(info);
-        }
-        JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
-        String appIdFromApm = jsonObject.get("appId").getAsString();
-        String appPkgIdFromApm = jsonObject.get("appPackageId").getAsString();
-
-        MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
-            mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
-            .getHostIp()).statusCode(Constant.STATUS_DISTRIBUTING).status(Constant.DISTRIBUTING_STATUS).build();
-
-        mecMDeploymentMapper.updateMecmPkgDeploymentInfo(info);
-    }
 
     public void queryDistribute(MecMPackageDeploymentInfo subJob) {
         String saveFilePath = mecmService.getPackageFile(subJob.getMecmPackageId());

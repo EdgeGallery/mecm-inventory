@@ -15,13 +15,31 @@
 
 package org.edgegallery.mecmNorth.facade;
 
+import static org.edgegallery.mecmNorth.utils.constant.Constant.ACCESS_TOKEN;
+import static org.edgegallery.mecmNorth.utils.constant.Constant.APP_NAME;
+import static org.edgegallery.mecmNorth.utils.constant.Constant.APP_VERSION;
+import static org.edgegallery.mecmNorth.utils.constant.Constant.PACKAGE_ID;
+import static org.edgegallery.mecmNorth.utils.constant.Constant.STATUS_DISTRIBUTING;
+import static org.edgegallery.mecmNorth.utils.constant.Constant.STATUS_ERROR;
+import static org.edgegallery.mecmNorth.utils.constant.Constant.SUCCESS;
+import static org.edgegallery.mecmNorth.utils.constant.Constant.TENANT_ID;
+
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import javax.json.Json;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
-import org.edgegallery.mecmNorth.controller.advice.*;
+import org.edgegallery.mecmNorth.controller.advice.RequestCheckBody;
+import org.edgegallery.mecmNorth.controller.advice.RequestPkgBody;
+import org.edgegallery.mecmNorth.controller.advice.ResponseOfStatus;
+import org.edgegallery.mecmNorth.controller.advice.ResponsePkgPost;
+import org.edgegallery.mecmNorth.controller.advice.StatusResponseBody;
 import org.edgegallery.mecmNorth.domain.ResponseConst;
 import org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo;
 import org.edgegallery.mecmNorth.model.MecMPackageInfo;
@@ -37,10 +55,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.*;
-
-import static org.edgegallery.mecmNorth.utils.constant.Constant.*;
 
 @Service("MecmPackageServiceFacade")
 public class MecmPackageServiceFacade {
@@ -109,8 +123,8 @@ public class MecmPackageServiceFacade {
         String saveFilePath = mecmService.saveFileToLocal(pkgBody.getFile(), mecmPackageId);
 
         MecMPackageInfo mecMPackageInfo = MecMPackageInfo.builder().mecmPackageId(mecmPackageId).
-                mecmPkgName(pkgName).mecmPkgVersion(pkgVersion).mecmAppClass(appClass).tenantId(tenantId).
-                hostIps(listToIps(hostList)).status(DISTRIBUTING_STATUS).build();
+            mecmPkgName(pkgName).mecmPkgVersion(pkgVersion).mecmAppClass(appClass).tenantId(tenantId).
+            hostIps(listToIps(hostList)).status(DISTRIBUTING_STATUS).build();
 
         mecMPackageMapper.insertMecmPkgInfo(mecMPackageInfo);
         LOGGER.info("create package info in database");
@@ -118,7 +132,6 @@ public class MecmPackageServiceFacade {
         Map<String, String> packageInfo = new HashMap<>();
         packageInfo.put(APP_NAME, pkgName);
         packageInfo.put(APP_VERSION, pkgVersion);
-
 
         for (String ip : hostList) {
             String deploymentId = UUID.randomUUID().toString();
@@ -132,11 +145,11 @@ public class MecmPackageServiceFacade {
 
             ResponseEntity<String> response = mecmService.uploadFileToAPM(saveFilePath, context, ip, packageInfo);
             if (null == response || !(HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED
-                    .equals(response.getStatusCode()))) {
+                .equals(response.getStatusCode()))) {
                 LOGGER.error("fail to upload file with ip: " + ip);
                 LOGGER.error("uploadFileToAPM failed to , response: {}", response);
                 MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                        mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(5)
+                    mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(STATUS_ERROR)
                     .status(FAIL_TO_DISTRIBUTE_STATUS).params(obj.toJSONString()).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
             }
@@ -145,8 +158,9 @@ public class MecmPackageServiceFacade {
             String appPkgIdFromApm = jsonObject.get("appPackageId").getAsString();
 
             MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId).
-                    mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
-                    appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(0).status(DISTRIBUTING_STATUS).build();
+                mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm).
+                appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(STATUS_DISTRIBUTING).status(DISTRIBUTING_STATUS)
+                .build();
             mecMDeploymentMapper.insertPkgDeploymentInfo(info);
         }
 
