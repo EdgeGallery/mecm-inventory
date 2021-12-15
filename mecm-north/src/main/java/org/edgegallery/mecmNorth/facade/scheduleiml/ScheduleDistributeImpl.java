@@ -1,14 +1,8 @@
 package org.edgegallery.mecmNorth.facade.scheduleiml;
 
-import static org.edgegallery.mecmNorth.utils.constant.Constant.ACCESS_TOKEN;
 import static org.edgegallery.mecmNorth.utils.constant.Constant.APP_NAME;
 import static org.edgegallery.mecmNorth.utils.constant.Constant.APP_VERSION;
 import static org.edgegallery.mecmNorth.utils.constant.Constant.PACKAGE_ID;
-import static org.edgegallery.mecmNorth.utils.constant.Constant.TENANT_ID;
-
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.util.HashMap;
 import java.util.Map;
 import org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo;
@@ -21,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service("ScheduleDistributeImpl")
@@ -47,7 +39,6 @@ public class ScheduleDistributeImpl {
 
 
     public void queryDistribute(MecMPackageDeploymentInfo subJob) {
-        String saveFilePath = mecmService.getPackageFile(subJob.getMecmPackageId());
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
@@ -64,19 +55,18 @@ public class ScheduleDistributeImpl {
         Map<String, String> packageInfo = new HashMap<>();
         packageInfo.put(APP_NAME, mecmPkg.getMecmPkgName());
         packageInfo.put(APP_VERSION, mecmPkg.getMecmPkgVersion());
-        // get distribution status from apm
 
         MecMPackageDeploymentInfo infoGetFromApm;
         String status = mecmService.getApmPackageOnce(context, context.get(PACKAGE_ID), subJob.getHostIp());
         if (status.equals(Constant.DISTRIBUTED_STATUS)) {
             LOGGER.error("fail to distribute package, the mecm package id is:{}", subJob.getMecmPackageId());
             LOGGER.error("fail to distribute this package to ip:{}", subJob.getHostIp());
-            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
-                mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
+            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
+                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
                 .getHostIp()).statusCode(Constant.STATUS_DISTRIBUTED).status(Constant.DISTRIBUTED_STATUS).build();
         } else {
-            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId()).
-                mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
+            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
+                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob
                 .getHostIp()).statusCode(Constant.STATUS_DISTRIBUTING).status(Constant.INSTANTIATING_STATUS).build();
         }
 
