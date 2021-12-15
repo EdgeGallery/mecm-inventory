@@ -16,7 +16,7 @@
   ~
   -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.edgegallery.mecmNorth.model.mapper.MecMDeploymentMapper">
+<mapper namespace="org.edgegallery.mecmNorth.repository.mapper.MecMDeploymentMapper">
     <resultMap id="BaseResultMap" type="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="mecm_package_id" property="mecmPackageId" jdbcType="VARCHAR"/>
@@ -27,20 +27,23 @@
         <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
         <result column="status_code" property="statusCode" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="start_time" property="startTime" jdbcType="VARCHAR"/>
+        <result column="params" property="params" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Deployment_Column_List">
         id
-        , mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm, app_instance_id, host_ip,status_code, status
+        , mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm, app_instance_id,
+        host_ip,status_code, status, start_time, params
     </sql>
 
     <insert id="insertPkgDeploymentInfo" parameterType="org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo">
         insert into pkg_deployment_table (id, mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm,
-                                          app_instance_id, host_ip, status_code, status)
+                                          app_instance_id, host_ip, status_code, status, start_time, params)
         values (#{id,jdbcType=VARCHAR}, #{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR},
                 #{appIdFromApm,jdbcType=VARCHAR}, #{appPkgIdFromApm,jdbcType=VARCHAR},
                 #{appInstanceId,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR}, #{statusCode,jdbcType=INTEGER},
-                #{status,jdbcType=VARCHAR})
+                #{status,jdbcType=VARCHAR}, #{start_time,jdbcType=VARCHAR}, #{params,jdbcType=INTEGER})
     </insert>
 
     <delete id="deletePkgDeploymentInfoByPkgId" parameterType="String">
@@ -59,7 +62,9 @@
             app_instance_id     = #{appInstanceId,jdbcType=VARCHAR},
             host_ip             = #{hostIp,jdbcType=VARCHAR},
             status_code         = #{statusCode,jdbcType=INTEGER},
-            status              = #{status,jdbcType=VARCHAR}
+            status              = #{status,jdbcType=VARCHAR},
+            start_time          = #{start_time,jdbcType=VARCHAR},
+            params              = #{params,jdbcType=INTEGER}
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
