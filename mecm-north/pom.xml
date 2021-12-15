@@ -329,11 +329,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.70</version>
         </dependency>
-        <dependency>
-            <groupId>com.gitee.starblues</groupId>
-            <artifactId>springboot-plugin-framework</artifactId>
-            <version>2.4.0-RELEASE</version>
-        </dependency>
     </dependencies>
     <profiles>
         <profile>
