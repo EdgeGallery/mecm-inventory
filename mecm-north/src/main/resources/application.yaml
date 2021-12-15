@@ -21,7 +21,7 @@ servicecomb:
     registry:
       address: ${SC_ADDRESS}
   rest:
-    address: ${LISTEN_IP:0.0.0.0}:9527
+    address: ${LISTEN_IP:0.0.0.0}:8103
     servlet:
       urlPattern: /cse/*
   uploads:
@@ -30,9 +30,8 @@ servicecomb:
     maxSize: -1
   request:
     timeout: 18000000
-###pgsql config######
 server:
-  port: 9527
+  port: 8103
   ssl:
     enabled: ${SSL_ENABLED:false}
     key-store: ${SSL_KEY_STORE_PATH:}
@@ -40,6 +39,7 @@ server:
     key-store-type: ${SSL_KEY_STORE_TYPE:}
     key-alias: ${SSL_KEY_ALIAS:}
 spring:
+  ###pgsql config######
   datasource:
     url: jdbc:postgresql://${POSTGRES_IP:mecm-north-postgres-svc}:${POSTGRES_PORT:5432}/${POSTGRES_DB_NAME:mecmnorthdb}
     username: ${POSTGRES_USERNAME}
