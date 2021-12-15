@@ -39,9 +39,6 @@ public class ScheduleImplementFacade {
 
     private void executeJobs() {
         for(MecMPackageDeploymentInfo subJob: scheduleCache) {
-            if(subJob.getStatus().equals(Constant.UPLOADED_STATUS)) {
-                scheduleDistributeImpl.executeDistribute(subJob);
-            }
 
             if(subJob.getStatus().equals(Constant.DISTRIBUTING_STATUS)) {
                 scheduleDistributeImpl.queryDistribute(subJob);
