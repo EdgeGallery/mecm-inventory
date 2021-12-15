@@ -2,8 +2,8 @@ package org.edgegallery.mecmNorth.facade;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.edgegallery.mecmNorth.facade.scheduleiml.ScheduleDistributeImpl;
-import org.edgegallery.mecmNorth.facade.scheduleiml.ScheduleInstantiateImpl;
+import org.edgegallery.mecmNorth.facade.schedule.ScheduleDistributeImpl;
+import org.edgegallery.mecmNorth.facade.schedule.ScheduleInstantiateImpl;
 import org.edgegallery.mecmNorth.model.MecMPackageDeploymentInfo;
 import org.edgegallery.mecmNorth.repository.mapper.MecMDeploymentMapper;
 import org.edgegallery.mecmNorth.repository.mapper.MecMPackageMapper;
@@ -45,7 +45,7 @@ public class ScheduleImplementFacade {
             }
 
             if(subJob.getStatus().equals(Constant.DISTRIBUTED_STATUS)) {
-                scheduleInstantiate.executeInstatiate(subJob);
+                scheduleInstantiate.executeInstantiate(subJob);
             }
 
             if(subJob.getStatus().equals(Constant.INSTANTIATING_STATUS)) {
