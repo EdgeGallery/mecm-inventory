@@ -16,7 +16,7 @@
   ~
   -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.edgegallery.mecmNorth.model.mapper.MecMPackageMapper">
+<mapper namespace="org.edgegallery.mecmNorth.repository.mapper.MecMPackageMapper">
     <resultMap id="BaseResultMap" type="org.edgegallery.mecmNorth.model.MecMPackageInfo">
         <id column="mecm_package_id" property="mecmPackageId" jdbcType="VARCHAR"/>
         <result column="mecm_pkg_name" property="mecmPkgName" jdbcType="VARCHAR"/>
@@ -25,19 +25,20 @@
         <result column="tenant_id" property="tenantId" jdbcType="VARCHAR"/>
         <result column="host_ips" property="hostIps" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="token" property="token" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         mecm_package_id
-        , mecm_pkg_name, mecm_pkg_version,mecm_app_class, tenant_id, host_ips, status
+        , mecm_pkg_name, mecm_pkg_version,mecm_app_class, tenant_id, host_ips, status,token
     </sql>
 
     <insert id="insertMecmPkgInfo" parameterType="org.edgegallery.mecmNorth.model.MecMPackageInfo">
         insert into package_table (mecm_package_id, mecm_pkg_name, mecm_pkg_version, mecm_app_class, tenant_id,
-                                   host_ips, status)
+                                   host_ips, status, token)
         values (#{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR}, #{mecmPkgVersion,jdbcType=VARCHAR},
                 #{mecmAppClass,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, #{hostIps,jdbcType=VARCHAR},
-                #{status,jdbcType=VARCHAR})
+                #{status,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR})
     </insert>
 
     <delete id="deletePkgInfoByPkgId" parameterType="String">
@@ -53,7 +54,8 @@
             mecm_app_class   = #{mecmAppClass,jdbcType=VARCHAR},
             tenant_id        = #{tenantId,jdbcType=VARCHAR},
             host_ips         = #{hostIps,jdbcType=VARCHAR},
-            status           = #{status,jdbcType=VARCHAR}
+            status           = #{status,jdbcType=VARCHAR},
+            token            = #{token,jdbcType=VARCHAR}
         where mecm_package_id = #{mecmPkgId,jdbcType=VARCHAR}
     </update>
 
