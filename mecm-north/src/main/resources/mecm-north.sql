@@ -20,8 +20,6 @@ create table if not exists pkg_deployment_table (
     id varchar (100) default null,
     mecm_package_id varchar (100) default null,
     mecm_pkg_name varchar (100) default null,
-    mecm_package_id varchar (100) default null,
-    mecm_pkg_name varchar (100) default null,
     app_id_from_apm varchar (100) default null,
     app_pkg_id_from_apm varchar (100) default null,
     app_instance_id varchar (100) default null,
