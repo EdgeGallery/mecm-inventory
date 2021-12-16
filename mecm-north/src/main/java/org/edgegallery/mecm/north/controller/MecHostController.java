@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RestSchema(schemaId = "mecmHost")
-@RequestMapping("/mecm-north/v1")
+@RequestMapping("/north/v1")
 @Api(tags = {"MecM Host Controller"})
 @Validated
 public class MecHostController {
