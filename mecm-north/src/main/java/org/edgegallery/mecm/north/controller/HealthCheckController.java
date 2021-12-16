@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestSchema(schemaId = "health")
-@RequestMapping("/health")
+@RequestMapping("/north/v1/health")
 @Controller
 public class HealthCheckController {
 
