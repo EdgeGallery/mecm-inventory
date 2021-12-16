@@ -17,29 +17,38 @@
 package org.edgegallery.mecm.north.controller.advice;
 
 import java.util.Map;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
-
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Setter
 @Builder
-public class RequestPkgBody {
+@AllArgsConstructor
+@NoArgsConstructor
+public class AppInfo {
 
-    String appPkgName;
+    @Length(min = 1, max = 1024)
+    @NotNull
+    String pkgName;
 
-    String appPkgVersion;
+    @Length(min = 1, max = 1024)
+    @NotNull
+    String pkgVersion;
 
+    @Length(min = 1, max = 1024)
+    @NotNull
     String appClass;
 
-    MultipartFile file;
-
-    String hostList;
-
+    @Size(min = 1, max = 20)
+    @NotNull
     Map<String, Object> paramsMap;
 
-    String tenantId;
+
 
 }

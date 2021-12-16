@@ -105,7 +105,7 @@ public class MecmPackageServiceFacade {
 
         String pkgName = pkgBody.getAppPkgName();
         String pkgVersion = pkgBody.getAppPkgVersion();
-        String[] hostList = pkgBody.getHostList();
+        String[] hostList = pkgBody.getHostList().split(",");
         String appClass = pkgBody.getAppClass();
         Map<String, Object> paramsMap = pkgBody.getParamsMap();
         JSONObject obj = JSONObject.parseObject(JSON.toJSONString(paramsMap));
@@ -244,8 +244,8 @@ public class MecmPackageServiceFacade {
             return false;
         }
 
-        String[] hostList = pkgBody.getHostList();
-        if (hostList == null || hostList.length == 0) {
+        String hostList = pkgBody.getHostList();
+        if (hostList == null || hostList.length() == 0) {
             LOGGER.error("hostList is empty, check if hostList is right");
             return false;
         }
