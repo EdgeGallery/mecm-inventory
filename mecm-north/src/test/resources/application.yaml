@@ -10,54 +10,23 @@
 #  or implied. See the License for the specific language governing permissions and limitations under
 #  the License.
 
-servicecomb-config-order: 1
-APPLICATION_ID: edgegallery
-service_description:
-  name: mec-mecm-north
-  version: 1.0.0
-  environment: development
 servicecomb:
-  service:
-    registry:
-      address: ${SC_ADDRESS}
-  rest:
-    address: ${LISTEN_IP:0.0.0.0}:8103
-    servlet:
-      urlPattern: /cse/*
-  uploads:
-    directory: /usr/mecm-north/file/
-    #directory: c:\mecm-north
-    maxSize: -1
-  request:
-    timeout: 18000000
+  boot:
+    waitUp.timeoutInMilliseconds: 200
+
+###spring config######
 server:
   port: 8103
-  ssl:
-    enabled: ${SSL_ENABLED:false}
-    key-store: ${SSL_KEY_STORE_PATH:}
-    key-store-password: ${SSL_KEY_STORE_PASSWORD:}
-    key-store-type: ${SSL_KEY_STORE_TYPE:}
-    key-alias: ${SSL_KEY_ALIAS:}
+
 spring:
-  ###pgsql config######
   datasource:
-    url: jdbc:postgresql://${POSTGRES_IP:mecm-north-postgres-svc}:${POSTGRES_PORT:5432}/${POSTGRES_DB_NAME:mecmnorthdb}
-    username: ${POSTGRES_USERNAME}
-    password: ${POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-    initialization-mode: always
-   # schema: classpath:mecm-north.sql
-  #    data: classpath:mecm-north-data.sql
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username:
+    password:
+    driver-class-name: org.h2.Driver
+    schema: classpath:mecm-north-test.sql
   main:
     allow-bean-definition-overriding: true
-  servlet:
-    multipart:
-      max-file-size: 10GB
-      max-request-size: 10GB
-  jackson:
-    default-property-inclusion: non_null
-  resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${servicecomb.uploads.directory}
 
 ###mybtis####
 mybatis:
@@ -65,13 +34,14 @@ mybatis:
 
 client:
   client-id: ${CLIENT_ID:mecm-north}
-  client-secret: ${CLIENT_SECRET:}
+  client-secret: ${CLIENT_SECRET:mecm-north-secret}
 
 security:
   oauth2:
     resource:
       jwt:
-        key-uri: ${AUTH_SERVER_ADDRESS:http://user-mgmt-svc:8067}/oauth/token_key
+        key-value: test
+        key-uri: http://localhost:38067/oauth/token_key
 
 serveraddress:
   apm: ${APM_SERVER_ADDRESS:https://mecm-apm:8092}
