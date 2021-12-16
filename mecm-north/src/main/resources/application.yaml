@@ -17,6 +17,9 @@ service_description:
   version: 1.0.0
   environment: development
 servicecomb:
+    server:
+      http2:
+        useAlpnEnabled: false
   service:
     registry:
       address: ${SC_ADDRESS}
