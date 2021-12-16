@@ -81,15 +81,14 @@ public class MecMPackageController {
         @ApiResponse(code = 500, message = "resource grant error", response = String.class)
     })
     @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
-    public ResponseEntity<ResponsePkgPost> uploadAndInsPackge(
-        @Validated @RequestBody AppInfo appInfo,
+    public ResponseEntity<ResponsePkgPost> uploadAndInsPackge(@Validated @RequestBody AppInfo appInfo,
         @ApiParam(value = "file", required = true) @RequestPart("file") MultipartFile file,
         @ApiParam(value = "hostList", required = true) @RequestParam String hostList,
         @ApiParam(value = "tenantId") @PathVariable("tenantId") String tenantId, HttpServletRequest request) {
         LOGGER.info("begin to upload and instantiate package to MecM");
-        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appInfo.getPkgName()).
-                appPkgVersion(appInfo.getPkgVersion()).appClass(appInfo.getAppClass()).
-            file(file).hostList(hostList).paramsMap(appInfo.getParamsMap()).tenantId(tenantId).build();
+        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appInfo.getPkgName())
+            .appPkgVersion(appInfo.getPkgVersion()).appClass(appInfo.getAppClass()).file(file).hostList(hostList)
+            .paramsMap(appInfo.getParamsMap()).tenantId(tenantId).build();
         return mecmPackageServiceFacade.uploadAndInstantiatePkg(body, request.getHeader(Constant.ACCESS_TOKEN));
     }
 
