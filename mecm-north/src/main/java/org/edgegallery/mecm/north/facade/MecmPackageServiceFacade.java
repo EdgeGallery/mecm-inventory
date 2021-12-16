@@ -95,7 +95,7 @@ public class MecmPackageServiceFacade {
      * uploadAndInstantiatePkg.
      */
     public ResponseEntity<ResponsePkgPost> uploadAndInstantiatePkg(RequestPkgBody pkgBody, String accessToken) {
-
+        LOGGER.info("begin to upload and instantiate package in facade");
         if (!foreCheck(pkgBody)) {
             LOGGER.error("pkgBody has empty field, pls check pkgBody");
             ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_FAIL, null);
@@ -110,10 +110,11 @@ public class MecmPackageServiceFacade {
         Map<String, Object> paramsMap = pkgBody.getParamsMap();
         JSONObject obj = JSONObject.parseObject(JSON.toJSONString(paramsMap));
         String tenantId = pkgBody.getTenantId();
+        LOGGER.info("get package name is {}", pkgName);
 
         String mecmPackageId = UUID.randomUUID().toString();
         String saveFilePath = mecmService.saveFileToLocal(pkgBody.getFile(), mecmPackageId);
-
+        LOGGER.info("begin to upload and instantiate package in facade");
         MecMPackageInfo mecMPackageInfo = MecMPackageInfo.builder().mecmPackageId(mecmPackageId).mecmPkgName(pkgName)
             .mecmPkgVersion(pkgVersion).mecmAppClass(appClass).tenantId(tenantId).hostIps(listToIps(hostList))
             .status(DISTRIBUTING_STATUS).build();
