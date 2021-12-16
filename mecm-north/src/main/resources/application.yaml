@@ -33,27 +33,43 @@ servicecomb:
 server:
   port: 8103
   ssl:
-    enabled: ${SSL_ENABLED:false}
-    key-store: ${SSL_KEY_STORE_PATH:}
+    enabled: ${SSL_ENABLED:true}
+    protocol: TLS
+    enabled-Protocols: [ TLSv1.2 ]
+    ciphers: [ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 ]
+
+    # Keystore
+    key-store: ${SSL_KEY_STORE_PATH:/usr/app/ssl/keystore.p12}
     key-store-password: ${SSL_KEY_STORE_PASSWORD:}
-    key-store-type: ${SSL_KEY_STORE_TYPE:}
-    key-alias: ${SSL_KEY_ALIAS:}
+    key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}
+    key-alias: ${SSL_KEY_ALIAS:edgegallery}
+    trust-store: ${SSL_KEY_STORE_JKS_PATH:/usr/app/ssl/keystore.jks}
+    trust-store-password: ${SSL_TRUST_PASSWORD:}
 spring:
   ###pgsql config######
   datasource:
-    url: jdbc:postgresql://${POSTGRES_IP:mecm-north-postgres-svc}:${POSTGRES_PORT:5432}/${POSTGRES_DB_NAME:mecmnorthdb}
-    username: ${POSTGRES_USERNAME}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${NORTH_DB_HOST:mecm-postgres}:${NORTH_DB_PORT:5432}/${NORTH_DB:northdb}
+    username: ${NORTH_DB_USER:north}
+    password: ${NORTH_DB_PASSWORD:}
     driver-class-name: org.postgresql.Driver
     initialization-mode: always
-   # schema: classpath:mecm-north.sql
-  #    data: classpath:mecm-north-data.sql
+    schema: classpath:mecm-north.sql
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: validate
+    open-in-view: false
+
   main:
     allow-bean-definition-overriding: true
+
   servlet:
     multipart:
       max-file-size: 10GB
       max-request-size: 10GB
+
   jackson:
     default-property-inclusion: non_null
   resources:
@@ -67,6 +83,10 @@ client:
   client-id: ${CLIENT_ID:mecm-north}
   client-secret: ${CLIENT_SECRET:}
 
+repository:
+  appsource:
+    repo: ${SOURCE_REPOS:}
+
 security:
   oauth2:
     resource:
@@ -78,7 +98,3 @@ serveraddress:
   appo: ${APPO_SERVER_ADDRESS:https://mecm-appo:8091}
   inventory: ${INVENTORY_SERVER_ADDRESS:https://mecm-inventory:8093}
   appstore: ${APPSTORE_SERVER_ADDRESS:https://appstore-be-svc:8099}
-
-plugin:
-  runMode: dev
-  pluginPath: plugins

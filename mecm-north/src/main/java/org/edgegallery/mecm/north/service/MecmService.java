@@ -208,10 +208,13 @@ public class MecmService {
      * @return mecm host list
      */
     public List<Map<String, Object>> getAllMecmHosts(String token, String tenantId) {
+        LOGGER.info("enter mec host service side");
         HttpHeaders headers = new HttpHeaders();
         headers.set(Constant.ACCESS_TOKEN, token);
+        LOGGER.info("access token is: {}", token);
         HttpEntity<String> request = new HttpEntity<>(headers);
         String url = inventoryUrl.concat(String.format(MECM_URL_GET_MECHOSTS, tenantId));
+        LOGGER.info("query : {}", token);
         try {
             ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
