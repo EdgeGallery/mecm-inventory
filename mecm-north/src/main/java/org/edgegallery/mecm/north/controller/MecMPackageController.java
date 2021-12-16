@@ -22,10 +22,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
 import org.apache.servicecomb.provider.rest.common.RestSchema;
+import org.edgegallery.mecm.north.controller.advice.AppInfo;
 import org.edgegallery.mecm.north.controller.advice.RequestCheckBody;
 import org.edgegallery.mecm.north.controller.advice.RequestPkgBody;
 import org.edgegallery.mecm.north.controller.advice.ResponseOfStatus;
@@ -40,6 +40,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,11 +68,9 @@ public class MecMPackageController {
     /**
      * Upload and Instantiate package to MecM.
      *
-     * @param appPkgName appPkgName
-     * @param appPkgVersion appPkgVersion
+     * @param appInfo appPkgInfo
      * @param file package from appstore
      * @param hostList host list to upload and instantiate
-     * @param paramsMap paramsMap
      * @param tenantId path variable tenantId
      */
 
@@ -81,17 +81,14 @@ public class MecMPackageController {
         @ApiResponse(code = 500, message = "resource grant error", response = String.class)
     })
     @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
-    public ResponseEntity<ResponsePkgPost> uploadAndInsPackge(
-        @ApiParam(value = "appPkgName", required = true) @RequestParam("appPkgName") String appPkgName,
-        @ApiParam(value = "appPkgVersion", required = true) @RequestParam("appPkgVersion") String appPkgVersion,
-        @ApiParam(value = "appClass", required = true) @RequestParam("appClass") String appClass,
+    public ResponseEntity<ResponsePkgPost> uploadAndInsPackge(@Validated @RequestBody AppInfo appInfo,
         @ApiParam(value = "file", required = true) @RequestPart("file") MultipartFile file,
-        @ApiParam(value = "hostList", required = true) @RequestBody String[] hostList,
-        @ApiParam(value = "params", required = true) @RequestBody Map<String, Object> paramsMap,
+        @ApiParam(value = "hostList", required = true) @RequestParam String hostList,
         @ApiParam(value = "tenantId") @PathVariable("tenantId") String tenantId, HttpServletRequest request) {
         LOGGER.info("begin to upload and instantiate package to MecM");
-        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appPkgName).appPkgVersion(appPkgVersion)
-            .appClass(appClass).file(file).hostList(hostList).paramsMap(paramsMap).tenantId(tenantId).build();
+        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appInfo.getPkgName())
+            .appPkgVersion(appInfo.getPkgVersion()).appClass(appInfo.getAppClass()).file(file).hostList(hostList)
+            .paramsMap(appInfo.getParamsMap()).tenantId(tenantId).build();
         return mecmPackageServiceFacade.uploadAndInstantiatePkg(body, request.getHeader(Constant.ACCESS_TOKEN));
     }
 
@@ -102,7 +99,7 @@ public class MecMPackageController {
      * @param tenantId path variable tenantId
      */
 
-    @PostMapping(value = "/tenants/{tenantId}/packages/{mecmPackageId}", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(value = "/tenants/{tenantId}/packages/{mecmPackageId}", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "get package Upload and Instantiate status", response = ResponseOfStatus.class)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "microservice not found", response = String.class),
@@ -125,7 +122,7 @@ public class MecMPackageController {
      * @param tenantId path variable tenantId
      */
 
-    @PostMapping(value = "/tenants/{tenantId}/packages/{mecmPackageId}", produces = MediaType.APPLICATION_JSON)
+    @DeleteMapping(value = "/tenants/{tenantId}/packages/{mecmPackageId}", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "get package Upload and Instantiate status", response = ResponseOfStatus.class)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "microservice not found", response = String.class),

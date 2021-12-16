@@ -125,10 +125,10 @@ public class MecmService {
     @Value("${serveraddress.apm}")
     private String apmServerAddress;
 
-    @Value("${mecm.urls.appo}")
+    @Value("${serveraddress.appo}")
     private String appoUrl;
 
-    @Value("${mecm.urls.inventory}")
+    @Value("${serveraddress.inventory}")
     private String inventoryUrl;
 
     /**

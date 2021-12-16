@@ -38,7 +38,7 @@ RUN mkdir -p /usr/app/bin
 RUN apk update &&\
     apk add shadow &&\
     groupadd -r -g $GID $GROUP_NAME &&\
-    useradd -r -u $UID -g $GID -d $APP_HOME -s /sbin/nologin -c "Docker image user" $USER_NAME \
+    useradd -r -u $UID -g $GID -d $APP_HOME -s /sbin/nologin -c "Docker image user" $USER_NAME
 
 
 WORKDIR $APP_HOME
