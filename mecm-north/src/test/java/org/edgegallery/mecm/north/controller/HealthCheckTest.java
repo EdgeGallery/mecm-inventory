@@ -17,8 +17,7 @@
 
 package org.edgegallery.mecm.north.controller;
 
-/*
-@RunWith(SpringRunner.class)
+/*@RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationTest.class)
 @AutoConfigureMockMvc
 public class HealthCheckTest {

@@ -17,8 +17,7 @@
 
 package org.edgegallery.mecm.north;
 
-/*
-@SpringBootApplication(scanBasePackages = "org.edgegallery.mecm.north", exclude = {SecurityAutoConfiguration.class})
+/*@SpringBootApplication(scanBasePackages = "org.edgegallery.mecm.north", exclude = {SecurityAutoConfiguration.class})
 @MapperScan(basePackages = {"org.edgegallery.mecm.north.repository.mapper"})
 @EnableScheduling
 @EnableServiceComb
@@ -38,6 +37,5 @@ public class ApplicationTest {
             }
         };
     }
-}
-*/
+}*/
 
