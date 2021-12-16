@@ -21,7 +21,7 @@
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.edgegallery</groupId>
-    <artifactId>north-system</artifactId>
+    <artifactId>mecm-north</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <properties>
@@ -340,7 +340,7 @@
         </profile>
     </profiles>
     <build>
-        <finalName>north-system</finalName>
+        <finalName>mecm-north</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

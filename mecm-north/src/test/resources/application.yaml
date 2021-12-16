@@ -1,0 +1,84 @@
+#  Copyright 2021 Huawei Technologies Co., Ltd.
+# 
+#  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+#  in compliance with the License. You may obtain a copy of the License at
+# 
+#  http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software distributed under the License
+#  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+#  or implied. See the License for the specific language governing permissions and limitations under
+#  the License.
+
+servicecomb-config-order: 1
+APPLICATION_ID: edgegallery
+service_description:
+  name: mec-mecm-north
+  version: 1.0.0
+  environment: development
+servicecomb:
+  service:
+    registry:
+      address: ${SC_ADDRESS}
+  rest:
+    address: ${LISTEN_IP:0.0.0.0}:8103
+    servlet:
+      urlPattern: /cse/*
+  uploads:
+    directory: /usr/mecm-north/file/
+    #directory: c:\mecm-north
+    maxSize: -1
+  request:
+    timeout: 18000000
+server:
+  port: 8103
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+    key-store: ${SSL_KEY_STORE_PATH:}
+    key-store-password: ${SSL_KEY_STORE_PASSWORD:}
+    key-store-type: ${SSL_KEY_STORE_TYPE:}
+    key-alias: ${SSL_KEY_ALIAS:}
+spring:
+  ###pgsql config######
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_IP:mecm-north-postgres-svc}:${POSTGRES_PORT:5432}/${POSTGRES_DB_NAME:mecmnorthdb}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: always
+   # schema: classpath:mecm-north.sql
+  #    data: classpath:mecm-north-data.sql
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 10GB
+      max-request-size: 10GB
+  jackson:
+    default-property-inclusion: non_null
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${servicecomb.uploads.directory}
+
+###mybtis####
+mybatis:
+  mapper-locations: classpath:mybatis/sql/*.xml
+
+client:
+  client-id: ${CLIENT_ID:mecm-north}
+  client-secret: ${CLIENT_SECRET:}
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-uri: ${AUTH_SERVER_ADDRESS:http://user-mgmt-svc:8067}/oauth/token_key
+
+serveraddress:
+  apm: ${APM_SERVER_ADDRESS:https://mecm-apm:8092}
+  appo: ${APPO_SERVER_ADDRESS:https://mecm-appo:8091}
+  inventory: ${INVENTORY_SERVER_ADDRESS:https://mecm-inventory:8093}
+  appstore: ${APPSTORE_SERVER_ADDRESS:https://appstore-be-svc:8099}
+
+plugin:
+  runMode: dev
+  pluginPath: plugins
