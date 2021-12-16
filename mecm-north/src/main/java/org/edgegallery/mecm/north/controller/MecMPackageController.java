@@ -52,7 +52,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RestSchema(schemaId = "mecmPackage")
-@RequestMapping("/mecm-north/v1")
+@RequestMapping("/north/v1")
 @Api(tags = {"MecM Package Controller"})
 @Validated
 public class MecMPackageController {
