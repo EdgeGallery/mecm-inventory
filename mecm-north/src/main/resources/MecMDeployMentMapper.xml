@@ -43,7 +43,7 @@
         values (#{id,jdbcType=VARCHAR}, #{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR},
                 #{appIdFromApm,jdbcType=VARCHAR}, #{appPkgIdFromApm,jdbcType=VARCHAR},
                 #{appInstanceId,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR}, #{statusCode,jdbcType=INTEGER},
-                #{status,jdbcType=VARCHAR}, #{start_time,jdbcType=VARCHAR}, #{params,jdbcType=INTEGER})
+                #{status,jdbcType=VARCHAR}, (select now()), #{params,jdbcType=INTEGER})
     </insert>
 
     <delete id="deletePkgDeploymentInfoByPkgId" parameterType="String">
@@ -63,7 +63,6 @@
             host_ip             = #{hostIp,jdbcType=VARCHAR},
             status_code         = #{statusCode,jdbcType=INTEGER},
             status              = #{status,jdbcType=VARCHAR},
-            start_time          = #{start_time,jdbcType=VARCHAR},
             params              = #{params,jdbcType=INTEGER}
         where id = #{id,jdbcType=VARCHAR}
     </update>
