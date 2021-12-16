@@ -87,8 +87,9 @@ public class MecMPackageController {
         @ApiParam(value = "hostList", required = true) @RequestParam String hostList,
         @ApiParam(value = "tenantId") @PathVariable("tenantId") String tenantId, HttpServletRequest request) {
         LOGGER.info("begin to upload and instantiate package to MecM");
-        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appInfo.getPkgName()).appPkgVersion(appInfo.getPkgVersion())
-            .appClass(appInfo.getAppClass()).file(file).hostList(hostList).paramsMap(appInfo.getParamsMap()).tenantId(tenantId).build();
+        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appInfo.getPkgName()).
+                appPkgVersion(appInfo.getPkgVersion()).appClass(appInfo.getAppClass()).
+            file(file).hostList(hostList).paramsMap(appInfo.getParamsMap()).tenantId(tenantId).build();
         return mecmPackageServiceFacade.uploadAndInstantiatePkg(body, request.getHeader(Constant.ACCESS_TOKEN));
     }
 
