@@ -65,6 +65,8 @@ public interface Constant {
 
     String FINISHED_STATUS = "Finished";
 
+    String INVALID_ACCESS_TOKEN = "Invalid access token";
+
     String DOT = ".";
 
     String COLON = ":";
