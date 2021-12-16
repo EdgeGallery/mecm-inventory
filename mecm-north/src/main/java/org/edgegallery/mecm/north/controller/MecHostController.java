@@ -47,6 +47,8 @@ public class MecHostController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MecHostController.class);
 
+    private static final String AdminId = "39937079-99fe-4cd8-881f-04ca8c4fe09d";
+
     @Autowired
     private MecmHostServiceFacade mecmHostServiceFacade;
 
@@ -62,7 +64,7 @@ public class MecHostController {
     public ResponseEntity<ResponseObject> queryMecmHosts(HttpServletRequest httpServletRequest) {
         LOGGER.info("enter query mecm hosts.");
         return mecmHostServiceFacade.getAllMecmHosts((String) httpServletRequest.getAttribute(Constant.ACCESS_TOKEN),
-            (String) httpServletRequest.getAttribute(Constant.USER_ID));
+            AdminId);
     }
 
 }
