@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestSchema(schemaId = "health")
-@RequestMapping("/north/v1/health")
+@RequestMapping("/north/v1")
 @Controller
 public class HealthCheckController {
 
@@ -35,7 +35,7 @@ public class HealthCheckController {
      *
      * @return status code 200 when ready
      */
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "health check", response = String.class)
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("ok");
