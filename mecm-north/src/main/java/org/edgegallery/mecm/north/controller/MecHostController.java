@@ -63,7 +63,7 @@ public class MecHostController {
     @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
     public ResponseEntity<ResponseObject> queryMecmHosts(HttpServletRequest httpServletRequest) {
         LOGGER.info("enter query mecm hosts.");
-        return mecmHostServiceFacade.getAllMecmHosts((String) httpServletRequest.getAttribute(Constant.ACCESS_TOKEN),
+        return mecmHostServiceFacade.getAllMecmHosts(httpServletRequest.getHeader(Constant.ACCESS_TOKEN),
             AdminId);
     }
 

@@ -45,6 +45,8 @@ public class MecmHostServiceFacade {
      */
     public ResponseEntity<ResponseObject> getAllMecmHosts(String token, String userId) {
         LOGGER.info("get all mecm hosts.");
+        LOGGER.info("Facade side, token is {}",token);
+        LOGGER.info("Facade side, userId is {}",userId);
         List<Map<String, Object>> mecHostList = mecmService.getAllMecmHosts(token, userId);
         List<MecmHostDto> respDataDto = mecHostList.stream().map(MecmHostDto::fromMap).collect(Collectors.toList());
         ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
