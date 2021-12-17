@@ -37,9 +37,9 @@
     <insert id="insertMecmPkgInfo" parameterType="org.edgegallery.mecm.north.model.MecMPackageInfo">
         insert into package_table (mecm_package_id, mecm_pkg_name, mecm_pkg_version, mecm_app_class, tenant_id,
                                    host_ips, status, token, save_file_path)
-        values (#{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR}, #{mecmPkgVersion,jdbcType=VARCHAR},
-                #{mecmAppClass,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, #{hostIps,jdbcType=VARCHAR},
-                #{status,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, #{saveFilePath,jdbcType=VARCHAR})
+        values (#{mecmPackageId}, #{mecmPkgName}, #{mecmPkgVersion},
+                #{mecmAppClass}, #{tenantId}, #{hostIps},
+                #{status}, #{token}, #{saveFilePath})
     </insert>
 
     <delete id="deletePkgInfoByPkgId" parameterType="String">
