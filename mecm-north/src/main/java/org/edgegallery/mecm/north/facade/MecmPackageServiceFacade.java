@@ -107,7 +107,7 @@ public class MecmPackageServiceFacade {
         String appClass = pkgBody.getAppClass();
         //String[] paramsMap = pkgBody.getParameters().split(";");
         String parameters = pkgBody.getParameters();
-       // JSONObject obj = JSONObject.parseObject(parameters);
+        // JSONObject obj = JSONObject.parseObject(parameters);
         String tenantId = pkgBody.getTenantId();
         LOGGER.info("get package name is {}", pkgName);
 
