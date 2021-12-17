@@ -15,8 +15,6 @@
 
 package org.edgegallery.mecm.north.facade;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.HashMap;
@@ -107,8 +105,9 @@ public class MecmPackageServiceFacade {
         String pkgVersion = pkgBody.getAppPkgVersion();
         String[] hostList = pkgBody.getHostList().split(";");
         String appClass = pkgBody.getAppClass();
-        String[] paramsMap = pkgBody.getParameters().split(";");
-        JSONObject obj = JSONObject.parseObject(JSON.toJSONString(paramsMap));
+        //String[] paramsMap = pkgBody.getParameters().split(";");
+        String parameters = pkgBody.getParameters();
+       // JSONObject obj = JSONObject.parseObject(parameters);
         String tenantId = pkgBody.getTenantId();
         LOGGER.info("get package name is {}", pkgName);
 
@@ -149,7 +148,7 @@ public class MecmPackageServiceFacade {
                 LOGGER.error("uploadFileToAPM failed to , response: {}", response);
                 MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId)
                     .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(Constant.STATUS_ERROR)
-                    .status(FAIL_TO_DISTRIBUTE_STATUS).params(obj.toJSONString()).build();
+                    .status(FAIL_TO_DISTRIBUTE_STATUS).params(parameters).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
             }
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
