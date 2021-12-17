@@ -39,7 +39,7 @@ create table if not exists package_table (
     tenant_id varchar (100) default null,
     host_ips varchar (100) default null,
     status varchar (100) default null,
-    token varchar (100) default null,
+    token text default null,
     save_file_path varchar (100) default null,
     CONSTRAINT package_table_pkey PRIMARY KEY (mecm_package_id)
     );
