@@ -26,6 +26,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.servicecomb.springboot2.starter.EnableServiceComb;
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -37,6 +38,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @SpringBootApplication(scanBasePackages = "org.edgegallery.mecm.north", exclude = {SecurityAutoConfiguration.class})
+@MapperScan(basePackages = {"org.edgegallery.mecm.north.repository.mapper"})
 @EnableScheduling
 @EnableServiceComb
 public class MainServer {
