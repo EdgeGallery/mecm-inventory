@@ -48,7 +48,4 @@ public class AppInfo {
     @Size(min = 1, max = 20)
     @NotNull
     Map<String, Object> paramsMap;
-
-
-
 }

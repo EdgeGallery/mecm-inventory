@@ -105,19 +105,20 @@ public class MecmPackageServiceFacade {
 
         String pkgName = pkgBody.getAppPkgName();
         String pkgVersion = pkgBody.getAppPkgVersion();
-        String[] hostList = pkgBody.getHostList().split(",");
+        String[] hostList = pkgBody.getHostList().split(";");
         String appClass = pkgBody.getAppClass();
-        Map<String, Object> paramsMap = pkgBody.getParamsMap();
+        String[] paramsMap = pkgBody.getParameters().split(";");
         JSONObject obj = JSONObject.parseObject(JSON.toJSONString(paramsMap));
         String tenantId = pkgBody.getTenantId();
         LOGGER.info("get package name is {}", pkgName);
 
         String mecmPackageId = UUID.randomUUID().toString();
         String saveFilePath = mecmService.saveFileToLocal(pkgBody.getFile(), mecmPackageId);
+        LOGGER.info("save file path is {}", saveFilePath);
         LOGGER.info("begin to upload and instantiate package in facade");
         MecMPackageInfo mecMPackageInfo = MecMPackageInfo.builder().mecmPackageId(mecmPackageId).mecmPkgName(pkgName)
             .mecmPkgVersion(pkgVersion).mecmAppClass(appClass).tenantId(tenantId).hostIps(listToIps(hostList))
-            .status(DISTRIBUTING_STATUS).build();
+            .status(DISTRIBUTING_STATUS).saveFilePath(saveFilePath).build();
 
         mecMPackageMapper.insertMecmPkgInfo(mecMPackageInfo);
         LOGGER.info("create package info in database");
@@ -252,13 +253,18 @@ public class MecmPackageServiceFacade {
             LOGGER.error("pkgName is empty, check if pkgName is right");
             return false;
         }
+
         if (StringUtils.isEmpty(pkgBody.getAppPkgVersion())) {
             LOGGER.error("pkgVersion is empty, check if pkgVersion is right");
             return false;
         }
 
-        String hostList = pkgBody.getHostList();
-        if (hostList == null || hostList.length() == 0) {
+        if (StringUtils.isEmpty(pkgBody.getAppClass())) {
+            LOGGER.error("AppClass is empty, check if AppClass is right");
+            return false;
+        }
+
+        if (StringUtils.isEmpty(pkgBody.getHostList())) {
             LOGGER.error("hostList is empty, check if hostList is right");
             return false;
         }
@@ -273,9 +279,8 @@ public class MecmPackageServiceFacade {
             return false;
         }
 
-        Map<String, Object> paramsMap = pkgBody.getParamsMap();
-        if (paramsMap == null || paramsMap.size() == 0) {
-            LOGGER.warn("paramsMap is empty, check if paramsMap is right");
+        if (StringUtils.isEmpty(pkgBody.getParameters())) {
+            LOGGER.warn("Parameters is empty, check if paramsMap is right");
         }
         return true;
     }

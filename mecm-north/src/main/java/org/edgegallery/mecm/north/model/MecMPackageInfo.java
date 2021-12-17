@@ -52,4 +52,7 @@ public class MecMPackageInfo {
     @Column(name = "token")
     private String token;
 
+    @Column(name = "save_file_path")
+    private String saveFilePath;
+
 }

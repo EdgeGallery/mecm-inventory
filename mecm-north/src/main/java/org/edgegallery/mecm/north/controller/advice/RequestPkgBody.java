@@ -16,7 +16,6 @@
 
 package org.edgegallery.mecm.north.controller.advice;
 
-import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +37,7 @@ public class RequestPkgBody {
 
     String hostList;
 
-    Map<String, Object> paramsMap;
+    String parameters;
 
     String tenantId;
 
