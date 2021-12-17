@@ -46,7 +46,7 @@ public class HealthCheckTest {
     @Test
     public void testHealthCheck() throws Exception {
         MvcResult mvcResultQueryAll = mvc.perform(
-            MockMvcRequestBuilders.get("/health").contentType(MediaType.APPLICATION_JSON_VALUE).with(csrf())
+            MockMvcRequestBuilders.get("/north/v1/health").contentType(MediaType.APPLICATION_JSON_VALUE).with(csrf())
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         int resultQueryAll = mvcResultQueryAll.getResponse().getStatus();
         assertEquals(200, resultQueryAll);
