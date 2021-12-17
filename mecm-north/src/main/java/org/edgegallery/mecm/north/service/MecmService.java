@@ -214,7 +214,7 @@ public class MecmService {
         LOGGER.info("access token is: {}", token);
         HttpEntity<String> request = new HttpEntity<>(headers);
         String url = inventoryUrl.concat(String.format(MECM_URL_GET_MECHOSTS, tenantId));
-        LOGGER.info("query : {}", token);
+        LOGGER.info("mecm service side query token is : {}", token);
         try {
             ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
