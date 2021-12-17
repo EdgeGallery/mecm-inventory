@@ -115,10 +115,10 @@ public class MecmPackageServiceFacade {
         String saveFilePath = mecmService.saveFileToLocal(pkgBody.getFile(), mecmPackageId);
         LOGGER.info("save file path is {}", saveFilePath);
         LOGGER.info("begin to upload and instantiate package in facade");
+
         MecMPackageInfo mecMPackageInfo = MecMPackageInfo.builder().mecmPackageId(mecmPackageId).mecmPkgName(pkgName)
             .mecmPkgVersion(pkgVersion).mecmAppClass(appClass).tenantId(tenantId).hostIps(listToIps(hostList))
-            .status(DISTRIBUTING_STATUS).saveFilePath(saveFilePath).build();
-
+            .status(DISTRIBUTING_STATUS).token(accessToken).saveFilePath(saveFilePath).build();
         mecMPackageMapper.insertMecmPkgInfo(mecMPackageInfo);
         LOGGER.info("create package info in database");
 
