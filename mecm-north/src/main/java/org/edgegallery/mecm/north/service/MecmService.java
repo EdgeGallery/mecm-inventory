@@ -117,7 +117,7 @@ public class MecmService {
 
     private static final String ARCHITECTURE = "app_architecture";
 
-    private static final String LOCAL_FILE_PATH = "/user/mecm-north/";
+    private static final String LOCAL_FILE_PATH = "/usr/mecm-north/";
 
     private static final String VM = "vm";
 
@@ -163,7 +163,7 @@ public class MecmService {
             return null;
         }
         LOGGER.info("upload file success {}", fileName);
-        return LOCAL_FILE_PATH + mecmPackageId + "/" + fileName;
+        return InitConfigUtil.getWorkSpaceBaseDir() + LOCAL_FILE_PATH + mecmPackageId + "/" + fileName;
     }
 
     /**

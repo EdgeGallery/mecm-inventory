@@ -64,7 +64,8 @@ public class ScheduleInstantiateImpl {
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
-
+        context.put(Constant.PACKAGE_ID, subJob.getAppPkgIdFromApm());
+        context.put(Constant.APP_ID, subJob.getAppIdFromApm());
         Map<String, Object> paramsMap = InitParamsUtil.handleParams(subJob.getParams());
 
         // instantiate original app
@@ -72,10 +73,15 @@ public class ScheduleInstantiateImpl {
             subJob.getHostIp(), paramsMap);
         context.put(Constant.APP_INSTANCE_ID, appInstanceId);
 
+
         MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
-            .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).hostIp(subJob.getHostIp())
+            .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
+                .getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm()).startTime(subJob.getStartTime())
+            .hostIp(subJob.getHostIp())
             .statusCode(Constant.STATUS_INSTANTIATING).appInstanceId(appInstanceId)
             .status(Constant.INSTANTIATING_STATUS).build();
+        subJob.setStatus(Constant.INSTANTIATING_STATUS);
+        subJob.setStatusCode(Constant.STATUS_INSTANTIATING);
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
     }
 

@@ -66,14 +66,17 @@ public class ScheduleDistributeImpl {
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
 
         MecMPackageDeploymentInfo infoGetFromApm;
-        String status = mecmService.getApmPackageOnce(context, context.get(Constant.PACKAGE_ID), subJob.getHostIp());
+        String status = mecmService.getApmPackageOnce(context, subJob.getAppPkgIdFromApm(), subJob.getHostIp());
         if (status.equals(Constant.DISTRIBUTED_STATUS)) {
             LOGGER.error("fail to distribute package, the mecm package id is:{}", subJob.getMecmPackageId());
             LOGGER.error("fail to distribute this package to ip:{}", subJob.getHostIp());
             infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
-                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
+                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
+                    .getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm()).startTime(subJob.getStartTime())
                 .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTED).status(Constant.DISTRIBUTED_STATUS)
                 .build();
+            subJob.setStatus(Constant.DISTRIBUTED_STATUS);
+            subJob.setStatusCode(Constant.STATUS_DISTRIBUTED);
         } else {
             infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())

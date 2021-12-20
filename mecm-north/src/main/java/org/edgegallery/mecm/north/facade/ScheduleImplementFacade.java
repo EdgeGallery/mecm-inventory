@@ -18,7 +18,9 @@
 package org.edgegallery.mecm.north.facade;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleDistributeImpl;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleInstantiateImpl;
 import org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo;
@@ -82,15 +84,19 @@ public class ScheduleImplementFacade {
 
     private void addToCache(List<MecMPackageDeploymentInfo> runningJobs) {
         for (MecMPackageDeploymentInfo item : runningJobs) {
-            if (checkIfContains(item)) {
+            if (!checkIfContains(item)) {
                 scheduleCache.add(item);
             }
         }
     }
 
     private boolean checkIfContains(MecMPackageDeploymentInfo item) {
-        for (MecMPackageDeploymentInfo subJob : scheduleCache) {
-            if (subJob.getAppIdFromApm().equals(item.getAppIdFromApm())) {
+        Iterator<MecMPackageDeploymentInfo> it = scheduleCache.iterator();
+        while (it.hasNext()) {
+            if(StringUtils.isEmpty(item.getAppIdFromApm())){
+                return false;
+            }
+            if (it.next().getAppIdFromApm().equals(item.getAppIdFromApm())) {
                 return true;
             }
         }
