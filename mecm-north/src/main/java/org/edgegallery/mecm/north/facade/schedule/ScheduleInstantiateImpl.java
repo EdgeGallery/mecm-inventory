@@ -17,10 +17,10 @@ package org.edgegallery.mecm.north.facade.schedule;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo;
-import org.edgegallery.mecm.north.model.MecMPackageInfo;
-import org.edgegallery.mecm.north.repository.mapper.MecMDeploymentMapper;
-import org.edgegallery.mecm.north.repository.mapper.MecMPackageMapper;
+import org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo;
+import org.edgegallery.mecm.north.model.MecmPackageInfo;
+import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
+import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
 import org.edgegallery.mecm.north.service.MecmService;
 import org.edgegallery.mecm.north.utils.InitParamsUtil;
 import org.edgegallery.mecm.north.utils.constant.Constant;
@@ -38,10 +38,10 @@ public class ScheduleInstantiateImpl {
     private MecmService mecmService;
 
     @Autowired
-    private MecMPackageMapper mecMPackageMapper;
+    private MecmPackageMapper mecMPackageMapper;
 
     @Autowired
-    private MecMDeploymentMapper mecMDeploymentMapper;
+    private MecmDeploymentMapper mecMDeploymentMapper;
 
     @Value("${serveraddress.apm}")
     private String apmServerAddress;
@@ -54,12 +54,12 @@ public class ScheduleInstantiateImpl {
      *
      * @param subJob object of job
      */
-    public void executeInstantiate(MecMPackageDeploymentInfo subJob) {
+    public void executeInstantiate(MecmPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
 
-        MecMPackageInfo mecmPkg = mecMPackageMapper.getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
+        MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
 
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
@@ -74,7 +74,7 @@ public class ScheduleInstantiateImpl {
         context.put(Constant.APP_INSTANCE_ID, appInstanceId);
         LOGGER.info(" appInstanceId:{}", appInstanceId);
 
-        MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
+        MecmPackageDeploymentInfo infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
             .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
             .appIdFromApm(subJob.getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm())
             .startTime(subJob.getStartTime()).hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_INSTANTIATING)
@@ -90,12 +90,12 @@ public class ScheduleInstantiateImpl {
      *
      * @param subJob object of job
      */
-    public void queryInstantiate(MecMPackageDeploymentInfo subJob) {
+    public void queryInstantiate(MecmPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
 
-        MecMPackageInfo mecmPkg = mecMPackageMapper.getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
+        MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
 
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
@@ -119,7 +119,7 @@ public class ScheduleInstantiateImpl {
         LOGGER.info("after status:{}", status);
         LOGGER.info("after statusCode:{}", statusCode);
         LOGGER.info("package status finished. package id is: " + subJob.getMecmPackageId());
-        MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
+        MecmPackageDeploymentInfo infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
             .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
             .appIdFromApm(subJob.getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm())
             .startTime(subJob.getStartTime()).hostIp(subJob.getHostIp()).statusCode(statusCode)

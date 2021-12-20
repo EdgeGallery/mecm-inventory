@@ -53,7 +53,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/north/v1")
 @Api(tags = {"MecM Package Controller"})
 @Validated
-public class MecMPackageController {
+public class MecmPackageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MecHostController.class);
 

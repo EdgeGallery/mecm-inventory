@@ -25,7 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class MecMPackageInfo {
+public class MecmPackageInfo {
 
     @Id
     @Column(name = "mecm_package_id")
