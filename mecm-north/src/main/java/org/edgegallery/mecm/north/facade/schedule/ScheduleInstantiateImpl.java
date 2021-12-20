@@ -72,7 +72,7 @@ public class ScheduleInstantiateImpl {
         String appInstanceId = mecmService.createInstanceFromAppoOnce(context, subJob.getMecmPkgName(),
             subJob.getHostIp(), paramsMap);
         context.put(Constant.APP_INSTANCE_ID, appInstanceId);
-
+        LOGGER.info(" appInstanceId:{}", appInstanceId);
 
         MecmPackageDeploymentInfo infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
             .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
@@ -82,7 +82,7 @@ public class ScheduleInstantiateImpl {
             .status(Constant.INSTANTIATING_STATUS).build();
         subJob.setStatus(Constant.INSTANTIATING_STATUS);
         subJob.setStatusCode(Constant.STATUS_INSTANTIATING);
-        mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
+        subJob.setAppInstanceId(appInstanceId);
     }
 
     /**
@@ -106,16 +106,15 @@ public class ScheduleInstantiateImpl {
         String status = mecmService.getApplicationInstanceOnce(context, subJob.getAppInstanceId());
         MecmPackageDeploymentInfo infoGetFromApm;
         String statusStr = Constant.INSTANTIATE_ERROR_STATUS;
+        LOGGER.info("status:{}", status);
         int statusCode = Constant.STATUS_ERROR;
-        if(status.equals(Constant.INSTANTIATED_STATUS)) {
+        if (status.equals("Created")) {
             statusStr = Constant.FINISHED_STATUS;
             statusCode = Constant.STATUS_FINISHED;
-        }
-        if(status.equals(Constant.INSTANTIATING_STATUS)) {
+        } else if (status.equals("Creating")) {
             statusStr = Constant.INSTANTIATING_STATUS;
             statusCode = Constant.STATUS_INSTANTIATING;
-        }
-        if (!status.equals(Constant.INSTANTIATED_STATUS) && !status.equals(Constant.INSTANTIATING_STATUS)) {
+        } else {
             statusStr = Constant.INSTANTIATE_ERROR_STATUS;
             statusCode = Constant.STATUS_ERROR;
         }
