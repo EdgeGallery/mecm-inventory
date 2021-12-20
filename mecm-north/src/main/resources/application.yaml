@@ -77,7 +77,7 @@ spring:
 
 ###mybtis####
 mybatis:
-  mapper-locations: classpath:mybatis/sql/*.xml
+  mapper-locations: classpath:mybatis/*.xml
 
 client:
   client-id: ${CLIENT_ID:mecm-north}

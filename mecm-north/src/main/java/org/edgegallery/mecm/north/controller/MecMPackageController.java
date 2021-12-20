@@ -25,7 +25,6 @@ import io.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
 import org.apache.servicecomb.provider.rest.common.RestSchema;
-import org.edgegallery.mecm.north.controller.advice.AppInfo;
 import org.edgegallery.mecm.north.controller.advice.RequestCheckBody;
 import org.edgegallery.mecm.north.controller.advice.RequestPkgBody;
 import org.edgegallery.mecm.north.controller.advice.ResponseOfStatus;
@@ -44,7 +43,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -68,7 +66,10 @@ public class MecMPackageController {
     /**
      * Upload and Instantiate package to MecM.
      *
-     * @param appInfo appPkgInfo
+     * @param pkgName  package name from appstore
+     * @param pkgVersion package version from appstore
+     * @param appClass package class from appstore
+     * @param parameters package parameters from appstore
      * @param file package from appstore
      * @param hostList host list to upload and instantiate
      * @param tenantId path variable tenantId
@@ -81,14 +82,18 @@ public class MecMPackageController {
         @ApiResponse(code = 500, message = "resource grant error", response = String.class)
     })
     @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
-    public ResponseEntity<ResponsePkgPost> uploadAndInsPackge(@Validated @RequestBody AppInfo appInfo,
+    public ResponseEntity<ResponsePkgPost> uploadAndInsPackage(
         @ApiParam(value = "file", required = true) @RequestPart("file") MultipartFile file,
-        @ApiParam(value = "hostList", required = true) @RequestParam String hostList,
+        @ApiParam(value = "appPkgName", required = true) @RequestParam("appPkgName") String pkgName,
+        @ApiParam(value = "appPkgVersion", required = true) @RequestParam("appPkgVersion") String pkgVersion,
+        @ApiParam(value = "appClass", required = true) @RequestParam("appClass") String appClass,
+        @ApiParam(value = "parameters", required = true) @RequestParam("parameters") String parameters,
+        @ApiParam(value = "hostList", required = true) @RequestParam("hostList") String hostList,
         @ApiParam(value = "tenantId") @PathVariable("tenantId") String tenantId, HttpServletRequest request) {
         LOGGER.info("begin to upload and instantiate package to MecM");
-        RequestPkgBody body = RequestPkgBody.builder().appPkgName(appInfo.getPkgName())
-            .appPkgVersion(appInfo.getPkgVersion()).appClass(appInfo.getAppClass()).file(file).hostList(hostList)
-            .paramsMap(appInfo.getParamsMap()).tenantId(tenantId).build();
+        RequestPkgBody body = RequestPkgBody.builder().appPkgName(pkgName)
+            .appPkgVersion(pkgVersion).appClass(appClass).file(file).hostList(hostList)
+            .parameters(parameters).tenantId(tenantId).build();
         return mecmPackageServiceFacade.uploadAndInstantiatePkg(body, request.getHeader(Constant.ACCESS_TOKEN));
     }
 

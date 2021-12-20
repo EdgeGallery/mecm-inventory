@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.edgegallery.mecm.north.domain.ResponseConst;
+import org.edgegallery.mecm.north.utils.InitConfigUtil;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.edgegallery.mecm.north.utils.exception.AppException;
 import org.slf4j.Logger;
@@ -116,7 +117,7 @@ public class MecmService {
 
     private static final String ARCHITECTURE = "app_architecture";
 
-    private static final String LOCAL_FILE_PATH = "/usr/app/NorthSystem/";
+    private static final String LOCAL_FILE_PATH = "/usr/mecm-north/";
 
     private static final String VM = "vm";
 
@@ -139,7 +140,7 @@ public class MecmService {
      * @return save File Path
      */
     public String saveFileToLocal(MultipartFile uploadFile, String mecmPackageId) {
-        File filePath = new File(LOCAL_FILE_PATH + mecmPackageId + "/");
+        File filePath = new File(InitConfigUtil.getWorkSpaceBaseDir() + LOCAL_FILE_PATH + mecmPackageId + "/");
         if (!filePath.isDirectory()) {
             boolean isSuccess = filePath.mkdirs();
             if (!isSuccess) {
@@ -162,7 +163,7 @@ public class MecmService {
             return null;
         }
         LOGGER.info("upload file success {}", fileName);
-        return LOCAL_FILE_PATH + mecmPackageId + "/" + fileName;
+        return InitConfigUtil.getWorkSpaceBaseDir() + LOCAL_FILE_PATH + mecmPackageId + "/" + fileName;
     }
 
     /**

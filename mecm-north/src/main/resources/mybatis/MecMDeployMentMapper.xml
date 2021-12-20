@@ -49,13 +49,13 @@
     <delete id="deletePkgDeploymentInfoByPkgId" parameterType="String">
         delete
         from pkg_deployment_table
-        where mecm_package_id = #{mecmPkgId,jdbcType=VARCHAR}
+        where mecm_package_id = #{mecmPackageId,jdbcType=VARCHAR}
     </delete>
 
     <update id="updateMecmPkgDeploymentInfo"
             parameterType="org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo">
         update pkg_deployment_table
-        set mecm_package_id     = #{mecmPkgId,jdbcType=VARCHAR},
+        set mecm_package_id     = #{mecmPackageId,jdbcType=VARCHAR},
             mecm_pkg_name       = #{mecmPkgName,jdbcType=VARCHAR},
             app_id_from_apm     = #{appIdFromApm,jdbcType=VARCHAR},
             app_pkg_id_from_apm = #{appPkgIdFromApm,jdbcType=VARCHAR},
@@ -86,7 +86,7 @@
         select
         <include refid="Deployment_Column_List"/>
         from pkg_deployment_table
-        where mecm_package_id = #{mecmPkgId,jdbcType=VARCHAR}
+        where mecm_package_id = #{mecmPackageId,jdbcType=VARCHAR}
     </select>
 
 </mapper>

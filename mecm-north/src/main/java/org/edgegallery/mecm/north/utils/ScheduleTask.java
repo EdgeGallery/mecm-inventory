@@ -29,7 +29,7 @@ public class ScheduleTask {
     @Autowired
     private ScheduleImplementFacade scheduleImplementFacade;
 
-    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "30/30 * * * * ?")
     public void doScheduleTask() {
         scheduleImplementFacade.loadScheduleJobs();
     }

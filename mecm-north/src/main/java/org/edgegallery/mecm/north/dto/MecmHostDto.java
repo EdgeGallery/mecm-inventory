@@ -32,6 +32,10 @@ public class MecmHostDto {
 
     private String mechostCity;
 
+    private String vim;
+
+    private String affinity;
+
     /**
      * convert from data map.
      *
@@ -40,6 +44,7 @@ public class MecmHostDto {
      */
     public static MecmHostDto fromMap(Map<String, Object> mecHostInfoMap) {
         return new MecmHostDto((String) mecHostInfoMap.get("mechostIp"), (String) mecHostInfoMap.get("mechostName"),
-            (String) mecHostInfoMap.get("city"));
+            (String) mecHostInfoMap.get("city"), (String) mecHostInfoMap.get("vim"),
+            (String) mecHostInfoMap.get("affinity"));
     }
 }
