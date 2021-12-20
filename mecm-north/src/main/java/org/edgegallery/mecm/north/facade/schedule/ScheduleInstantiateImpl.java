@@ -105,21 +105,28 @@ public class ScheduleInstantiateImpl {
 
         String status = mecmService.getApplicationInstanceOnce(context, subJob.getAppInstanceId());
         MecMPackageDeploymentInfo infoGetFromApm;
-        if (!status.equals(Constant.INSTANTIATED_STATUS) && !status.equals(Constant.INSTANTIATING_STATUS)) {
-            LOGGER.error("Error happens when instantiating.");
-            status = Constant.INSTANTIATE_ERROR_STATUS;
-            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
-                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
-                .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_ERROR).appInstanceId(subJob.getAppInstanceId())
-                .status(status).build();
-        } else {
-            LOGGER.error("package status finished. package id is: " + subJob.getMecmPackageId());
-            status = Constant.FINISHED_STATUS;
-            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
-                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
-                .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_FINISHED)
-                .appInstanceId(subJob.getAppInstanceId()).status(status).build();
+        String statusStr = Constant.INSTANTIATE_ERROR_STATUS;
+        int statusCode = Constant.STATUS_ERROR;
+        if(status.equals(Constant.INSTANTIATED_STATUS)) {
+            statusStr = Constant.FINISHED_STATUS;
+            statusCode = Constant.STATUS_FINISHED;
         }
+        if(status.equals(Constant.INSTANTIATING_STATUS)) {
+            statusStr = Constant.INSTANTIATING_STATUS;
+            statusCode = Constant.STATUS_INSTANTIATING;
+        }
+        if (!status.equals(Constant.INSTANTIATED_STATUS) && !status.equals(Constant.INSTANTIATING_STATUS)) {
+            statusStr = Constant.INSTANTIATE_ERROR_STATUS;
+            statusCode = Constant.STATUS_ERROR;
+        }
+        LOGGER.error("package status finished. package id is: " + subJob.getMecmPackageId());
+        infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
+            .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
+                .getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm()).startTime(subJob.getStartTime())
+            .hostIp(subJob.getHostIp()).statusCode(statusCode)
+            .appInstanceId(subJob.getAppInstanceId()).status(statusStr).build();
+        subJob.setStatus(statusStr);
+        subJob.setStatusCode(statusCode);
 
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
     }

@@ -82,6 +82,8 @@ public class ScheduleDistributeImpl {
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
                 .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTING)
                 .status(Constant.INSTANTIATING_STATUS).build();
+            subJob.setStatus(Constant.INSTANTIATING_STATUS);
+            subJob.setStatusCode(Constant.STATUS_DISTRIBUTING);
         }
 
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
