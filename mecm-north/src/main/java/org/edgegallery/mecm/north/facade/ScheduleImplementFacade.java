@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Set;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleDistributeImpl;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleInstantiateImpl;
-import org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo;
-import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
-import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
+import org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo;
+import org.edgegallery.mecm.north.repository.mapper.MecMDeploymentMapper;
+import org.edgegallery.mecm.north.repository.mapper.MecMPackageMapper;
 import org.edgegallery.mecm.north.service.MecmService;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +36,10 @@ public class ScheduleImplementFacade {
     private MecmService mecmService;
 
     @Autowired
-    private MecmPackageMapper mecMPackageMapper;
+    private MecMPackageMapper mecMPackageMapper;
 
     @Autowired
-    private MecmDeploymentMapper mecMDeploymentMapper;
+    private MecMDeploymentMapper mecMDeploymentMapper;
 
     @Autowired
     private ScheduleDistributeImpl scheduleDistributeImpl;
@@ -47,7 +47,7 @@ public class ScheduleImplementFacade {
     @Autowired
     private ScheduleInstantiateImpl scheduleInstantiate;
 
-    private Set<MecmPackageDeploymentInfo> scheduleCache = new HashSet<>();
+    private Set<MecMPackageDeploymentInfo> scheduleCache = new HashSet<>();
 
     /**
      * loadScheduleJobs for schedule.
@@ -59,7 +59,7 @@ public class ScheduleImplementFacade {
     }
 
     private void executeJobs() {
-        for (MecmPackageDeploymentInfo subJob : scheduleCache) {
+        for (MecMPackageDeploymentInfo subJob : scheduleCache) {
 
             if (subJob.getStatus().equals(Constant.DISTRIBUTING_STATUS)) {
                 scheduleDistributeImpl.queryDistribute(subJob);
@@ -77,12 +77,12 @@ public class ScheduleImplementFacade {
     }
 
     private void loadFromDB() {
-        List<MecmPackageDeploymentInfo> runningJobs = mecMDeploymentMapper.getMecMPkgDeploymentInfos();
+        List<MecMPackageDeploymentInfo> runningJobs = mecMDeploymentMapper.getMecMPkgDeploymentInfos();
         addToCache(runningJobs);
     }
 
-    private void addToCache(List<MecmPackageDeploymentInfo> runningJobs) {
-        for (MecmPackageDeploymentInfo item : runningJobs) {
+    private void addToCache(List<MecMPackageDeploymentInfo> runningJobs) {
+        for (MecMPackageDeploymentInfo item : runningJobs) {
              scheduleCache.add(item);
         }
     }

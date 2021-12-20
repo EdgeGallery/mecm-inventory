@@ -29,10 +29,10 @@ import org.edgegallery.mecm.north.controller.advice.ResponseOfStatus;
 import org.edgegallery.mecm.north.controller.advice.ResponsePkgPost;
 import org.edgegallery.mecm.north.controller.advice.StatusResponseBody;
 import org.edgegallery.mecm.north.domain.ResponseConst;
-import org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo;
-import org.edgegallery.mecm.north.model.MecmPackageInfo;
-import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
-import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
+import org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo;
+import org.edgegallery.mecm.north.model.MecMPackageInfo;
+import org.edgegallery.mecm.north.repository.mapper.MecMDeploymentMapper;
+import org.edgegallery.mecm.north.repository.mapper.MecMPackageMapper;
 import org.edgegallery.mecm.north.service.MecmService;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.edgegallery.mecm.north.utils.exception.ErrorMessage;
@@ -78,10 +78,10 @@ public class MecmPackageServiceFacade {
     private MecmService mecmService;
 
     @Autowired
-    private MecmPackageMapper mecMPackageMapper;
+    private MecMPackageMapper mecMPackageMapper;
 
     @Autowired
-    private MecmDeploymentMapper mecMDeploymentMapper;
+    private MecMDeploymentMapper mecMDeploymentMapper;
 
     @Value("${serveraddress.apm}")
     private String apmServerAddress;
@@ -116,7 +116,7 @@ public class MecmPackageServiceFacade {
         LOGGER.info("save file path is {}", saveFilePath);
         LOGGER.info("begin to upload and instantiate package in facade");
 
-        MecmPackageInfo mecMPackageInfo = MecmPackageInfo.builder().mecmPackageId(mecmPackageId).mecmPkgName(pkgName)
+        MecMPackageInfo mecMPackageInfo = MecMPackageInfo.builder().mecmPackageId(mecmPackageId).mecmPkgName(pkgName)
             .mecmPkgVersion(pkgVersion).mecmAppClass(appClass).tenantId(tenantId).hostIps(listToIps(hostList))
             .status(DISTRIBUTING_STATUS).token(accessToken).saveFilePath(saveFilePath).build();
         mecMPackageMapper.insertMecmPkgInfo(mecMPackageInfo);
@@ -146,7 +146,7 @@ public class MecmPackageServiceFacade {
                 response.getStatusCode()))) {
                 LOGGER.error("fail to upload file with ip: {}", ip);
                 LOGGER.error("uploadFileToAPM failed to , response: {}", response);
-                MecmPackageDeploymentInfo info = MecmPackageDeploymentInfo.builder().id(deploymentId)
+                MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId)
                     .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(Constant.STATUS_ERROR)
                     .status(FAIL_TO_DISTRIBUTE_STATUS).params(parameters).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
@@ -155,7 +155,7 @@ public class MecmPackageServiceFacade {
             String appIdFromApm = jsonObject.get("appId").getAsString();
             String appPkgIdFromApm = jsonObject.get("appPackageId").getAsString();
 
-            MecmPackageDeploymentInfo info = MecmPackageDeploymentInfo.builder().id(deploymentId)
+            MecMPackageDeploymentInfo info = MecMPackageDeploymentInfo.builder().id(deploymentId)
                 .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm)
                 .appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(Constant.STATUS_DISTRIBUTING)
                 .status(DISTRIBUTING_STATUS).build();
@@ -178,12 +178,12 @@ public class MecmPackageServiceFacade {
         String mecmPackageId = checkBody.getMecmPackageId();
         LOGGER.info("begin to get package distribution and instantiation status with mecmPkgId:{}", mecmPackageId);
         /*        List<StatusResponseBody> resList = new LinkedList<>();
-        for (MecmPackageDeploymentInfo info:statusList) {
+        for (MecMPackageDeploymentInfo info:statusList) {
             StatusResponseBody res = new StatusResponseBody();
             res.setHostIp(info.getHostIp());
             res.setRetCode();
         }*/
-        List<MecmPackageDeploymentInfo> statusList = mecMDeploymentMapper.getMecMPkgDeploymentInfoByPkgId(
+        List<MecMPackageDeploymentInfo> statusList = mecMDeploymentMapper.getMecMPkgDeploymentInfoByPkgId(
             mecmPackageId);
         return ResponseEntity.ok(
             ResponseOfStatus.builder().mecmPackageId(mecmPackageId).message("Query server success").retCode(0)
@@ -208,11 +208,11 @@ public class MecmPackageServiceFacade {
         context.put("appoServerAddress", appoServerAddress);
         context.put(Constant.ACCESS_TOKEN, accessToken);
         context.put(Constant.TENANT_ID, checkBody.getTenantId());
-        List<MecmPackageDeploymentInfo> statusList = mecMDeploymentMapper.getMecMPkgDeploymentInfoByPkgId(
+        List<MecMPackageDeploymentInfo> statusList = mecMDeploymentMapper.getMecMPkgDeploymentInfoByPkgId(
             mecmPackageId);
         List<StatusResponseBody> dataList = new LinkedList<>();
 
-        for (MecmPackageDeploymentInfo deployment : statusList) {
+        for (MecMPackageDeploymentInfo deployment : statusList) {
             String ip = deployment.getHostIp();
             LOGGER.info("begin to delete pkg deployment from host ip:{}", ip);
             context.put(Constant.PACKAGE_ID, deployment.getAppIdFromApm());

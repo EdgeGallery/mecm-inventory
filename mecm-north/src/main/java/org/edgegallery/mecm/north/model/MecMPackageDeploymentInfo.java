@@ -27,7 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class MecmPackageDeploymentInfo {
+public class MecMPackageDeploymentInfo {
 
     @Id
     @Column(name = "id")
@@ -68,10 +68,10 @@ public class MecmPackageDeploymentInfo {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MecmPackageDeploymentInfo)) {
+        if (!(o instanceof MecMPackageDeploymentInfo)) {
             return false;
         }
-        MecmPackageDeploymentInfo that = (MecmPackageDeploymentInfo) o;
+        MecMPackageDeploymentInfo that = (MecMPackageDeploymentInfo) o;
         return Objects.equals(getId(), that.getId());
     }
 
