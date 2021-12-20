@@ -17,10 +17,10 @@ package org.edgegallery.mecm.north.facade.schedule;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo;
-import org.edgegallery.mecm.north.model.MecMPackageInfo;
-import org.edgegallery.mecm.north.repository.mapper.MecMDeploymentMapper;
-import org.edgegallery.mecm.north.repository.mapper.MecMPackageMapper;
+import org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo;
+import org.edgegallery.mecm.north.model.MecmPackageInfo;
+import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
+import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
 import org.edgegallery.mecm.north.service.MecmService;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.slf4j.Logger;
@@ -38,10 +38,10 @@ public class ScheduleDistributeImpl {
     private MecmService mecmService;
 
     @Autowired
-    private MecMPackageMapper mecMPackageMapper;
+    private MecmPackageMapper mecMPackageMapper;
 
     @Autowired
-    private MecMDeploymentMapper mecMDeploymentMapper;
+    private MecmDeploymentMapper mecMDeploymentMapper;
 
     @Value("${serveraddress.apm}")
     private String apmServerAddress;
@@ -54,23 +54,23 @@ public class ScheduleDistributeImpl {
      *
      * @param subJob object of job
      */
-    public void queryDistribute(MecMPackageDeploymentInfo subJob) {
+    public void queryDistribute(MecmPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
 
-        MecMPackageInfo mecmPkg = mecMPackageMapper.getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
+        MecmPackageInfo mecmPkg = mecMPackageMapper.getMecMPkgInfoByPkgId(subJob.getMecmPackageId());
 
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
 
-        MecMPackageDeploymentInfo infoGetFromApm;
+        MecmPackageDeploymentInfo infoGetFromApm;
         String status = mecmService.getApmPackageOnce(context, subJob.getAppPkgIdFromApm(), subJob.getHostIp());
         if (status.equals(Constant.DISTRIBUTED_STATUS)) {
             LOGGER.error("fail to distribute package, the mecm package id is:{}", subJob.getMecmPackageId());
             LOGGER.error("fail to distribute this package to ip:{}", subJob.getHostIp());
-            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
+            infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
                     .getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm()).startTime(subJob.getStartTime())
                 .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTED).status(Constant.DISTRIBUTED_STATUS)
@@ -78,7 +78,7 @@ public class ScheduleDistributeImpl {
             subJob.setStatus(Constant.DISTRIBUTED_STATUS);
             subJob.setStatusCode(Constant.STATUS_DISTRIBUTED);
         } else {
-            infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
+            infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
                 .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTING)
                 .status(Constant.INSTANTIATING_STATUS).build();

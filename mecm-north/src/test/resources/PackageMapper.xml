@@ -16,8 +16,8 @@
   ~
   -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.edgegallery.mecm.north.repository.mapper.MecMPackageMapper">
-    <resultMap id="BaseResultMap" type="org.edgegallery.mecm.north.model.MecMPackageInfo">
+<mapper namespace="org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper">
+    <resultMap id="BaseResultMap" type="org.edgegallery.mecm.north.model.MecmPackageInfo">
         <id column="mecm_package_id" property="mecmPackageId" jdbcType="VARCHAR"/>
         <result column="mecm_pkg_name" property="mecmPkgName" jdbcType="VARCHAR"/>
         <result column="mecm_pkg_version" property="mecmPkgVersion" jdbcType="VARCHAR"/>
@@ -33,7 +33,7 @@
         , mecm_pkg_name, mecm_pkg_version,mecm_app_class, tenant_id, host_ips, status,token
     </sql>
 
-    <insert id="insertMecmPkgInfo" parameterType="org.edgegallery.mecm.north.model.MecMPackageInfo">
+    <insert id="insertMecmPkgInfo" parameterType="org.edgegallery.mecm.north.model.MecmPackageInfo">
         insert into package_table (mecm_package_id, mecm_pkg_name, mecm_pkg_version, mecm_app_class, tenant_id,
                                    host_ips, status, token)
         values (#{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR}, #{mecmPkgVersion,jdbcType=VARCHAR},
@@ -47,7 +47,7 @@
         where mecm_package_id = #{mecmPkgId,jdbcType=VARCHAR}
     </delete>
 
-    <update id="updateMecmPkgInfo" parameterType="org.edgegallery.mecm.north.model.MecMPackageInfo">
+    <update id="updateMecmPkgInfo" parameterType="org.edgegallery.mecm.north.model.MecmPackageInfo">
         update package_table
         set mecm_pkg_name    = #{mecmPkgName,jdbcType=VARCHAR},
             mecm_pkg_version = #{mecmPkgVersion,jdbcType=VARCHAR},
