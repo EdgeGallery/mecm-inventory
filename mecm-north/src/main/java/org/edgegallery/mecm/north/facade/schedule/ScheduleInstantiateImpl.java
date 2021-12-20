@@ -72,7 +72,7 @@ public class ScheduleInstantiateImpl {
         String appInstanceId = mecmService.createInstanceFromAppoOnce(context, subJob.getMecmPkgName(),
             subJob.getHostIp(), paramsMap);
         context.put(Constant.APP_INSTANCE_ID, appInstanceId);
-
+        LOGGER.info(" appInstanceId:{}", appInstanceId);
 
         MecMPackageDeploymentInfo infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
             .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
@@ -82,6 +82,7 @@ public class ScheduleInstantiateImpl {
             .status(Constant.INSTANTIATING_STATUS).build();
         subJob.setStatus(Constant.INSTANTIATING_STATUS);
         subJob.setStatusCode(Constant.STATUS_INSTANTIATING);
+        subJob.setAppInstanceId(appInstanceId);
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromApm);
     }
 
@@ -106,20 +107,23 @@ public class ScheduleInstantiateImpl {
         String status = mecmService.getApplicationInstanceOnce(context, subJob.getAppInstanceId());
         MecMPackageDeploymentInfo infoGetFromApm;
         String statusStr = Constant.INSTANTIATE_ERROR_STATUS;
+        LOGGER.info("status:{}",status);
         int statusCode = Constant.STATUS_ERROR;
-        if(status.equals(Constant.INSTANTIATED_STATUS)) {
+        if(status.equals("Created")) {
             statusStr = Constant.FINISHED_STATUS;
             statusCode = Constant.STATUS_FINISHED;
         }
-        if(status.equals(Constant.INSTANTIATING_STATUS)) {
+        if(status.equals("Creating")) {
             statusStr = Constant.INSTANTIATING_STATUS;
             statusCode = Constant.STATUS_INSTANTIATING;
         }
-        if (!status.equals(Constant.INSTANTIATED_STATUS) && !status.equals(Constant.INSTANTIATING_STATUS)) {
+        if (!status.equals("Created") && !status.equals("Creating")) {
             statusStr = Constant.INSTANTIATE_ERROR_STATUS;
             statusCode = Constant.STATUS_ERROR;
         }
-        LOGGER.error("package status finished. package id is: " + subJob.getMecmPackageId());
+        LOGGER.info("after status:{}",status);
+        LOGGER.info("after statusCode:{}",statusCode);
+        LOGGER.info("package status finished. package id is: " + subJob.getMecmPackageId());
         infoGetFromApm = MecMPackageDeploymentInfo.builder().id(subJob.getId())
             .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
                 .getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm()).startTime(subJob.getStartTime())
