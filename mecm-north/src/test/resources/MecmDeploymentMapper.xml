@@ -16,8 +16,8 @@
   ~
   -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.edgegallery.mecm.north.repository.mapper.MecMDeploymentMapper">
-    <resultMap id="BaseResultMap" type="org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo">
+<mapper namespace="org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper">
+    <resultMap id="BaseResultMap" type="org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="mecm_package_id" property="mecmPackageId" jdbcType="VARCHAR"/>
         <result column="mecm_pkg_name" property="mecmPkgName" jdbcType="VARCHAR"/>
@@ -37,7 +37,7 @@
         host_ip,status_code, status, start_time, params
     </sql>
 
-    <insert id="insertPkgDeploymentInfo" parameterType="org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo">
+    <insert id="insertPkgDeploymentInfo" parameterType="org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo">
         insert into pkg_deployment_table (id, mecm_package_id, mecm_pkg_name, app_id_from_apm, app_pkg_id_from_apm,
                                           app_instance_id, host_ip, status_code, status, start_time, params)
         values (#{id,jdbcType=VARCHAR}, #{mecmPackageId,jdbcType=VARCHAR}, #{mecmPkgName,jdbcType=VARCHAR},
@@ -53,7 +53,7 @@
     </delete>
 
     <update id="updateMecmPkgDeploymentInfo"
-            parameterType="org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo">
+            parameterType="org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo">
         update pkg_deployment_table
         set mecm_package_id     = #{mecmPkgId,jdbcType=VARCHAR},
             mecm_pkg_name       = #{mecmPkgName,jdbcType=VARCHAR},
@@ -81,7 +81,7 @@
         where status != 'Finished' order by start_time desc limit 5;
     </select>
 
-    <select id="getMecMPkgDeploymentInfoByPkgId" resultType="org.edgegallery.mecm.north.model.MecMPackageDeploymentInfo"
+    <select id="getMecMPkgDeploymentInfoByPkgId" resultType="org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo"
             parameterType="java.util.List">
         select
         <include refid="Deployment_Column_List"/>

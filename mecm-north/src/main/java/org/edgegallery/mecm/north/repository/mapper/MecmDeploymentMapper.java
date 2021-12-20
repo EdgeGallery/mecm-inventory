@@ -17,20 +17,25 @@
 
 package org.edgegallery.mecm.north.repository.mapper;
 
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import org.edgegallery.mecm.north.model.MecMPackageInfo;
+import org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo;
 import org.springframework.stereotype.Component;
 
 @Component
 @Mapper
-public interface MecMPackageMapper {
+public interface MecmDeploymentMapper {
 
-    void insertMecmPkgInfo(MecMPackageInfo mecMPackageInfo);
+    void insertPkgDeploymentInfo(MecmPackageDeploymentInfo mecMPackageInfo);
 
-    void deletePkgInfoByPkgId(String mecmPkgId);
+    void deletePkgDeploymentInfoByPkgId(String mecmPkgId);
 
-    void updateMecmPkgInfo(MecMPackageInfo mecMPackageInfo);
+    void updateMecmPkgDeploymentInfo(MecmPackageDeploymentInfo mecMPackageInfo);
 
-    MecMPackageInfo getMecMPkgInfoByPkgId(String mecmPkgId);
+    MecmPackageDeploymentInfo getMecMPkgDeploymentInfoById(String id);
+
+    List<MecmPackageDeploymentInfo> getMecMPkgDeploymentInfos();
+
+    List<MecmPackageDeploymentInfo> getMecMPkgDeploymentInfoByPkgId(String mecmPkgId);
 
 }
