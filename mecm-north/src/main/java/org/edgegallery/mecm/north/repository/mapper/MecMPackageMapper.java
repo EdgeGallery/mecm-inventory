@@ -18,19 +18,19 @@
 package org.edgegallery.mecm.north.repository.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.edgegallery.mecm.north.model.MecMPackageInfo;
+import org.edgegallery.mecm.north.model.MecmPackageInfo;
 import org.springframework.stereotype.Component;
 
 @Component
 @Mapper
-public interface MecMPackageMapper {
+public interface MecmPackageMapper {
 
-    void insertMecmPkgInfo(MecMPackageInfo mecMPackageInfo);
+    void insertMecmPkgInfo(MecmPackageInfo mecMPackageInfo);
 
     void deletePkgInfoByPkgId(String mecmPkgId);
 
-    void updateMecmPkgInfo(MecMPackageInfo mecMPackageInfo);
+    void updateMecmPkgInfo(MecmPackageInfo mecMPackageInfo);
 
-    MecMPackageInfo getMecMPkgInfoByPkgId(String mecmPkgId);
+    MecmPackageInfo getMecMPkgInfoByPkgId(String mecmPkgId);
 
 }

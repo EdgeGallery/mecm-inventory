@@ -17,6 +17,7 @@
 
 package org.edgegallery.mecm.north.model;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import lombok.Builder;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class MecMPackageDeploymentInfo {
+public class MecmPackageDeploymentInfo {
 
     @Id
     @Column(name = "id")
@@ -61,4 +62,21 @@ public class MecMPackageDeploymentInfo {
 
     @Column(name = "params")
     private String params;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MecmPackageDeploymentInfo)) {
+            return false;
+        }
+        MecmPackageDeploymentInfo that = (MecmPackageDeploymentInfo) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }
