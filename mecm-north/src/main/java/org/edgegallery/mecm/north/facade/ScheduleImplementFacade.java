@@ -93,7 +93,7 @@ public class ScheduleImplementFacade {
     private boolean checkIfContains(MecMPackageDeploymentInfo item) {
         Iterator<MecMPackageDeploymentInfo> it = scheduleCache.iterator();
         while (it.hasNext()) {
-            if(StringUtils.isEmpty(item.getAppIdFromApm())){
+            if (StringUtils.isEmpty(item.getAppIdFromApm())) {
                 return false;
             }
             if (it.next().getAppIdFromApm().equals(item.getAppIdFromApm())) {
