@@ -178,8 +178,8 @@ public class ScheduleInstantiateImpl {
             statusStr = Constant.CREATED;
             statusCode = Constant.STATUS_CREATED;
         } else if (status.equalsIgnoreCase(Constant.INSTANTIATED_STATUS)) {
-            statusStr = Constant.INSTANTIATED_STATUS;
-            statusCode = Constant.STATUS_INSTANTIATED;
+            statusStr = Constant.FINISHED_STATUS;
+            statusCode = Constant.STATUS_FINISHED;
         } else if (status.equalsIgnoreCase(Constant.CREATING) || status.equalsIgnoreCase(
             Constant.INSTANTIATING_STATUS)) {
             statusStr = status;
