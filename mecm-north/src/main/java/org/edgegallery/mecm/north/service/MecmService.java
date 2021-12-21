@@ -350,8 +350,7 @@ public class MecmService {
      * @param hostIp mec host ip
      * @return create app instance sucess or not.s
      */
-    public String createInstanceFromAppoOnce(Map<String, String> context, String appName, String hostIp,
-        Map<String, Object> parameters) {
+    public String createInstanceFromAppoOnce(Map<String, String> context, String appName, String hostIp) {
         Map<String, Object> body = new HashMap<>();
         body.put("appInstanceDescription", UUID.randomUUID().toString());
         body.put("appName", appName);
@@ -376,6 +375,7 @@ public class MecmService {
                 JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
                 if (null != responseBody) {
                     String appInstanceId = responseBody.get("app_instance_id").getAsString();
+                    LOGGER.info("new appInstanceId get from appo: {}", appInstanceId);
                     return appInstanceId;
                 }
             }
@@ -545,7 +545,7 @@ public class MecmService {
      * @param appInstanceId appInstanceId
      * @return instantiate app successful
      */
-    private boolean instantiateAppFromAppo(Map<String, String> context, Map<String, Object> parameters,
+    public boolean instantiateAppFromAppo(Map<String, String> context, Map<String, Object> parameters,
         String appInstanceId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
@@ -579,6 +579,49 @@ public class MecmService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * instantiate application by appo.
+     *
+     * @param context context info.
+     * @param appInstanceId appInstanceId
+     * @return instantiate app successful
+     */
+    public String instantiateAppFromAppoOnce(Map<String, String> context, Map<String, Object> parameters,
+        String appInstanceId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
+        headers.set(CONTENT_TYPE, APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> request;
+        if (VM.equalsIgnoreCase(context.get(APP_CLASS))) {
+            Map<String, Object> body = new HashMap<String, Object>();
+            // if package is vm, need parameters body
+            LOGGER.info("package is vm.");
+            body.put("parameters", parameters);
+            request = new HttpEntity<>(body, headers);
+        } else {
+            request = new HttpEntity<>(headers);
+        }
+
+        String url = context.get("appoServerAddress")
+            .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
+        LOGGER.info("instantiateAppFromAppo URL : {}", url);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+            if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
+                LOGGER.error("instantiate application from appo reponse failed. The status code is {}",
+                    response.getStatusCode());
+                return Constant.INSTANTIATE_ERROR_STATUS;
+            }
+            LOGGER.info("instantiateAppFromAppo: {}", response.getStatusCode());
+        } catch (RestClientException e) {
+            LOGGER.error("Failed to instantiate application from appo which app_instance_id is {} exception {}",
+                appInstanceId, e.getMessage());
+            return Constant.INSTANTIATE_ERROR_STATUS;
+        }
+        return Constant.INSTANTIATING_STATUS;
     }
 
     /*    private void setBody(Map<String, Object> body, Map<String, String> context) {

@@ -91,7 +91,11 @@ public interface Constant {
 
     String WAITING = "waiting";
 
-    String ATP_CREATED = "created";
+    String CREATED = "Created";
+
+    String CREATING = "Creating";
+
+    String CREATE_ERROR = "Create Error";
 
     String REG = "[^\\s\\\\/:*?\"<>|](\\x20|[^\\s\\\\/:*?\"<>|])*[^\\s\\\\/:*?\"<>|.]$";
 
@@ -198,5 +202,7 @@ public interface Constant {
     int STATUS_INSTANTIATING = 4;
 
     int STATUS_INSTANTIATED = 5;
+
+    int STATUS_CREATED = 6;
 
 }
