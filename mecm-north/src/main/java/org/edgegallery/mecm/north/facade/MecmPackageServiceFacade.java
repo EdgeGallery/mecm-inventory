@@ -148,7 +148,7 @@ public class MecmPackageServiceFacade {
                 LOGGER.error("uploadFileToAPM failed to , response: {}", response);
                 MecmPackageDeploymentInfo info = MecmPackageDeploymentInfo.builder().id(deploymentId)
                     .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(Constant.STATUS_ERROR)
-                    .status(FAIL_TO_DISTRIBUTE_STATUS).params(parameters).build();
+                    .status(Constant.DISTRIBUTE_ERROR_STATUS).params(parameters).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
             }
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();

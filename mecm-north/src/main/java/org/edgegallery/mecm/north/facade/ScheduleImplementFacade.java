@@ -18,6 +18,7 @@
 package org.edgegallery.mecm.north.facade;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleDistributeImpl;
@@ -59,7 +60,16 @@ public class ScheduleImplementFacade {
     }
 
     private void executeJobs() {
-        for (MecmPackageDeploymentInfo subJob : scheduleCache) {
+        Iterator<MecmPackageDeploymentInfo> iterator = scheduleCache.iterator();
+
+        while (iterator.hasNext()) {
+            MecmPackageDeploymentInfo subJob = iterator.next();
+            if (subJob.getStatus().equals(Constant.FINISHED_STATUS) || subJob.getStatus()
+                .equals(Constant.INSTANTIATE_ERROR_STATUS) || subJob.getStatus()
+                .equals(Constant.DISTRIBUTE_ERROR_STATUS)) {
+                iterator.remove();
+                continue;
+            }
 
             if (subJob.getStatus().equals(Constant.DISTRIBUTING_STATUS)) {
                 scheduleDistributeImpl.queryDistribute(subJob);
