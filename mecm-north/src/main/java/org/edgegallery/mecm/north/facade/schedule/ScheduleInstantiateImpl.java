@@ -133,14 +133,16 @@ public class ScheduleInstantiateImpl {
         int statusCode;
 
         if (statusStr.equals(Constant.INSTANTIATING_STATUS)) {
+            statusStr = Constant.INSTANTIATING_STATUS;
             statusCode = Constant.STATUS_INSTANTIATING;
         } else {
+            statusStr = Constant.INSTANTIATE_ERROR_STATUS;
             statusCode = Constant.STATUS_ERROR;
         }
         MecmPackageDeploymentInfo infoGetFromAppo = MecmPackageDeploymentInfo.builder().id(subJob.getId())
             .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
             .appIdFromApm(subJob.getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm())
-            .startTime(subJob.getStartTime()).hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_INSTANTIATING)
+            .startTime(subJob.getStartTime()).hostIp(subJob.getHostIp()).statusCode(statusCode)
             .appInstanceId(appInstanceId).status(statusStr).params(subJob.getParams()).build();
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromAppo);
 
@@ -174,7 +176,7 @@ public class ScheduleInstantiateImpl {
         int statusCode;
         if (status.equalsIgnoreCase(Constant.CREATED)) {
             statusStr = Constant.CREATED;
-            statusCode = Constant.STATUS_INSTANTIATING;
+            statusCode = Constant.STATUS_CREATED;
         } else if (status.equalsIgnoreCase(Constant.INSTANTIATED_STATUS)) {
             statusStr = Constant.INSTANTIATED_STATUS;
             statusCode = Constant.STATUS_INSTANTIATED;

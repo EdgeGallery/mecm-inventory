@@ -203,4 +203,6 @@ public interface Constant {
 
     int STATUS_INSTANTIATED = 5;
 
+    int STATUS_CREATED = 6;
+
 }

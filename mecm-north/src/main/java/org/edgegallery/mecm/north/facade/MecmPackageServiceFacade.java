@@ -215,7 +215,7 @@ public class MecmPackageServiceFacade {
         for (MecmPackageDeploymentInfo deployment : statusList) {
             String ip = deployment.getHostIp();
             LOGGER.info("begin to delete pkg deployment from host ip:{}", ip);
-            context.put(Constant.PACKAGE_ID, deployment.getAppIdFromApm());
+            context.put(Constant.PACKAGE_ID, deployment.getAppPkgIdFromApm());
             String appInstanceId = deployment.getAppInstanceId();
             mecmService.delay();
             String res = deleteDeployment(appInstanceId, ip, context);
