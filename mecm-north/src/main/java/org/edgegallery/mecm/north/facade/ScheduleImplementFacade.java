@@ -66,10 +66,15 @@ public class ScheduleImplementFacade {
             }
 
             if (subJob.getStatus().equals(Constant.DISTRIBUTED_STATUS)) {
+                scheduleInstantiate.createInstantiate(subJob);
+            }
+
+            if (subJob.getStatus().equals(Constant.CREATED)) {
                 scheduleInstantiate.executeInstantiate(subJob);
             }
 
-            if (subJob.getStatus().equals(Constant.INSTANTIATING_STATUS)) {
+            if (subJob.getStatus().equals(Constant.INSTANTIATING_STATUS) || subJob.getStatus()
+                .equals(Constant.CREATING)) {
                 scheduleInstantiate.queryInstantiate(subJob);
             }
 

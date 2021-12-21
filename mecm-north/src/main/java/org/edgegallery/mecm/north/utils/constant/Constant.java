@@ -91,7 +91,11 @@ public interface Constant {
 
     String WAITING = "waiting";
 
-    String ATP_CREATED = "created";
+    String CREATED = "Created";
+
+    String CREATING = "Creating";
+
+    String CREATE_ERROR = "Create Error";
 
     String REG = "[^\\s\\\\/:*?\"<>|](\\x20|[^\\s\\\\/:*?\"<>|])*[^\\s\\\\/:*?\"<>|.]$";
 
