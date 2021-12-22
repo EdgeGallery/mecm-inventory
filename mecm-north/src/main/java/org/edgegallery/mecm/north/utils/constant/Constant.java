@@ -53,7 +53,7 @@ public interface Constant {
 
     String DISTRIBUTING_STATUS = "Distributing";
 
-    String PROCESSING_STATUS ="Processing";
+    String PROCESSING_STATUS = "Processing";
 
     String DISTRIBUTED_STATUS = "Distributed";
 
