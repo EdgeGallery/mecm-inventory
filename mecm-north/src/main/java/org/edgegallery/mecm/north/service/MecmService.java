@@ -417,7 +417,7 @@ public class MecmService {
             if ("Instantiation failed".equalsIgnoreCase(responseStatus) || "Create failed".equalsIgnoreCase(
                 responseStatus)) {
                 LOGGER.error("instantiate or create app failed. The status  is {}", responseStatus);
-
+              return Constant.INSTANTIATE_ERROR_STATUS;
             }
             return responseStatus;
         } catch (RestClientException e) {

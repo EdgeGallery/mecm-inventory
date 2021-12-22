@@ -28,6 +28,8 @@ import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
 import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
 import org.edgegallery.mecm.north.service.MecmService;
 import org.edgegallery.mecm.north.utils.constant.Constant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +52,8 @@ public class ScheduleImplementFacade {
 
     private Set<MecmPackageDeploymentInfo> scheduleCache = new HashSet<>();
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(ScheduleDistributeImpl.class);
+
     /**
      * loadScheduleJobs for schedule.
      */
@@ -61,30 +65,36 @@ public class ScheduleImplementFacade {
 
     private void executeJobs() {
         Iterator<MecmPackageDeploymentInfo> iterator = scheduleCache.iterator();
-
+        int i = 1;
         while (iterator.hasNext()) {
             MecmPackageDeploymentInfo subJob = iterator.next();
             if (subJob.getStatus().equals(Constant.FINISHED_STATUS) || subJob.getStatus()
                 .equals(Constant.INSTANTIATE_ERROR_STATUS) || subJob.getStatus()
                 .equals(Constant.DISTRIBUTE_ERROR_STATUS)) {
                 iterator.remove();
+                LOGGER.info("finish,error status is {}th step", i++);
                 continue;
             }
 
             if (subJob.getStatus().equals(Constant.DISTRIBUTING_STATUS)) {
+                LOGGER.info("query distributing status is {}th step", i++);
                 scheduleDistributeImpl.queryDistribute(subJob);
             }
 
             if (subJob.getStatus().equals(Constant.DISTRIBUTED_STATUS)) {
+                LOGGER.info("create Instantiate status is {}th step", i++);
                 scheduleInstantiate.createInstantiate(subJob);
             }
 
             if (subJob.getStatus().equals(Constant.CREATED)) {
+                LOGGER.info("execute Instantiate status is {}th step", i++);
                 scheduleInstantiate.executeInstantiate(subJob);
+                continue;
             }
 
             if (subJob.getStatus().equals(Constant.INSTANTIATING_STATUS) || subJob.getStatus()
                 .equals(Constant.CREATING)) {
+                LOGGER.info("query Instantiate status is {}th step", i++);
                 scheduleInstantiate.queryInstantiate(subJob);
             }
 

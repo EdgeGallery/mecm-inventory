@@ -89,6 +89,7 @@ public class ScheduleInstantiateImpl {
                 statusStr = Constant.CREATING;
                 statusCode = Constant.STATUS_INSTANTIATING;
             } else {
+                LOGGER.info("while create instance error, get application instance status from appo: {}", status);
                 statusStr = Constant.INSTANTIATE_ERROR_STATUS;
                 statusCode = Constant.STATUS_ERROR;
             }
@@ -131,11 +132,12 @@ public class ScheduleInstantiateImpl {
         // instantiate original app
         String statusStr = mecmService.instantiateAppFromAppoOnce(context, paramsMap, appInstanceId);
         int statusCode;
-
+        LOGGER.info("while instantiate once, get application instance status from appo: {}", statusStr);
         if (statusStr.equals(Constant.INSTANTIATING_STATUS)) {
             statusStr = Constant.INSTANTIATING_STATUS;
             statusCode = Constant.STATUS_INSTANTIATING;
         } else {
+            LOGGER.error("while instance error, get application instance status from appo: {}", statusStr);
             statusStr = Constant.INSTANTIATE_ERROR_STATUS;
             statusCode = Constant.STATUS_ERROR;
         }
@@ -146,9 +148,9 @@ public class ScheduleInstantiateImpl {
             .appInstanceId(appInstanceId).status(statusStr).params(subJob.getParams()).build();
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromAppo);
 
-        LOGGER.info("after query status:{}", statusStr);
-        LOGGER.info("after query statusCode:{}", statusCode);
-        LOGGER.info("package query status finished. package id is: " + subJob.getMecmPackageId());
+        LOGGER.info("after instantiate once status:{}", statusStr);
+        LOGGER.info("after instantiate once statusCode:{}", statusCode);
+        LOGGER.info("after instantiate once package id is: " + subJob.getMecmPackageId());
         subJob.setStatus(statusStr);
         subJob.setStatusCode(statusCode);
     }
@@ -185,6 +187,7 @@ public class ScheduleInstantiateImpl {
             statusStr = status;
             statusCode = Constant.STATUS_INSTANTIATING;
         } else {
+            LOGGER.info("while query instance error, get application instance status from appo: {}", status);
             statusStr = Constant.INSTANTIATE_ERROR_STATUS;
             statusCode = Constant.STATUS_ERROR;
         }
