@@ -58,12 +58,21 @@ public class ScheduleInstantiateImpl {
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
+        LOGGER.info("before create instance from appo, apmServerAddress:{}", apmServerAddress);
+        LOGGER.info("before create instance from appo, appoServerAddress:{}", appoServerAddress);
         MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
         context.put(Constant.PACKAGE_ID, subJob.getAppPkgIdFromApm());
         context.put(Constant.APP_ID, subJob.getAppIdFromApm());
+
+        LOGGER.info("before create instance from appo, access_token:{}", mecmPkg.getToken());
+        LOGGER.info("before create instance from appo, TenantId:{}", mecmPkg.getTenantId());
+        LOGGER.info("before create instance from appo, APP_CLASS:{}", mecmPkg.getMecmAppClass());
+        LOGGER.info("before create instance from appo, PACKAGE_IDfromApm:{}", subJob.getAppPkgIdFromApm());
+        LOGGER.info("before create instance from appo, APP_ID:{}",  subJob.getAppIdFromApm());
+        LOGGER.info("before create instance from appo, hostIp:{}",  subJob.getHostIp());
 
         //Create app instance from appo to get appInstanceId
         String appInstanceId = mecmService.createInstanceFromAppoOnce(context, subJob.getMecmPkgName(),
