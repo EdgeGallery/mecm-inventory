@@ -73,10 +73,10 @@ public class ScheduleDistributeImpl {
             LOGGER.info("distribute package, the mecm package id is:{}", subJob.getMecmPackageId());
             LOGGER.info("distribute this package to ip:{}", subJob.getHostIp());
             infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
-                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName()).appIdFromApm(subJob
-                    .getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm()).startTime(subJob.getStartTime())
-                .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTED).status(Constant.DISTRIBUTED_STATUS)
-                .build();
+                .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
+                .appIdFromApm(subJob.getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm())
+                .startTime(subJob.getStartTime()).hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTED)
+                .status(Constant.DISTRIBUTED_STATUS).build();
             subJob.setStatus(Constant.DISTRIBUTED_STATUS);
             subJob.setStatusCode(Constant.STATUS_DISTRIBUTED);
         } else if (status.equals(Constant.DISTRIBUTING_STATUS)) {
@@ -87,12 +87,12 @@ public class ScheduleDistributeImpl {
                 .status(Constant.DISTRIBUTING_STATUS).build();
             subJob.setStatus(Constant.DISTRIBUTING_STATUS);
             subJob.setStatusCode(Constant.STATUS_DISTRIBUTING);
-        }else {
+        } else {
             LOGGER.error("get Apm package error status is:{}", status);
             infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
-                .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_ERROR)
-                .status(Constant.DISTRIBUTE_ERROR_STATUS).build();
+                .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_ERROR).status(Constant.DISTRIBUTE_ERROR_STATUS)
+                .build();
             subJob.setStatus(Constant.DISTRIBUTE_ERROR_STATUS);
             subJob.setStatusCode(Constant.STATUS_ERROR);
         }
