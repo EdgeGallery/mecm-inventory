@@ -79,7 +79,7 @@ public class ScheduleDistributeImpl {
                 .status(Constant.DISTRIBUTED_STATUS).build();
             subJob.setStatus(Constant.DISTRIBUTED_STATUS);
             subJob.setStatusCode(Constant.STATUS_DISTRIBUTED);
-        } else if (status.equals(Constant.DISTRIBUTING_STATUS)) {
+        } else if (status.equals(Constant.DISTRIBUTING_STATUS) || status.equals(Constant.PROCESSING_STATUS)) {
             LOGGER.info("get Apm package distributing status is:{}", status);
             infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())

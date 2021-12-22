@@ -53,6 +53,8 @@ public interface Constant {
 
     String DISTRIBUTING_STATUS = "Distributing";
 
+    String PROCESSING_STATUS ="Processing";
+
     String DISTRIBUTED_STATUS = "Distributed";
 
     String DISTRIBUTE_ERROR_STATUS = "Distribute Error";
