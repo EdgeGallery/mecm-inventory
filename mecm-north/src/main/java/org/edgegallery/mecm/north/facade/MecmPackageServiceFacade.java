@@ -102,14 +102,16 @@ public class MecmPackageServiceFacade {
         }
 
         String pkgName = pkgBody.getAppPkgName();
+        LOGGER.info("get package name is {}", pkgName);
         String pkgVersion = pkgBody.getAppPkgVersion();
+        LOGGER.info("get package Version is {}", pkgVersion);
         String[] hostList = pkgBody.getHostList().split(";");
         String appClass = pkgBody.getAppClass();
         //String[] paramsMap = pkgBody.getParameters().split(";");
         String parameters = pkgBody.getParameters();
         // JSONObject obj = JSONObject.parseObject(parameters);
         String tenantId = pkgBody.getTenantId();
-        LOGGER.info("get package name is {}", pkgName);
+
 
         String mecmPackageId = UUID.randomUUID().toString();
         String saveFilePath = mecmService.saveFileToLocal(pkgBody.getFile(), mecmPackageId);
@@ -148,7 +150,7 @@ public class MecmPackageServiceFacade {
                 LOGGER.error("uploadFileToAPM failed to , response: {}", response);
                 MecmPackageDeploymentInfo info = MecmPackageDeploymentInfo.builder().id(deploymentId)
                     .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(Constant.STATUS_ERROR)
-                    .status(FAIL_TO_DISTRIBUTE_STATUS).params(parameters).build();
+                    .status(Constant.DISTRIBUTE_ERROR_STATUS).params(parameters).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
             }
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
@@ -237,6 +239,9 @@ public class MecmPackageServiceFacade {
                 dataList.add(tmpRes);
             }
         }
+        mecMDeploymentMapper.deletePkgDeploymentInfoByPkgId(mecmPackageId);
+        mecMPackageMapper.deletePkgInfoByPkgId(mecmPackageId);
+        //TODO:删除本地文件
 
         LOGGER.info("finish deleting pkg distribution and instantiation status with mecmPackageId:{}", mecmPackageId);
         return ResponseEntity.ok(

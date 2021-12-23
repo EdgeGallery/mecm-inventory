@@ -58,12 +58,21 @@ public class ScheduleInstantiateImpl {
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
         context.put("appoServerAddress", appoServerAddress);
+        LOGGER.info("before create instance from appo, apmServerAddress:{}", apmServerAddress);
+        LOGGER.info("before create instance from appo, appoServerAddress:{}", appoServerAddress);
         MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
         context.put(Constant.PACKAGE_ID, subJob.getAppPkgIdFromApm());
         context.put(Constant.APP_ID, subJob.getAppIdFromApm());
+
+        LOGGER.info("before create instance from appo, access_token:{}", mecmPkg.getToken());
+        LOGGER.info("before create instance from appo, TenantId:{}", mecmPkg.getTenantId());
+        LOGGER.info("before create instance from appo, APP_CLASS:{}", mecmPkg.getMecmAppClass());
+        LOGGER.info("before create instance from appo, PACKAGE_IDfromApm:{}", subJob.getAppPkgIdFromApm());
+        LOGGER.info("before create instance from appo, APP_ID:{}",  subJob.getAppIdFromApm());
+        LOGGER.info("before create instance from appo, hostIp:{}",  subJob.getHostIp());
 
         //Create app instance from appo to get appInstanceId
         String appInstanceId = mecmService.createInstanceFromAppoOnce(context, subJob.getMecmPkgName(),
@@ -89,6 +98,7 @@ public class ScheduleInstantiateImpl {
                 statusStr = Constant.CREATING;
                 statusCode = Constant.STATUS_INSTANTIATING;
             } else {
+                LOGGER.info("while create instance error, get application instance status from appo: {}", status);
                 statusStr = Constant.INSTANTIATE_ERROR_STATUS;
                 statusCode = Constant.STATUS_ERROR;
             }
@@ -131,11 +141,12 @@ public class ScheduleInstantiateImpl {
         // instantiate original app
         String statusStr = mecmService.instantiateAppFromAppoOnce(context, paramsMap, appInstanceId);
         int statusCode;
-
+        LOGGER.info("while instantiate once, get application instance status from appo: {}", statusStr);
         if (statusStr.equals(Constant.INSTANTIATING_STATUS)) {
             statusStr = Constant.INSTANTIATING_STATUS;
             statusCode = Constant.STATUS_INSTANTIATING;
         } else {
+            LOGGER.error("while instance error, get application instance status from appo: {}", statusStr);
             statusStr = Constant.INSTANTIATE_ERROR_STATUS;
             statusCode = Constant.STATUS_ERROR;
         }
@@ -146,9 +157,9 @@ public class ScheduleInstantiateImpl {
             .appInstanceId(appInstanceId).status(statusStr).params(subJob.getParams()).build();
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromAppo);
 
-        LOGGER.info("after query status:{}", statusStr);
-        LOGGER.info("after query statusCode:{}", statusCode);
-        LOGGER.info("package query status finished. package id is: " + subJob.getMecmPackageId());
+        LOGGER.info("after instantiate once status:{}", statusStr);
+        LOGGER.info("after instantiate once statusCode:{}", statusCode);
+        LOGGER.info("after instantiate once package id is: " + subJob.getMecmPackageId());
         subJob.setStatus(statusStr);
         subJob.setStatusCode(statusCode);
     }
@@ -178,13 +189,14 @@ public class ScheduleInstantiateImpl {
             statusStr = Constant.CREATED;
             statusCode = Constant.STATUS_CREATED;
         } else if (status.equalsIgnoreCase(Constant.INSTANTIATED_STATUS)) {
-            statusStr = Constant.INSTANTIATED_STATUS;
-            statusCode = Constant.STATUS_INSTANTIATED;
+            statusStr = Constant.FINISHED_STATUS;
+            statusCode = Constant.STATUS_FINISHED;
         } else if (status.equalsIgnoreCase(Constant.CREATING) || status.equalsIgnoreCase(
             Constant.INSTANTIATING_STATUS)) {
             statusStr = status;
             statusCode = Constant.STATUS_INSTANTIATING;
         } else {
+            LOGGER.info("while query instance error, get application instance status from appo: {}", status);
             statusStr = Constant.INSTANTIATE_ERROR_STATUS;
             statusCode = Constant.STATUS_ERROR;
         }

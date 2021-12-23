@@ -39,14 +39,15 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 @Component
 @Import({ResourceServerTokenServicesConfiguration.class})
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AccessTokenFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenFilter.class);
+
     private static final String INVALID_TOKEN_MESSAGE = "Invalid access token";
+
     private static final String[] HEALTH_URI = {"/north/v1/health"};
 
     @Autowired
@@ -92,8 +93,8 @@ public class AccessTokenFilter extends OncePerRequestFilter {
         String userIdFromToken = additionalInfoMap.get("userId").toString();
         String userIdFromRequest = getTenantId(request.getRequestURI());
 
-        if (userIdFromRequest != null
-            && !StringUtils.isEmpty(userIdFromRequest) && !userIdFromRequest.equals(userIdFromToken)) {
+        if (userIdFromRequest != null && !StringUtils.isEmpty(userIdFromRequest) && !userIdFromRequest.equals(
+            userIdFromToken)) {
             LOGGER.error("Illegal tenant ID");
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Illegal tenant ID");
             return;
