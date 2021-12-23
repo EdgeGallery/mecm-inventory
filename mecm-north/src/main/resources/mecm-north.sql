@@ -27,7 +27,7 @@ create table if not exists pkg_deployment_table (
     status_code integer default 0,
     status varchar (100) default null,
     start_time varchar (100) default null,
-    params varchar (100) default null,
+    params varchar (800 ) default null,
     CONSTRAINT pkg_deployment_table_pkey PRIMARY KEY (id)
     );
 

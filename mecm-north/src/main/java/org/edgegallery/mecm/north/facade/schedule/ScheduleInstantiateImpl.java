@@ -22,7 +22,7 @@ import org.edgegallery.mecm.north.model.MecmPackageInfo;
 import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
 import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
 import org.edgegallery.mecm.north.service.MecmService;
-import org.edgegallery.mecm.north.utils.InitParamsUtil;
+import org.edgegallery.mecm.north.utils.CommonUtil;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +112,7 @@ public class ScheduleInstantiateImpl {
             .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
             .appIdFromApm(subJob.getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm())
             .startTime(subJob.getStartTime()).hostIp(subJob.getHostIp()).statusCode(statusCode)
-            .appInstanceId(appInstanceId).status(statusStr).build();
+            .appInstanceId(appInstanceId).status(statusStr).params(subJob.getParams()).build();
         subJob.setStatus(statusStr);
         subJob.setStatusCode(statusCode);
         mecMDeploymentMapper.updateMecmPkgDeploymentInfo(infoGetFromAppo);
@@ -135,7 +135,7 @@ public class ScheduleInstantiateImpl {
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
         context.put(Constant.PACKAGE_ID, subJob.getAppPkgIdFromApm());
         context.put(Constant.APP_ID, subJob.getAppIdFromApm());
-        Map<String, Object> paramsMap = InitParamsUtil.handleParams(subJob.getParams());
+        Map<String, Object> paramsMap = CommonUtil.handleParams(subJob.getParams());
         String appInstanceId = subJob.getAppInstanceId();
 
         // instantiate original app

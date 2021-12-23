@@ -72,7 +72,7 @@ public class ScheduleImplementFacade {
                 .equals(Constant.INSTANTIATE_ERROR_STATUS) || subJob.getStatus()
                 .equals(Constant.DISTRIBUTE_ERROR_STATUS) || subJob.getStatus().equals(Constant.CREATE_ERROR)) {
                 iterator.remove();
-                LOGGER.info("finish,error status is {}th step", i++);
+                LOGGER.info("finish or error status is {}th step", i++);
                 continue;
             }
 

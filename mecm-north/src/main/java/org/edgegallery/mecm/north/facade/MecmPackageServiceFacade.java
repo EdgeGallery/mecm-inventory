@@ -34,6 +34,7 @@ import org.edgegallery.mecm.north.model.MecmPackageInfo;
 import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
 import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
 import org.edgegallery.mecm.north.service.MecmService;
+import org.edgegallery.mecm.north.utils.CommonUtil;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.edgegallery.mecm.north.utils.exception.ErrorMessage;
 import org.slf4j.Logger;
@@ -112,7 +113,6 @@ public class MecmPackageServiceFacade {
         // JSONObject obj = JSONObject.parseObject(parameters);
         String tenantId = pkgBody.getTenantId();
 
-
         String mecmPackageId = UUID.randomUUID().toString();
         String saveFilePath = mecmService.saveFileToLocal(pkgBody.getFile(), mecmPackageId);
         LOGGER.info("save file path is {}", saveFilePath);
@@ -160,7 +160,7 @@ public class MecmPackageServiceFacade {
             MecmPackageDeploymentInfo info = MecmPackageDeploymentInfo.builder().id(deploymentId)
                 .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).appIdFromApm(appIdFromApm)
                 .appPkgIdFromApm(appPkgIdFromApm).hostIp(ip).statusCode(Constant.STATUS_DISTRIBUTING)
-                .status(DISTRIBUTING_STATUS).build();
+                .status(DISTRIBUTING_STATUS).params(parameters).build();
             mecMDeploymentMapper.insertPkgDeploymentInfo(info);
             LOGGER.info("upload pkg to ip:{} success", ip);
         }
@@ -239,9 +239,9 @@ public class MecmPackageServiceFacade {
                 dataList.add(tmpRes);
             }
         }
+        CommonUtil.deleteFile(mecMPackageMapper.getMecmPkgInfoByPkgId(mecmPackageId).getSaveFilePath());
         mecMDeploymentMapper.deletePkgDeploymentInfoByPkgId(mecmPackageId);
         mecMPackageMapper.deletePkgInfoByPkgId(mecmPackageId);
-        //TODO:删除本地文件
 
         LOGGER.info("finish deleting pkg distribution and instantiation status with mecmPackageId:{}", mecmPackageId);
         return ResponseEntity.ok(
