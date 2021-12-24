@@ -599,6 +599,9 @@ public class MecmService {
             Map<String, Object> body = new HashMap<String, Object>();
             // if package is vm, need parameters body
             LOGGER.info("package is vm.");
+            for (String key:parameters.keySet()) {
+                LOGGER.info("before instantiation, params have: {},{}",key,parameters.get(key));
+            }
             body.put("parameters", parameters);
             request = new HttpEntity<>(body, headers);
         } else {
@@ -623,19 +626,6 @@ public class MecmService {
         }
         return Constant.INSTANTIATING_STATUS;
     }
-
-    /*    private void setBody(Map<String, Object> body, Map<String, String> context) {
-        String configParam = context.get("configParamList");
-        String[] configList = configParam.split(",");
-        for (String config : configList) {
-            String[] params = config.split(";");
-            for (String param : params) {
-                String[] configItem = param.split("=");
-                // param patter: key = value or key = ;
-                body.put(configItem[0].trim(), 1 == configItem.length ? "" : configItem[1].trim());
-            }
-        }
-    }*/
 
     /**
      * delete edge package.

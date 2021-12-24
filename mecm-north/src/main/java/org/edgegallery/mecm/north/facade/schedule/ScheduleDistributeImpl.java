@@ -76,7 +76,7 @@ public class ScheduleDistributeImpl {
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
                 .appIdFromApm(subJob.getAppIdFromApm()).appPkgIdFromApm(subJob.getAppPkgIdFromApm())
                 .startTime(subJob.getStartTime()).hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTED)
-                .status(Constant.DISTRIBUTED_STATUS).build();
+                .status(Constant.DISTRIBUTED_STATUS).params(subJob.getParams()).build();
             subJob.setStatus(Constant.DISTRIBUTED_STATUS);
             subJob.setStatusCode(Constant.STATUS_DISTRIBUTED);
         } else if (status.equals(Constant.DISTRIBUTING_STATUS) || status.equals(Constant.PROCESSING_STATUS)) {
@@ -84,7 +84,7 @@ public class ScheduleDistributeImpl {
             infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
                 .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_DISTRIBUTING)
-                .status(Constant.DISTRIBUTING_STATUS).build();
+                .status(Constant.DISTRIBUTING_STATUS).params(subJob.getParams()).build();
             subJob.setStatus(Constant.DISTRIBUTING_STATUS);
             subJob.setStatusCode(Constant.STATUS_DISTRIBUTING);
         } else {
@@ -92,7 +92,7 @@ public class ScheduleDistributeImpl {
             infoGetFromApm = MecmPackageDeploymentInfo.builder().id(subJob.getId())
                 .mecmPackageId(subJob.getMecmPackageId()).mecmPkgName(subJob.getMecmPkgName())
                 .hostIp(subJob.getHostIp()).statusCode(Constant.STATUS_ERROR).status(Constant.DISTRIBUTE_ERROR_STATUS)
-                .build();
+                .params(subJob.getParams()).build();
             subJob.setStatus(Constant.DISTRIBUTE_ERROR_STATUS);
             subJob.setStatusCode(Constant.STATUS_ERROR);
         }

@@ -17,10 +17,15 @@
 
 package org.edgegallery.mecm.north.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class InitParamsUtil {
+public class CommonUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InitConfigUtil.class);
 
     /**
      * Transfer data from json string to params.
@@ -29,7 +34,25 @@ public class InitParamsUtil {
      * @return
      */
     public static Map<String, Object> handleParams(String params) {
-        Map<String, Object> jsonToMap = JSONObject.parseObject(params);
-        return jsonToMap;
+        Map<String, Object> resMap = new HashMap<>();
+        String[] paramArr = params.split(";");
+        for (String param : paramArr) {
+            String[] configItem = param.split("=");
+            // param patter: key = value or key = ;
+            resMap.put(configItem[0].trim(), 1 == configItem.length ? "" : configItem[1].trim());
+        }
+        return resMap;
+    }
+
+    /**
+     * delete file.
+     *
+     * @param filePath file
+     */
+    public static void deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (!file.delete()) {
+            LOGGER.error("delete file failed.");
+        }
     }
 }
