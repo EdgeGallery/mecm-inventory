@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.edgegallery.mecm.north.facade.schedule.ScheduleClearErrorImpl;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleDistributeImpl;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleInstantiateImpl;
 import org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo;
@@ -50,6 +51,9 @@ public class ScheduleImplementFacade {
     @Autowired
     private ScheduleInstantiateImpl scheduleInstantiate;
 
+    @Autowired
+    private ScheduleClearErrorImpl scheduleClearErrorImpl;
+
     private Set<MecmPackageDeploymentInfo> scheduleCache = new HashSet<>();
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ScheduleDistributeImpl.class);
@@ -68,11 +72,15 @@ public class ScheduleImplementFacade {
         int i = 1;
         while (iterator.hasNext()) {
             MecmPackageDeploymentInfo subJob = iterator.next();
-            if (subJob.getStatus().equals(Constant.FINISHED_STATUS) || subJob.getStatus()
-                .equals(Constant.INSTANTIATE_ERROR_STATUS) || subJob.getStatus()
+            if (subJob.getStatus().equals(Constant.INSTANTIATE_ERROR_STATUS) || subJob.getStatus()
                 .equals(Constant.DISTRIBUTE_ERROR_STATUS) || subJob.getStatus().equals(Constant.CREATE_ERROR)) {
+                LOGGER.info("clear {}status is {}th step", subJob.getStatus(), i++);
+                scheduleClearErrorImpl.deleteErrorStatus(subJob);
+            }
+
+            if (subJob.getStatus().equals(Constant.FINISHED_STATUS)) {
                 iterator.remove();
-                LOGGER.info("finish or error status is {}th step", i++);
+                LOGGER.info("finish status is {}th step", i++);
                 continue;
             }
 
