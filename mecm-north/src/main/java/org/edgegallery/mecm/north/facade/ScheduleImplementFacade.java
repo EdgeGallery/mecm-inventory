@@ -74,7 +74,8 @@ public class ScheduleImplementFacade {
             MecmPackageDeploymentInfo subJob = iterator.next();
             if (subJob.getStatus().equals(Constant.INSTANTIATE_ERROR_STATUS) || subJob.getStatus()
                 .equals(Constant.DISTRIBUTE_ERROR_STATUS) || subJob.getStatus().equals(Constant.CREATE_ERROR)) {
-                LOGGER.info("clear {}status is {}th step", subJob.getStatus(), i++);
+                LOGGER.info("clear {} status is {}th step with mecmPkgID: {}", subJob.getStatus(), i++,
+                    subJob.getMecmPackageId());
                 scheduleClearErrorImpl.deleteErrorStatus(subJob);
             }
 
