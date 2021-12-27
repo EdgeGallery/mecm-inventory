@@ -77,6 +77,7 @@ public class ScheduleImplementFacade {
                 LOGGER.info("clear {} status is {}th step with mecmPkgID: {}", subJob.getStatus(), i++,
                     subJob.getMecmPackageId());
                 scheduleClearErrorImpl.deleteErrorStatus(subJob);
+                continue;
             }
 
             if (subJob.getStatus().equals(Constant.FINISHED_STATUS)) {
