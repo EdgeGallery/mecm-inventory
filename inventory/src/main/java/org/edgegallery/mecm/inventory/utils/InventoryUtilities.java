@@ -16,6 +16,9 @@
 
 package org.edgegallery.mecm.inventory.utils;
 
+import static org.edgegallery.mecm.inventory.utils.Constants.ROLE_ADMIN;
+import static org.edgegallery.mecm.inventory.utils.Constants.ROLE_TENANT;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -140,5 +143,19 @@ public final class InventoryUtilities {
         }
         host.setHwcapabilities(capabilities);
         return host;
+    }
+
+    /**
+     * Returns MEC host ID based on host IP and tenant ID.
+     * @param mecHostIp host IP
+     * @param tenantId tenant ID
+     * @return mec host ID
+     */
+    public static String getMecHostId(String mecHostIp, String tenantId) {
+        String role = InventoryUtilities.hasRole(ROLE_ADMIN) ? ROLE_ADMIN : ROLE_TENANT;
+        if (role.equals(ROLE_ADMIN)) {
+            return mecHostIp;
+        }
+        return mecHostIp + "_" + tenantId;
     }
 }

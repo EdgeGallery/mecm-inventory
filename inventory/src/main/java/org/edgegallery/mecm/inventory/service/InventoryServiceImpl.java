@@ -114,6 +114,19 @@ public final class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public <T extends BaseModel> List<T> getRecordsByRole(String role, CrudRepository<T, String> repository) {
+        List<T> record;
+        Iterable<T> records = ((BaseRepository) repository).findByUserRole(role);
+        if (!records.iterator().hasNext()) {
+            LOGGER.error(Constants.RECORD_NOT_FOUND_ERROR);
+            throw new NoSuchElementException(Constants.RECORD_NOT_FOUND_ERROR);
+        }
+        record = Lists.newArrayList(repository.findAll());
+        LOGGER.info("Records returned for the type {}", record.get(0).getType());
+        return record;
+    }
+
+    @Override
     public <T extends BaseModel> T getRecord(String id, CrudRepository<T, String> repository) {
         Optional<T> record = repository.findById(id);
         if (!record.isPresent()) {

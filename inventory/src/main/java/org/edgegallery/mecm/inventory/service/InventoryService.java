@@ -85,4 +85,14 @@ public interface InventoryService {
      * @return status
      */
     <T extends BaseModel> Status deleteRecord(String id, CrudRepository<T, String> repository);
+
+    /**
+     * Returns records of a given role.
+     *
+     * @param role   role of the user
+     * @param repository operating repository
+     * @param <T>        type of model
+     * @return list of records
+     */
+    <T extends BaseModel> List<T> getRecordsByRole(String role, CrudRepository<T, String> repository);
 }

@@ -37,5 +37,8 @@ public interface MecApplicationRepository extends CrudRepository<MecApplication,
 
     @Query(value = "SELECT * FROM mecapplicationinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
     List<MecApplication> findByTenantId(@Param("tenantId") String tenantId);
+
+    @Query(value = "SELECT * FROM mecapplicationinventory m WHERE m.role=:role", nativeQuery = true)
+    List<MecApplication> findByUserRole(@Param("role") String role);
 }
 

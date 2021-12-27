@@ -39,4 +39,7 @@ public interface AppTrafficRuleRepository extends CrudRepository<AppTrafficRule,
 
     @Query(value = "SELECT * FROM apptrafficruleinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
     List<AppTrafficRule> findByTenantId(@Param(TENANT_ID) String tenantId);
+
+    @Query(value = "SELECT * FROM apptrafficruleinventory m WHERE m.role=:role", nativeQuery = true)
+    List<AppTrafficRule> findByUserRole(@Param("role") String role);
 }

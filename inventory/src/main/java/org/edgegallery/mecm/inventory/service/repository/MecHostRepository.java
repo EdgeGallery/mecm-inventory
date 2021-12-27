@@ -36,5 +36,8 @@ public interface MecHostRepository extends CrudRepository<MecHost, String>, Base
 
     @Query(value = "SELECT * FROM mechostinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
     List<MecHost> findByTenantId(@Param("tenantId") String tenantId);
+
+    @Query(value = "SELECT * FROM mechostinventory m WHERE m.role=:role", nativeQuery = true)
+    List<MecHost> findByUserRole(@Param("role") String role);
 }
 

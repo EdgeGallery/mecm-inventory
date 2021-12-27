@@ -41,4 +41,12 @@ public interface BaseRepository<T extends BaseModel> {
      * @return list of records
      */
     List<T> findByTenantId(@Param("tenantId") String tenantId);
+
+    /**
+     * Returns records by role identifier.
+     *
+     * @param role tenant identifier
+     * @return list of records
+     */
+    List<T> findByUserRole(@Param("role") String role);
 }

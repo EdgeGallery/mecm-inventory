@@ -16,13 +16,17 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
+import java.util.List;
 import org.edgegallery.mecm.inventory.model.MecHwCapability;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * MEC host hardware capability repository.
  */
 public interface MecHwCapabilityRepository extends CrudRepository<MecHwCapability, String> {
-
+    @Query(value = "SELECT * FROM mechwcapabilityinventory m WHERE m.role=:role", nativeQuery = true)
+    List<MecHwCapability> findByUserRole(@Param("role") String role);
 }
 

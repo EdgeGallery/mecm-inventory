@@ -50,6 +50,8 @@ public final class Constants {
     public static final String LOWER_CASE_REGEX = ".*[a-z].*";
     public static final String UPPER_CASE_REGEX = ".*[A-Z].*";
     public static final int MAX_PWD_COUNT = 2;
+    public static final String ROLE_ADMIN = "ROLE_MECM_ADMIN";
+    public static final String ROLE_TENANT = "ROLE_MECM_TENANT";
 
     public static final String APPLCM_URI = "/lcmcontroller/v1";
     public static final String APPLCM_V2_URI = "/lcmcontroller/v2";
