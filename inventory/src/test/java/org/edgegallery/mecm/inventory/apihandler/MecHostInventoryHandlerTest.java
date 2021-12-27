@@ -217,7 +217,7 @@ public class MecHostInventoryHandlerTest {
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "[{\"mechostIp\":\"1.1.1.1\",\"tenantId\":\"18db0283-3c67-4042-a708-a8e4a10c6b31\",\"mechostName\":\"TestHost1\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null},{\"mechostIp\":\"1.1.1.1\",\"tenantId\":\"18db0283-3c67-4042-a708-a8e4a10c6b32\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":\"k8s\",\"configUploadStatus\":null}]",
+                "[{\"mechostIp\":\"1.1.1.1\",\"tenantId\":\"18db0283-3c67-4042-a708-a8e4a10c6b32\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":\"k8s\",\"configUploadStatus\":null}]",
                 getAllResponse);
 
         // Test Delete all records
@@ -408,7 +408,7 @@ public class MecHostInventoryHandlerTest {
                 .andReturn();
         String getAllResponse = getAllMvcResult.getResponse().getContentAsString();
         Assert.assertEquals(
-                "[{\"mechostIp\":\"1.1.1.1\",\"tenantId\":\"18db0283-3c67-4042-a708-a8e4a10c6b31\",\"mechostName\":\"TestHost1\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":\"part1,part2\",\"userName\":null,\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null},{\"mechostIp\":\"1.1.1.1\",\"tenantId\":\"18db0283-3c67-4042-a708-a8e4a10c6b32\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null}]",
+                "[{\"mechostIp\":\"1.1.1.1\",\"tenantId\":\"18db0283-3c67-4042-a708-a8e4a10c6b32\",\"mechostName\":\"TestHost\",\"zipCode\":null,\"city\":\"TestCity\",\"address\":\"Test Address\",\"affinity\":null,\"userName\":null,\"mepmIp\":\"1.1.1.1\",\"coordinates\":\"1,1\",\"hwcapabilities\":[],\"vim\":null,\"configUploadStatus\":null}]",
                 getAllResponse);
 
         // Test Delete all records
@@ -440,7 +440,7 @@ public class MecHostInventoryHandlerTest {
     @Test
     @WithMockUser(roles = {"MECM_TENANT", "MECM_ADMIN", "MECM_GUEST"})
     public void validateMecApplicationInventory() throws Exception {
-        String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b31";
+        String tenantId = "18db0283-3c67-4042-a708-a8e4a10c6b32";
         String hostIp = "1.1.1.1";
 
         // Add Mepm record post
