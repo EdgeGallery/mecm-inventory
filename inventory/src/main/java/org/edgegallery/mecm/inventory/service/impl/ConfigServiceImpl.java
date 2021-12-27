@@ -17,6 +17,7 @@
 package org.edgegallery.mecm.inventory.service.impl;
 
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_V2_URI;
+import static org.edgegallery.mecm.inventory.utils.InventoryUtilities.getMecHostId;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -88,7 +89,7 @@ public class ConfigServiceImpl implements ConfigService {
         HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(parts, httpHeaders);
 
         // Preparing URL
-        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        MecHost host = service.getRecord(getMecHostId(hostIp, tenantId), hostRepository);
         String mepmIp = host.getMepmIp();
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         String mepmPort = mepm.getMepmPort();
@@ -126,7 +127,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public ResponseEntity<String> deleteConfig(String tenantId, String hostIp, String token) {
         // Preparing URL
-        MecHost host = service.getRecord(hostIp + "_" + tenantId, hostRepository);
+        MecHost host = service.getRecord(getMecHostId(hostIp, tenantId), hostRepository);
         String mepmIp = host.getMepmIp();
         Mepm mepm = service.getRecord(mepmIp, mepmRepository);
         String mecmPort = mepm.getMepmPort();
