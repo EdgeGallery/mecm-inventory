@@ -16,12 +16,16 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
+import java.util.List;
 import org.edgegallery.mecm.inventory.model.Tenant;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Tenant repository.
  */
 public interface TenantRepository extends CrudRepository<Tenant, String> {
-
+    @Query(value = "SELECT * FROM tenantinventory m WHERE m.role=:role", nativeQuery = true)
+    List<Tenant> findByUserRole(@Param("role") String role);
 }

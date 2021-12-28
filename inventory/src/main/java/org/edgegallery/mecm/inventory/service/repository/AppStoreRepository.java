@@ -16,12 +16,17 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
+import java.util.List;
+import org.edgegallery.mecm.inventory.model.AppRepo;
 import org.edgegallery.mecm.inventory.model.AppStore;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Application store repository.
  */
 public interface AppStoreRepository extends CrudRepository<AppStore, String> {
-
+    @Query(value = "SELECT * FROM appstoreinventory m WHERE m.role=:role", nativeQuery = true)
+    List<AppStore> findByUserRole(@Param("role") String role);
 }

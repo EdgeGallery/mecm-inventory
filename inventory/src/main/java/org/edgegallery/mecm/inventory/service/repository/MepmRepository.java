@@ -16,12 +16,16 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
+import java.util.List;
 import org.edgegallery.mecm.inventory.model.Mepm;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * MEPM repository.
  */
 public interface MepmRepository extends CrudRepository<Mepm, String> {
-
+    @Query(value = "SELECT * FROM mepminventory m WHERE m.role=:role", nativeQuery = true)
+    List<Mepm> findByUserRole(@Param("role") String role);
 }

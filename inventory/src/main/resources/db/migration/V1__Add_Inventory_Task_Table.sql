@@ -42,6 +42,7 @@
         tenant_id varchar(255) not null,
         mepm_ip varchar(255) not null,
         mepm_id varchar(255),
+        role varchar(50),
         mechost_name varchar(255) not null,
         zip_code varchar(200),
         city varchar(255) not null,

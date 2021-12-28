@@ -37,4 +37,7 @@ public interface AppDRuleRepository extends CrudRepository<AppdRule, String>, Ba
 
     @Query(value = "SELECT * FROM appdruleinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
     List<AppdRule> findByTenantId(@Param(TENANT_ID) String tenantId);
+
+    @Query(value = "SELECT * FROM appdruleinventory m WHERE m.role=:role", nativeQuery = true)
+    List<AppdRule> findByUserRole(@Param("role") String role);
 }

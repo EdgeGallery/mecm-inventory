@@ -16,12 +16,17 @@
 
 package org.edgegallery.mecm.inventory.service.repository;
 
+import java.util.List;
+import org.edgegallery.mecm.inventory.model.AppDnsRule;
 import org.edgegallery.mecm.inventory.model.AppRepo;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Application repo repository.
  */
 public interface AppRepoRepository extends CrudRepository<AppRepo, String> {
-
+    @Query(value = "SELECT * FROM apprepoinventory m WHERE m.role=:role", nativeQuery = true)
+    List<AppRepo> findByUserRole(@Param("role") String role);
 }

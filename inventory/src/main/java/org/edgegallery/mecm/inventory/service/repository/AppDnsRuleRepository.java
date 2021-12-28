@@ -36,4 +36,7 @@ public interface AppDnsRuleRepository extends CrudRepository<AppDnsRule, String>
 
     @Query(value = "SELECT * FROM appdnsruleinventory m WHERE m.tenant_id=:tenantId", nativeQuery = true)
     List<AppDnsRule> findByTenantId(@Param("tenantId") String tenantId);
+
+    @Query(value = "SELECT * FROM appdnsruleinventory m WHERE m.role=:role", nativeQuery = true)
+    List<AppDnsRule> findByUserRole(@Param("role") String role);
 }

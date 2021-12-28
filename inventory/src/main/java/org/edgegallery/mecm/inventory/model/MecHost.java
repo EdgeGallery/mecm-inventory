@@ -56,6 +56,9 @@ public final class MecHost implements BaseModel {
     @Column(name = "mechost_ip")
     private String mechostIp;
 
+    @Column(name = "role")
+    private String role;
+
     @Column(name = "mechost_name")
     private String mechostName;
 

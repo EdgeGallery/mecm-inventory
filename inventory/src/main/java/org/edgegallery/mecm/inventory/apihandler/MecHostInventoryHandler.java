@@ -17,6 +17,7 @@
 package org.edgegallery.mecm.inventory.apihandler;
 
 import static org.edgegallery.mecm.inventory.utils.Constants.APPLCM_URI;
+import static org.edgegallery.mecm.inventory.utils.InventoryUtilities.getMecHostId;
 
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
@@ -89,6 +90,7 @@ public class MecHostInventoryHandler {
     private static final String MECHOSTIP = "mechost IP";
     private static final String TENANT_ID = "tenant_id";
     private static final String ROLE_ADMIN = "ROLE_MECM_ADMIN";
+    private static final String ROLE_TENANT = "ROLE_MECM_TENANT";
 
     @Autowired
     private InventoryServiceImpl service;
@@ -123,8 +125,11 @@ public class MecHostInventoryHandler {
             @RequestBody MecHostDto mecHostDto) {
         MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostDto.getMechostIp());
         host.setTenantId(tenantId);
-        host.setMechostId(mecHostDto.getMechostIp() + "_" + tenantId);
+        host.setMechostId(getMecHostId(mecHostDto.getMechostIp(), tenantId));
         host.setApplications(new HashSet<>());
+
+        String role = InventoryUtilities.hasRole(ROLE_ADMIN) ? ROLE_ADMIN : ROLE_TENANT;
+        host.setRole(role);
 
         Status status = service.addRecord(host, repository);
 
@@ -166,10 +171,12 @@ public class MecHostInventoryHandler {
 
         MecHost host = InventoryUtilities.getMecHost(mecHostDto, mecHostIp);
         host.setTenantId(tenantId);
-        host.setMechostId(mecHostIp + "_" + tenantId);
+        host.setMechostId(getMecHostId(mecHostIp, tenantId));
 
-        MecHost hostDb = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost hostDb = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);;
+
         host.setApplications(hostDb.getApplications());
+        host.setRole(hostDb.getRole());
         Status status = service.updateRecord(host, repository);
 
         // Send record to MEPM
@@ -194,15 +201,34 @@ public class MecHostInventoryHandler {
     public ResponseEntity<List<MecHostDto>> getAllMecHostRecords(
             @ApiParam(value = "tenant identifier") @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
-        if (InventoryUtilities.hasRole(ROLE_ADMIN)) {
-            tenantId = null;
-        }
-        List<MecHost> mecHosts = service.getTenantRecords(tenantId, repository);
+
+        List<MecHost> mecHostsAdmin;
         List<MecHostDto> mecHostDtos = new LinkedList<>();
+
+        mecHostsAdmin = service.getRecordsByRole(ROLE_ADMIN, repository);
+        // if role is admin, just return all records belongs to admin role users.
+        if (InventoryUtilities.hasRole(ROLE_ADMIN)) {
+            for (MecHost host : mecHostsAdmin) {
+                MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
+                mecHostDtos.add(mecHostDto);
+            }
+            return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
+        }
+
+        List<MecHost> mecHosts = service.getTenantRecords(tenantId, repository);
         for (MecHost host : mecHosts) {
             MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
             mecHostDtos.add(mecHostDto);
         }
+        for (MecHost mecHostAdmin : mecHostsAdmin) {
+            for (MecHostDto tenantMecHost : mecHostDtos) {
+                if (!mecHostAdmin.getMechostIp().equals(tenantMecHost.getMechostIp())) {
+                    MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(mecHostAdmin, MecHostDto.class);
+                    mecHostDtos.add(mecHostDto);
+                }
+            }
+        }
+
         return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
     }
 
@@ -221,7 +247,13 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = MECHOSTIP) @PathVariable(MECHOST_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost host;
+        try {
+            host = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);
+        } catch (NoSuchElementException ex) {
+            host = service.getRecord(mecHostIp, repository);
+        }
+
         MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
         return new ResponseEntity<>(mecHostDto, HttpStatus.OK);
     }
@@ -234,7 +266,7 @@ public class MecHostInventoryHandler {
      * @param mecHostIp MEC host IP
      * @return capabilities record & status code 200 on success, error code on failure
      */
-    @ApiOperation(value = "Retrieves MEC host record", response = String.class)
+    @ApiOperation(value = "Retrieves MEC host capabilities", response = String.class)
     @GetMapping(path = "/tenants/{tenant_id}/mechosts/{mechost_ip}/capabilities",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MECM_TENANT') || hasRole('MECM_ADMIN') || hasRole('MECM_GUEST')")
@@ -243,7 +275,13 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId,
             @ApiParam(value = MECHOSTIP) @PathVariable(MECHOST_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+
+        MecHost host;
+        try {
+            host = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);
+        } catch (NoSuchElementException ex) {
+            host = service.getRecord(mecHostIp, repository);
+        }
         List<MecHwCapabilityDto> mecCapabilityDtos = new LinkedList<>();
         for (MecHwCapability hostCap : host.getHwcapabilities()) {
             MecHwCapabilityDto cap = InventoryUtilities.getModelMapper().map(hostCap, MecHwCapabilityDto.class);
@@ -279,7 +317,13 @@ public class MecHostInventoryHandler {
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp,
             @ApiParam(value = "capability type") @PathVariable("capability_type")
             @Pattern(regexp = Constants.NAME_REGEX) @Size(max = 128) String capabilityType) {
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost host;
+        try {
+            host = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);
+        } catch (NoSuchElementException ex) {
+            host = service.getRecord(mecHostIp, repository);
+        }
+
         List<MecApplicationDto> applications = new LinkedList<>();
 
         for (MecHwCapability hostCap : host.getHwcapabilities()) {
@@ -339,11 +383,11 @@ public class MecHostInventoryHandler {
             @ApiParam(value = MECHOSTIP) @PathVariable(MECHOST_IP)
             @Pattern(regexp = Constants.IP_REGEX) @Size(max = 15) String mecHostIp) {
         // Save mepm IP
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost host = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);
         String mepmIp = host.getMepmIp();
 
         // Delete record
-        Status status = service.deleteRecord(mecHostIp + "_" + tenantId, repository);
+        Status status = service.deleteRecord(getMecHostId(mecHostIp, tenantId), repository);
 
         // Send record to MEPM
         try {
@@ -385,8 +429,13 @@ public class MecHostInventoryHandler {
         if (!capabilities.isEmpty()) {
             app.setCapabilities(capabilities);
         }
+        MecHost host;
+        try {
+            host = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);
+        } catch (NoSuchElementException ex) {
+            host = service.getRecord(mecHostIp, repository);
+        }
 
-        MecHost host = service.getRecord(mecHostIp + "_" + tenantId, repository);
         app.setMecAppHost(host);
 
         Status status = service.addRecord(app, appRepository);
@@ -490,7 +539,13 @@ public class MecHostInventoryHandler {
 
         Status status = new Status("Deleted");
 
-        MecHost hostDb = service.getRecord(mecHostIp + "_" + tenantId, repository);
+        MecHost hostDb;
+        try {
+            hostDb = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);
+        } catch (NoSuchElementException ex) {
+            hostDb = service.getRecord(mecHostIp, repository);
+        }
+
         Set<MecApplication> apps = hostDb.getApplications();
         for (MecApplication app : apps) {
             if (app.getAppInstanceId().equals(appId)) {
