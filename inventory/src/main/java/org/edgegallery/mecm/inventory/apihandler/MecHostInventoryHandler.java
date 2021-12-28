@@ -202,24 +202,36 @@ public class MecHostInventoryHandler {
             @ApiParam(value = "tenant identifier") @PathVariable(TENANT_ID)
             @Pattern(regexp = Constants.TENANT_ID_REGEX) @Size(max = 64) String tenantId) {
 
-        List<MecHost> mecHostsAdmin;
+        List<MecHost> mecHostsAdmin = new LinkedList<>();
         List<MecHostDto> mecHostDtos = new LinkedList<>();
 
-        mecHostsAdmin = service.getRecordsByRole(ROLE_ADMIN, repository);
-        // if role is admin, just return all records belongs to admin role users.
-        if (InventoryUtilities.hasRole(ROLE_ADMIN)) {
-            for (MecHost host : mecHostsAdmin) {
+        try {
+            mecHostsAdmin = service.getRecordsByRole(ROLE_ADMIN, repository);
+            // if role is admin, just return all records belongs to admin role users.
+            if (InventoryUtilities.hasRole(ROLE_ADMIN)) {
+                for (MecHost host : mecHostsAdmin) {
+                    MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
+                    mecHostDtos.add(mecHostDto);
+                }
+                return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
+            }
+        } catch (NoSuchElementException ex) {
+            LOGGER.debug("No MEC host records exist created by Admin");
+        }
+
+        List<MecHost> mecHosts;
+        try {
+            mecHosts = service.getTenantRecords(tenantId, repository);
+            for (MecHost host : mecHosts) {
                 MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
                 mecHostDtos.add(mecHostDto);
             }
-            return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
+        } catch (NoSuchElementException ex) {
+            if (mecHostsAdmin.isEmpty()) {
+                throw ex;
+            }
         }
 
-        List<MecHost> mecHosts = service.getTenantRecords(tenantId, repository);
-        for (MecHost host : mecHosts) {
-            MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
-            mecHostDtos.add(mecHostDto);
-        }
         for (MecHost mecHostAdmin : mecHostsAdmin) {
             for (MecHostDto tenantMecHost : mecHostDtos) {
                 if (!mecHostAdmin.getMechostIp().equals(tenantMecHost.getMechostIp())) {
