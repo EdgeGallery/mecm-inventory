@@ -79,14 +79,22 @@ public class ScheduleClearErrorImpl {
             if (!mecmService.deleteAppInstance(appInstanceId, context)) {
                 LOGGER.error("clear error status,fail to delete instance with appinstanceId:{}", appInstanceId);
             }
+            LOGGER.info("clear error status, delete instance with appInstanceId:{} success", appInstanceId);
         }
         if (!mecmService.deleteEdgePackage(context, subJob.getHostIp())) {
             LOGGER.error("clear error status,fail to delete edge package from ip:{}", subJob.getHostIp());
+        } else {
+            LOGGER.info("clear error status, delete edge package from ip:{} success", subJob.getHostIp());
         }
+
         if (!mecmService.deleteApmPackage(context)) {
             LOGGER.error("clear error status,fail to delete apm package with pkgId:{}",
                 context.get(Constant.PACKAGE_ID));
+        } else {
+            LOGGER.info("clear error status, delete apm package with pkgId:{} success",
+                context.get(Constant.PACKAGE_ID));
         }
+
         String mecmPackageId = subJob.getMecmPackageId();
         CommonUtil.deleteFile(mecMPackageMapper.getMecmPkgInfoByPkgId(mecmPackageId).getSaveFilePath());
         mecMDeploymentMapper.deletePkgDeploymentInfoByPkgId(mecmPackageId);
