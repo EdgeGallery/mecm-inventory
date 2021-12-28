@@ -232,16 +232,28 @@ public class MecHostInventoryHandler {
             }
         }
 
+        if (mecHostDtos.isEmpty()) {
+            for (MecHost host : mecHostsAdmin) {
+                MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(host, MecHostDto.class);
+                mecHostDtos.add(mecHostDto);
+            }
+            return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
+        }
+
+        List<MecHostDto> retHostDtos = new LinkedList<>();
+        for (MecHostDto hostDto : mecHostDtos) {
+            retHostDtos.add(hostDto);
+        }
+
         for (MecHost mecHostAdmin : mecHostsAdmin) {
             for (MecHostDto tenantMecHost : mecHostDtos) {
                 if (!mecHostAdmin.getMechostIp().equals(tenantMecHost.getMechostIp())) {
                     MecHostDto mecHostDto = InventoryUtilities.getModelMapper().map(mecHostAdmin, MecHostDto.class);
-                    mecHostDtos.add(mecHostDto);
+                    retHostDtos.add(mecHostDto);
                 }
             }
         }
-
-        return new ResponseEntity<>(mecHostDtos, HttpStatus.OK);
+        return new ResponseEntity<>(retHostDtos, HttpStatus.OK);
     }
 
     /**
