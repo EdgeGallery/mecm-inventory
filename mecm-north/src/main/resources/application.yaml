@@ -33,11 +33,11 @@ servicecomb:
 server:
   port: 8103
   ssl:
-    enabled: ${SSL_ENABLED:true}
+    enabled: ${SSL_ENABLED:false}
     protocol: TLS
     enabled-Protocols: [ TLSv1.2 ]
     ciphers: [ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                 TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 ]
+               TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 ]
 
     # Keystore
     key-store: ${SSL_KEY_STORE_PATH:/usr/app/ssl/keystore.p12}
@@ -94,7 +94,7 @@ security:
         key-uri: ${AUTH_SERVER_ADDRESS:https://user-mgmt-svc:8067}/oauth/token_key
 
 serveraddress:
-  apm: ${APM_SERVER_ADDRESS:https://mecm-apm:8092}
-  appo: ${APPO_SERVER_ADDRESS:https://mecm-appo:8091}
-  inventory: ${INVENTORY_SERVER_ADDRESS:https://mecm-inventory:8093}
+  apm: ${APM_SERVER_ADDRESS:https://192.168.1.38:30202}
+  appo: ${APPO_SERVER_ADDRESS:https://192.168.1.38:30201}
+  inventory: ${INVENTORY_SERVER_ADDRESS:https://192.168.1.38:30203}
   appstore: ${APPSTORE_SERVER_ADDRESS:https://appstore-be-svc:8099}
