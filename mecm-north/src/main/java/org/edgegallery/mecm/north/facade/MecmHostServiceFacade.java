@@ -26,7 +26,11 @@ import org.edgegallery.mecm.north.utils.exception.ErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 @Service("MecmHostServiceFacade")
@@ -37,17 +41,28 @@ public class MecmHostServiceFacade {
     @Autowired
     private MecmService mecmService;
 
+    @Autowired
+    TokenStore jwtTokenStore;
+
     /**
      * get all mecm hosts.
      *
      * @param token Access Token
      * @return ResponseEntity
      */
-    public ResponseEntity<ResponseObject> getAllMecmHosts(String token, String userId) {
+    public ResponseEntity<ResponseObject> getAllMecmHosts(String token) {
         LOGGER.info("get all mecm hosts.");
         LOGGER.info("Facade side, token is {}",token);
-        LOGGER.info("Facade side, userId is {}",userId);
-        List<Map<String, Object>> mecHostList = mecmService.getAllMecmHosts(token, userId);
+
+        OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(token);
+        if (accessToken == null || accessToken.isExpired()) {
+            LOGGER.error("Access token has expired.");
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+        }
+
+        Map<String, Object> additionalInfoMap = accessToken.getAdditionalInformation();
+        String userIdFromToken = additionalInfoMap.get("userId").toString();
+        List<Map<String, Object>> mecHostList = mecmService.getAllMecmHosts(token, userIdFromToken);
         List<MecmHostDto> respDataDto = mecHostList.stream().map(MecmHostDto::fromMap).collect(Collectors.toList());
         ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
         return ResponseEntity.ok(new ResponseObject(respDataDto, resultMsg, "query mecm host success."));
