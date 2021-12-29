@@ -206,7 +206,13 @@ public class MecHostInventoryHandler {
         List<MecHostDto> mecHostDtos = new LinkedList<>();
 
         try {
-            mecHostsAdmin = service.getRecordsByRole(ROLE_ADMIN, repository);
+            List<MecHost> mecHosts  = service.getTenantRecords(null, repository);
+            for (MecHost mecHost: mecHosts) {
+                if (mecHost.getRole().equals(ROLE_ADMIN)) {
+                    mecHostsAdmin.add(mecHost);
+                }
+            }
+
             // if role is admin, just return all records belongs to admin role users.
             if (InventoryUtilities.hasRole(ROLE_ADMIN)) {
                 for (MecHost host : mecHostsAdmin) {
