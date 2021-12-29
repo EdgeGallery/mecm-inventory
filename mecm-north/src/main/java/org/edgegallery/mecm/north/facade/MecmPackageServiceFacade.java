@@ -179,12 +179,6 @@ public class MecmPackageServiceFacade {
 
         String mecmPackageId = checkBody.getMecmPackageId();
         LOGGER.info("begin to get package distribution and instantiation status with mecmPkgId:{}", mecmPackageId);
-        /*        List<StatusResponseBody> resList = new LinkedList<>();
-        for (MecMPackageDeploymentInfo info:statusList) {
-            StatusResponseBody res = new StatusResponseBody();
-            res.setHostIp(info.getHostIp());
-            res.setRetCode();
-        }*/
         List<MecmPackageDeploymentInfo> statusList = mecMDeploymentMapper.getMecMPkgDeploymentInfoByPkgId(
             mecmPackageId);
         return ResponseEntity.ok(

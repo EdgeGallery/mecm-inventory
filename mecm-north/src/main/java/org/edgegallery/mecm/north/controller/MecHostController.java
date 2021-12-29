@@ -37,7 +37,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 @Controller
 @RestSchema(schemaId = "mecmHost")
 @RequestMapping("/north/v1")
@@ -46,8 +45,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MecHostController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MecHostController.class);
-
-    private static final String AdminId = "39937079-99fe-4cd8-881f-04ca8c4fe09d";
 
     @Autowired
     private MecmHostServiceFacade mecmHostServiceFacade;
@@ -63,8 +60,7 @@ public class MecHostController {
     @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
     public ResponseEntity<ResponseObject> queryMecmHosts(HttpServletRequest httpServletRequest) {
         LOGGER.info("enter query mecm hosts.");
-        return mecmHostServiceFacade.getAllMecmHosts(httpServletRequest.getHeader(Constant.ACCESS_TOKEN),
-            AdminId);
+        return mecmHostServiceFacade.getAllMecmHosts(httpServletRequest.getHeader(Constant.ACCESS_TOKEN));
     }
 
 }
