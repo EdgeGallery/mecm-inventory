@@ -173,7 +173,7 @@ public class MecHostInventoryHandler {
         host.setTenantId(tenantId);
         host.setMechostId(getMecHostId(mecHostIp, tenantId));
 
-        MecHost hostDb = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);;
+        MecHost hostDb = service.getRecord(getMecHostId(mecHostIp, tenantId), repository);
 
         host.setApplications(hostDb.getApplications());
         host.setRole(hostDb.getRole());

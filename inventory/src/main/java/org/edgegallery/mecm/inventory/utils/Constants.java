@@ -68,6 +68,8 @@ public final class Constants {
     public static final String INVALID_MODEL_TYPE = "Model type not supported";
     public static final String HTTPS_PROTO = "https://";
     public static final String HTTP_PROTO = "http://";
+    public static final String TENANTS    = "/tenants/";
+    public static final String CONFIGURATION = "/configuration";
 
     private Constants() {
     }

@@ -17,7 +17,6 @@
 package org.edgegallery.mecm.inventory.service.repository;
 
 import java.util.List;
-import org.edgegallery.mecm.inventory.model.AppDnsRule;
 import org.edgegallery.mecm.inventory.model.AppRepo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

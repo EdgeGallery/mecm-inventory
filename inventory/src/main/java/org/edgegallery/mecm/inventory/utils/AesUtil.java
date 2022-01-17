@@ -33,6 +33,9 @@ public class AesUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AesUtil.class);
 
+    private AesUtil() {
+    }
+
     /**
      * AES encryption.
      */

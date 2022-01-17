@@ -97,12 +97,12 @@ public class ConfigServiceImpl implements ConfigService {
         String msg;
         if (Boolean.parseBoolean(isSslEnabled)) {
             url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
-                    .append(mepmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
-                    .append("/configuration").toString();
+                    .append(mepmPort).append(APPLCM_V2_URI).append(Constants.TENANTS).append(tenantId)
+                    .append(Constants.CONFIGURATION).toString();
         } else {
             url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
-                    .append(mepmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
-                    .append("/configuration").toString();
+                    .append(mepmPort).append(APPLCM_V2_URI).append(Constants.TENANTS).append(tenantId)
+                    .append(Constants.CONFIGURATION).toString();
         }
 
         ResponseEntity<String> response;
@@ -135,12 +135,12 @@ public class ConfigServiceImpl implements ConfigService {
 
         if (Boolean.parseBoolean(isSslEnabled)) {
             url = new StringBuilder(Constants.HTTPS_PROTO).append(mepmIp).append(":")
-                    .append(mecmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
-                    .append("/configuration").toString();
+                    .append(mecmPort).append(APPLCM_V2_URI).append(Constants.TENANTS).append(tenantId)
+                    .append(Constants.CONFIGURATION).toString();
         } else {
             url = new StringBuilder(Constants.HTTP_PROTO).append(mepmIp).append(":")
-                    .append(mecmPort).append(APPLCM_V2_URI).append("/tenants/").append(tenantId)
-                    .append("/configuration").toString();
+                    .append(mecmPort).append(APPLCM_V2_URI).append(Constants.TENANTS).append(tenantId)
+                    .append(Constants.CONFIGURATION).toString();
         }
 
         // Preparing request parts.
