@@ -31,7 +31,7 @@
         <maven.test.failure.ignore>false</maven.test.failure.ignore>
         <lombok.version>1.18.10</lombok.version>
         <log4j.version>2.17.1</log4j.version>
-        <tomcat.embed.version>9.0.56</tomcat.embed.version>
+        <tomcat.embed.version>9.0.44</tomcat.embed.version>
         <spring-security-oauth2-autoconfigure.version>2.2.2.RELEASE</spring-security-oauth2-autoconfigure.version>
     </properties>
     <dependencyManagement>
