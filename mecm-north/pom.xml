@@ -52,17 +52,6 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-<!--        <dependency>-->
-<!--            <artifactId>tomcat-embed-core</artifactId>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <artifactId>tomcat-annotations-api</artifactId>-->
-<!--                    <groupId>org.apache.tomcat</groupId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--            <groupId>org.apache.tomcat.embed</groupId>-->
-<!--            <version>${tomcat.embed.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <artifactId>netty-common</artifactId>
             <groupId>io.netty</groupId>
