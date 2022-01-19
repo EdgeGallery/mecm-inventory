@@ -43,11 +43,11 @@ public class ScheduleInstantiateImpl {
     @Autowired
     private MecmDeploymentMapper mecMDeploymentMapper;
 
-    @Value("${serveraddress.apm}")
-    private String apmServerAddress;
-
     @Value("${serveraddress.appo}")
     private String appoServerAddress;
+
+    @Value("${serveraddress.apm}")
+    private String apmServerAddress;
 
     /**
      * Create Instantiate.
@@ -61,11 +61,11 @@ public class ScheduleInstantiateImpl {
         LOGGER.info("before create instance from appo, apmServerAddress:{}", apmServerAddress);
         LOGGER.info("before create instance from appo, appoServerAddress:{}", appoServerAddress);
         MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
-        context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
-        context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
         context.put(Constant.PACKAGE_ID, subJob.getAppPkgIdFromApm());
         context.put(Constant.APP_ID, subJob.getAppIdFromApm());
+        context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
+        context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
 
         LOGGER.info("before create instance from appo, access_token:{}", mecmPkg.getToken());
         LOGGER.info("before create instance from appo, TenantId:{}", mecmPkg.getTenantId());
