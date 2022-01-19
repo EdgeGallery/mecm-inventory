@@ -291,6 +291,7 @@ public class MecmService {
                 return false;
             } catch (InterruptedException e) {
                 LOGGER.error("thead sleep exception.");
+                Thread.currentThread().interrupt();
                 return false;
             }
         }
@@ -532,6 +533,7 @@ public class MecmService {
                 return false;
             } catch (InterruptedException e) {
                 LOGGER.error("thead sleep exception.");
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -732,6 +734,7 @@ public class MecmService {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             LOGGER.error("thread sleep has error.");
+            Thread.currentThread().interrupt();
         }
     }
 
