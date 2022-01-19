@@ -52,12 +52,15 @@ public class MecmHostServiceFacade {
      */
     public ResponseEntity<ResponseObject> getAllMecmHosts(String token) {
         LOGGER.info("get all mecm hosts.");
-        LOGGER.info("Facade side, token is {}",token);
+        LOGGER.info("Facade side, token is {}", token);
 
         OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(token);
         if (accessToken == null || accessToken.isExpired()) {
             LOGGER.error("Access token has expired.");
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+            // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            ErrorMessage errorMsg = new ErrorMessage(ResponseConst.RET_FAIL, null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseObject(null, errorMsg, "Access token is null or expired."));
         }
 
         Map<String, Object> additionalInfoMap = accessToken.getAdditionalInformation();

@@ -152,6 +152,9 @@ public class MecmPackageServiceFacade {
                     .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(Constant.STATUS_ERROR)
                     .status(Constant.DISTRIBUTE_ERROR_STATUS).params(parameters).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
+                ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_FAIL, null);
+                return ResponseEntity.ok(new ResponsePkgPost("", 1, errMsg,
+                    "Fail to upload file to apm with ip: " + ip));
             }
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
             String appIdFromApm = jsonObject.get("appId").getAsString();
