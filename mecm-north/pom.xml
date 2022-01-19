@@ -261,11 +261,6 @@
             <version>1.26</version>
         </dependency>
         <dependency>
-            <artifactId>tomcat-embed-core</artifactId>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <version>9.0.56</version>
-        </dependency>
-        <dependency>
             <artifactId>tomcat-embed-websocket</artifactId>
             <exclusions>
                 <exclusion>
