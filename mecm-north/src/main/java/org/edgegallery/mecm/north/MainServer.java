@@ -42,9 +42,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @EnableScheduling
 @EnableServiceComb
 public class MainServer {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(MainServer.class);
-
     /**
      * Main.
      */

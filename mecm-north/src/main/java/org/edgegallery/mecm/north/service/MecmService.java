@@ -241,70 +241,6 @@ public class MecmService {
      * @param hostIp hostIp
      * @return
      */
-    public boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("apmServerAddress")
-            .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
-        LOGGER.warn("getApmPackage URL: " + url);
-
-        long startTime = System.currentTimeMillis();
-        while (true) {
-            try {
-                // time out limit
-                if ((System.currentTimeMillis() - startTime) > 180000) {
-                    LOGGER.error("get package {} from apm time out", packageId);
-                    return false;
-                }
-
-                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
-                if (!HttpStatus.OK.equals(response.getStatusCode())) {
-                    LOGGER.error("get package from apm reponse failed. The status code is {}",
-                        response.getStatusCode());
-                    return false;
-                }
-
-                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
-                JsonArray mecHostInfo = jsonObject.get("mecHostInfo").getAsJsonArray();
-                for (JsonElement mecHost : mecHostInfo) {
-                    JsonObject mecHostObject = mecHost.getAsJsonObject();
-                    String status = mecHostObject.get("status").getAsString();
-                    String hostIpReq = mecHostObject.get("hostIp").getAsString();
-                    if (hostIp.equals(hostIpReq)) {
-                        LOGGER.info("status: {}", status);
-                        if ("Distributed".equalsIgnoreCase(status) || "uploaded".equalsIgnoreCase(status)) {
-                            return true;
-                        } else {
-                            if ("Error".equalsIgnoreCase(status)) {
-                                return false;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
-                Thread.sleep(9000);
-            } catch (RestClientException e) {
-                LOGGER.error("Failed to get package from apm which packageId is {} exception {}", packageId,
-                    e.getMessage());
-                return false;
-            } catch (InterruptedException e) {
-                LOGGER.error("thead sleep exception.");
-                Thread.currentThread().interrupt();
-                return false;
-            }
-        }
-    }
-
-    /**
-     * get package from apm.
-     *
-     * @param context context
-     * @param packageId packageId
-     * @param hostIp hostIp
-     * @return
-     */
     public String getApmPackageOnce(Map<String, String> context, String packageId, String hostIp) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
@@ -683,17 +619,6 @@ public class MecmService {
 
         return false;
     }
-
-    /*
-    private String getMecHostAppInstantiated(Map<String, String> context) {
-        String mecHostIpList = context.get("mecHostIpList");
-        if (null == mecHostIpList) {
-            return null;
-        }
-        String[] hostArray = mecHostIpList.split(",");
-        return hostArray[0];
-    }
-    */
 
     /**
      * delete app instance from appo.
