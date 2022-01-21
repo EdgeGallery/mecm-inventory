@@ -119,6 +119,12 @@
       <artifactId>netty-handler</artifactId>
       <groupId>io.netty</groupId>
       <version>4.1.72.Final</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-tcnative-classes</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <artifactId>netty-handler-proxy</artifactId>
@@ -137,10 +143,19 @@
       <version>4.1.72.Final</version>
     </dependency>
     <dependency>
+      <artifactId>spring-boot2-starter</artifactId>
+      <groupId>org.apache.servicecomb</groupId>
+      <version>1.3.6</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.servicecomb</groupId>
       <artifactId>spring-boot2-starter-servlet</artifactId>
       <version>1.3.6</version>
       <exclusions>
+        <exclusion>
+          <artifactId>spring-boot2-starter</artifactId>
+          <groupId>org.apache.servicecomb</groupId>
+        </exclusion>
         <exclusion>
           <artifactId>netty-common</artifactId>
           <groupId>io.netty</groupId>
@@ -371,10 +386,21 @@
       <version>${spring-security-oauth2-autoconfigure.version}</version>
     </dependency>
     <dependency>
+      <exclusions>
+      <exclusion>
+        <artifactId>json-smart</artifactId>
+        <groupId>net.minidev</groupId>
+      </exclusion>
+      </exclusions>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
       <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>json-smart</artifactId>
+      <groupId>net.minidev</groupId>
+      <version>2.4.7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -505,6 +531,10 @@
           <artifactId>spring-security-config</artifactId>
           <groupId>org.springframework.security</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>bcprov-jdk15on</artifactId>
+          <groupId>org.bouncycastle</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -516,6 +546,11 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.7</version>
+    </dependency>
+    <dependency>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <groupId>org.bouncycastle</groupId>
+      <version>1.68</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -542,12 +577,6 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.10.5.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>1.4.199</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
