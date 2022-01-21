@@ -36,11 +36,6 @@ import org.springframework.stereotype.Service;
 
 @Service("ScheduleImplementFacade")
 public class ScheduleImplementFacade {
-    @Autowired
-    private MecmService mecmService;
-
-    @Autowired
-    private MecmPackageMapper mecMPackageMapper;
 
     @Autowired
     private MecmDeploymentMapper mecMDeploymentMapper;
