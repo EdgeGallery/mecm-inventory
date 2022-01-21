@@ -91,13 +91,7 @@ public class MecmService {
 
     private static final String APPLICATION_JSON = "application/json";
 
-    private static final String CREATED = "Created";
-
     private static final String APPO_GET_INSTANCE = "/appo/v1/tenants/%s/app_instance_infos/%s";
-
-    private static final String INSTANTIATED = "instantiated";
-
-    private static final String LOCAL_FILE_PATH = "/usr/mecm-north/";
 
     private static final String VM = "vm";
 
@@ -114,7 +108,8 @@ public class MecmService {
      * @return save File Path
      */
     public String saveFileToLocal(MultipartFile uploadFile, String mecmPackageId) {
-        File filePath = new File(InitConfigUtil.getWorkSpaceBaseDir() + LOCAL_FILE_PATH + mecmPackageId + "/");
+        String localFilePath = Constant.LOCAL_FILE_PATH + mecmPackageId + File.separator;
+        File filePath = new File(InitConfigUtil.getWorkSpaceBaseDir() + localFilePath);
         if (!filePath.isDirectory()) {
             boolean isSuccess = filePath.mkdirs();
             if (!isSuccess) {
@@ -122,7 +117,7 @@ public class MecmService {
                 return null;
             }
         }
-        LOGGER.info("make file path to {}", LOCAL_FILE_PATH + mecmPackageId + "/");
+        LOGGER.info("make file path to {}", localFilePath);
         String fileName = uploadFile.getOriginalFilename();
 
         if (fileName == null || fileName.length() == 0) {
@@ -137,7 +132,7 @@ public class MecmService {
             return null;
         }
         LOGGER.info("upload file success {}", fileName);
-        return InitConfigUtil.getWorkSpaceBaseDir() + LOCAL_FILE_PATH + mecmPackageId + "/" + fileName;
+        return InitConfigUtil.getWorkSpaceBaseDir() + localFilePath + fileName;
     }
 
     /**
@@ -354,11 +349,12 @@ public class MecmService {
 
         HttpEntity<Map<String, Object>> request;
         if (VM.equalsIgnoreCase(context.get(APP_CLASS))) {
-            Map<String, Object> body = new HashMap<String, Object>();
+            Map<String, Object> body = new HashMap<>();
             // if package is vm, need parameters body
             LOGGER.info("package is vm.");
-            for (String key : parameters.keySet()) {
-                LOGGER.info("before instantiation, params have: {},{}", key, parameters.get(key));
+            //for (String key : parameters.keySet()) {
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                LOGGER.info("before instantiation, params have: {},{}", entry.getKey(), entry.getValue());
             }
             body.put("parameters", parameters);
             request = new HttpEntity<>(body, headers);

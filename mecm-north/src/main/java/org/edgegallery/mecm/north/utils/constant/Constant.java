@@ -37,6 +37,8 @@ public interface Constant {
 
     String ACCESS_TOKEN = "access_token";
 
+    String LOCAL_FILE_PATH = "/usr/mecm-north/";
+
     String USER_ID = "userId";
 
     String USER_NAME = "userName";
