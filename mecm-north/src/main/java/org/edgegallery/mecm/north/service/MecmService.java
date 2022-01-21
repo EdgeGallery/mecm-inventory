@@ -101,7 +101,7 @@ public class MecmService {
 
     private static final String VM = "vm";
 
-    private  static final RestTemplate restTemplate = new RestTemplate();
+    private static final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${serveraddress.inventory}")
     private String inventoryUrl;
@@ -167,7 +167,8 @@ public class MecmService {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         // 走upload with package，body里放file
-        String url = context.get(Constant.APM_SERVER_ADDRESS).concat(String.format(APM_UPLOAD_PACKAGE, context.get(TENANT_ID)));
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
+            .concat(String.format(APM_UPLOAD_PACKAGE, context.get(TENANT_ID)));
         try {
             return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         } catch (RestClientException e) {
@@ -511,8 +512,8 @@ public class MecmService {
             Map<String, Object> body = new HashMap<String, Object>();
             // if package is vm, need parameters body
             LOGGER.info("package is vm.");
-            for (String key:parameters.keySet()) {
-                LOGGER.info("before instantiation, params have: {},{}",key,parameters.get(key));
+            for (String key : parameters.keySet()) {
+                LOGGER.info("before instantiation, params have: {},{}", key, parameters.get(key));
             }
             body.put("parameters", parameters);
             request = new HttpEntity<>(body, headers);
