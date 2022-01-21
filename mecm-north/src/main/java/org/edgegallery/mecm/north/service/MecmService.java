@@ -65,14 +65,6 @@ public class MecmService {
 
     private static final String APPO_INSTANTIATE_APP = "/appo/v1/tenants/%s/app_instances/%s";
 
-    private static final String MECM_UPLOAD_GET_APPINFO = "/apm/v1/tenants/%s/packages/upload";
-
-    private static final String MECM_GET_DEPLOYMENT_STATUS = "/appo/v1/tenants/%s/apps/%s/packages/%s/status";
-
-    private static final String RESPONSE_FROM_APM_FAILED = "upload csar file to apm failed, and the response code is: ";
-
-    private static final String INSTANTIATE_APP_FAILED = "instantiate app from appo failed.";
-
     private static final String APPO_DELETE_APPLICATION_INSTANCE = "/appo/v1/tenants/%s/app_instances/%s";
 
     private static final String APP_NAME = "app_product_name";
@@ -83,19 +75,13 @@ public class MecmService {
 
     private static final String APP_CLASS = "app_class";
 
-    private static final String APP_INSTANCE_ID = "appInstanceId";
-
     private static final String APP_ID = "appId";
 
     private static final String PACKAGE_ID = "packageId";
 
-    private static final String SUCCESS = "success";
-
     private static final String APM_UPLOAD_PACKAGE = "/apm/v1/tenants/%s/packages/upload";
 
     private static final String APM_GET_PACKAGE = "/apm/v1/tenants/%s/packages/%s";
-
-    private static final String INVENTORY_GET_MECHOSTS_URL = "/inventory/v1/tenants/%s/mechosts";
 
     private static final String TENANT_ID = "tenantId";
 
@@ -109,25 +95,13 @@ public class MecmService {
 
     private static final String APPO_GET_INSTANCE = "/appo/v1/tenants/%s/app_instance_infos/%s";
 
-    private static final String APPO_GET_KPI_INSTANCE = "/appo/v1/tenants/%s/hosts/%s/kpi";
-
-    private static final String PROVIDER_ID = "app_provider_id";
-
     private static final String INSTANTIATED = "instantiated";
-
-    private static final String ARCHITECTURE = "app_architecture";
 
     private static final String LOCAL_FILE_PATH = "/usr/mecm-north/";
 
     private static final String VM = "vm";
 
-    private RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${serveraddress.apm}")
-    private String apmServerAddress;
-
-    @Value("${serveraddress.appo}")
-    private String appoUrl;
+    private  static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
     @Value("${serveraddress.inventory}")
     private String inventoryUrl;
@@ -195,7 +169,7 @@ public class MecmService {
         // 走upload with package，body里放file
         String url = context.get("apmServerAddress").concat(String.format(APM_UPLOAD_PACKAGE, context.get(TENANT_ID)));
         try {
-            return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            return REST_TEMPLATE.exchange(url, HttpMethod.POST, requestEntity, String.class);
         } catch (RestClientException e) {
             LOGGER.error("Failed to upload file to apm, exception {}", e.getMessage());
         }
@@ -251,7 +225,7 @@ public class MecmService {
 
         try {
 
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
                 LOGGER.error("get package from apm reponse failed. The status code is {}", response.getStatusCode());
             }
@@ -304,7 +278,7 @@ public class MecmService {
             .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.POST, requestEntity, String.class);
             LOGGER.info("response is: {}", response.getStatusCode());
             if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED.equals(
                 response.getStatusCode())) {
@@ -339,7 +313,7 @@ public class MecmService {
         LOGGER.warn("getApplicationInstance URL: " + url);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
                 LOGGER.error("get application instance from appo reponse failed. The status code is {}",
                     response.getStatusCode());
@@ -390,7 +364,7 @@ public class MecmService {
             .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.POST, requestEntity, String.class);
             LOGGER.info("response is: {}", response.getStatusCode());
             if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED.equals(
                 response.getStatusCode())) {
@@ -434,7 +408,7 @@ public class MecmService {
         long startTime = System.currentTimeMillis();
         while (true) {
             try {
-                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+                ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.GET, request, String.class);
                 if (!HttpStatus.OK.equals(response.getStatusCode())) {
                     LOGGER.error("get application instance from appo reponse failed. The status code is {}",
                         response.getStatusCode());
@@ -504,7 +478,7 @@ public class MecmService {
             .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
         LOGGER.info("instantiateAppFromAppo URL : {}", url);
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.POST, request, String.class);
             if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
                 LOGGER.error("instantiate application from appo reponse failed. The status code is {}",
                     response.getStatusCode());
@@ -550,7 +524,7 @@ public class MecmService {
             .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
         LOGGER.info("instantiateAppFromAppo URL : {}", url);
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.POST, request, String.class);
             if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
                 LOGGER.error("instantiate application from appo reponse failed. The status code is {}",
                     response.getStatusCode());
@@ -581,7 +555,7 @@ public class MecmService {
             .concat(String.format(APM_DELETE_EDGE_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID), hostIp));
         LOGGER.warn("deleteEdgePkg URL: {}", url);
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.DELETE, request, String.class);
             if (HttpStatus.OK.equals(response.getStatusCode())) {
                 return true;
             }
@@ -608,7 +582,7 @@ public class MecmService {
             .concat(String.format(APM_DELETE_APM_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID)));
         LOGGER.warn("deleteApmPkg URL: {}", url);
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.DELETE, request, String.class);
             if (HttpStatus.OK.equals(response.getStatusCode())) {
                 return true;
             }
@@ -636,7 +610,7 @@ public class MecmService {
             .concat(String.format(APPO_DELETE_APPLICATION_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("deleteAppInstance URL: {}", url);
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+            ResponseEntity<String> response = REST_TEMPLATE.exchange(url, HttpMethod.DELETE, request, String.class);
             if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED.equals(
                 response.getStatusCode())) {
                 return true;
