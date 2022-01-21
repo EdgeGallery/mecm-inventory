@@ -167,7 +167,7 @@ public class MecmService {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         // 走upload with package，body里放file
-        String url = context.get("apmServerAddress").concat(String.format(APM_UPLOAD_PACKAGE, context.get(TENANT_ID)));
+        String url = context.get(Constant.APM_SERVER_ADDRESS).concat(String.format(APM_UPLOAD_PACKAGE, context.get(TENANT_ID)));
         try {
             return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         } catch (RestClientException e) {
@@ -219,7 +219,7 @@ public class MecmService {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("apmServerAddress")
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
             .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
         LOGGER.warn("getApmPackage URL: " + url);
 
@@ -274,7 +274,7 @@ public class MecmService {
         headers.set(CONTENT_TYPE, APPLICATION_JSON);
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
 
         try {
@@ -308,7 +308,7 @@ public class MecmService {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("getApplicationInstance URL: " + url);
 
@@ -360,7 +360,7 @@ public class MecmService {
         headers.set(CONTENT_TYPE, APPLICATION_JSON);
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
 
         try {
@@ -401,7 +401,7 @@ public class MecmService {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("getApplicationInstance URL: " + url);
 
@@ -474,7 +474,7 @@ public class MecmService {
             request = new HttpEntity<>(headers);
         }
 
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
         LOGGER.info("instantiateAppFromAppo URL : {}", url);
         try {
@@ -520,7 +520,7 @@ public class MecmService {
             request = new HttpEntity<>(headers);
         }
 
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
         LOGGER.info("instantiateAppFromAppo URL : {}", url);
         try {
@@ -551,7 +551,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        String url = context.get("apmServerAddress")
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
             .concat(String.format(APM_DELETE_EDGE_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID), hostIp));
         LOGGER.warn("deleteEdgePkg URL: {}", url);
         try {
@@ -578,7 +578,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        String url = context.get("apmServerAddress")
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
             .concat(String.format(APM_DELETE_APM_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID)));
         LOGGER.warn("deleteApmPkg URL: {}", url);
         try {
@@ -606,7 +606,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_DELETE_APPLICATION_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("deleteAppInstance URL: {}", url);
         try {

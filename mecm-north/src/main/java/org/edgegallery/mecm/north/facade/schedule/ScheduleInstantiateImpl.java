@@ -56,8 +56,8 @@ public class ScheduleInstantiateImpl {
      */
     public void createInstantiate(MecmPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
-        context.put("apmServerAddress", apmServerAddress);
-        context.put("appoServerAddress", appoServerAddress);
+        context.put(Constant.APM_SERVER_ADDRESS, apmServerAddress);
+        context.put(Constant.APPO_SERVER_ADDRESS, appoServerAddress);
         LOGGER.info("before create instance from appo, apmServerAddress:{}", apmServerAddress);
         LOGGER.info("before create instance from appo, appoServerAddress:{}", appoServerAddress);
         MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
@@ -125,11 +125,10 @@ public class ScheduleInstantiateImpl {
      */
     public void executeInstantiate(MecmPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
-        context.put("apmServerAddress", apmServerAddress);
-        context.put("appoServerAddress", appoServerAddress);
+        context.put(Constant.APM_SERVER_ADDRESS, apmServerAddress);
+        context.put(Constant.APPO_SERVER_ADDRESS, appoServerAddress);
 
         MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
-
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
@@ -171,15 +170,13 @@ public class ScheduleInstantiateImpl {
      */
     public void queryInstantiate(MecmPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
-        context.put("apmServerAddress", apmServerAddress);
-        context.put("appoServerAddress", appoServerAddress);
+        context.put(Constant.APM_SERVER_ADDRESS, apmServerAddress);
+        context.put(Constant.APPO_SERVER_ADDRESS, appoServerAddress);
 
         MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
-
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());
         context.put(Constant.TENANT_ID, mecmPkg.getTenantId());
         context.put(Constant.APP_CLASS, mecmPkg.getMecmAppClass());
-
         context.put(Constant.APP_INSTANCE_ID, subJob.getAppInstanceId());
 
         String status = mecmService.getApplicationInstanceOnce(context, subJob.getAppInstanceId());
