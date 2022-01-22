@@ -25,8 +25,6 @@ public final class Constant {
 
     public static final String ACCESS_TOKEN = "access_token";
 
-    public static final String LOCAL_FILE_PATH = "/usr/mecm-north/";
-
     public static final String TENANT_ID = "tenantId";
 
     public static final String APP_INSTANCE_ID = "appInstanceId";
@@ -78,5 +76,9 @@ public final class Constant {
     //int STATUS_INSTANTIATED = 5
 
     public static final int STATUS_CREATED = 6;
+
+    private Constant() {
+        throw new IllegalStateException("Utility class");
+    }
 
 }

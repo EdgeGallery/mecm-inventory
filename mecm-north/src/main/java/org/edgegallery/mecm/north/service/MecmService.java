@@ -108,7 +108,7 @@ public class MecmService {
      * @return save File Path
      */
     public String saveFileToLocal(MultipartFile uploadFile, String mecmPackageId) {
-        String localFilePath = Constant.LOCAL_FILE_PATH + mecmPackageId + File.separator;
+        String localFilePath = "/usr/mecm-north/" + mecmPackageId + File.separator;
         File filePath = new File(InitConfigUtil.getWorkSpaceBaseDir() + localFilePath);
         if (!filePath.isDirectory()) {
             boolean isSuccess = filePath.mkdirs();
