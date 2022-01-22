@@ -352,7 +352,6 @@ public class MecmService {
             Map<String, Object> body = new HashMap<>();
             // if package is vm, need parameters body
             LOGGER.info("package is vm.");
-            //for (String key : parameters.keySet()) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 LOGGER.info("before instantiation, params have: {},{}", entry.getKey(), entry.getValue());
             }
