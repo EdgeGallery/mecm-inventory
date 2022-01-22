@@ -35,13 +35,13 @@ public class ScheduleDistributeImpl {
     public static final Logger LOGGER = LoggerFactory.getLogger(ScheduleDistributeImpl.class);
 
     @Autowired
+    private MecmDeploymentMapper mecMDeploymentMapper;
+
+    @Autowired
     private MecmService mecmService;
 
     @Autowired
     private MecmPackageMapper mecMPackageMapper;
-
-    @Autowired
-    private MecmDeploymentMapper mecMDeploymentMapper;
 
     @Value("${serveraddress.apm}")
     private String apmServerAddress;

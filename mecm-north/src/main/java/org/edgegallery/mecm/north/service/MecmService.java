@@ -65,14 +65,6 @@ public class MecmService {
 
     private static final String APPO_INSTANTIATE_APP = "/appo/v1/tenants/%s/app_instances/%s";
 
-    private static final String MECM_UPLOAD_GET_APPINFO = "/apm/v1/tenants/%s/packages/upload";
-
-    private static final String MECM_GET_DEPLOYMENT_STATUS = "/appo/v1/tenants/%s/apps/%s/packages/%s/status";
-
-    private static final String RESPONSE_FROM_APM_FAILED = "upload csar file to apm failed, and the response code is: ";
-
-    private static final String INSTANTIATE_APP_FAILED = "instantiate app from appo failed.";
-
     private static final String APPO_DELETE_APPLICATION_INSTANCE = "/appo/v1/tenants/%s/app_instances/%s";
 
     private static final String APP_NAME = "app_product_name";
@@ -83,19 +75,13 @@ public class MecmService {
 
     private static final String APP_CLASS = "app_class";
 
-    private static final String APP_INSTANCE_ID = "appInstanceId";
-
     private static final String APP_ID = "appId";
 
     private static final String PACKAGE_ID = "packageId";
 
-    private static final String SUCCESS = "success";
-
     private static final String APM_UPLOAD_PACKAGE = "/apm/v1/tenants/%s/packages/upload";
 
     private static final String APM_GET_PACKAGE = "/apm/v1/tenants/%s/packages/%s";
-
-    private static final String INVENTORY_GET_MECHOSTS_URL = "/inventory/v1/tenants/%s/mechosts";
 
     private static final String TENANT_ID = "tenantId";
 
@@ -105,29 +91,11 @@ public class MecmService {
 
     private static final String APPLICATION_JSON = "application/json";
 
-    private static final String CREATED = "Created";
-
     private static final String APPO_GET_INSTANCE = "/appo/v1/tenants/%s/app_instance_infos/%s";
-
-    private static final String APPO_GET_KPI_INSTANCE = "/appo/v1/tenants/%s/hosts/%s/kpi";
-
-    private static final String PROVIDER_ID = "app_provider_id";
-
-    private static final String INSTANTIATED = "instantiated";
-
-    private static final String ARCHITECTURE = "app_architecture";
-
-    private static final String LOCAL_FILE_PATH = "/usr/mecm-north/";
 
     private static final String VM = "vm";
 
-    private RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${serveraddress.apm}")
-    private String apmServerAddress;
-
-    @Value("${serveraddress.appo}")
-    private String appoUrl;
+    private static final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${serveraddress.inventory}")
     private String inventoryUrl;
@@ -140,7 +108,8 @@ public class MecmService {
      * @return save File Path
      */
     public String saveFileToLocal(MultipartFile uploadFile, String mecmPackageId) {
-        File filePath = new File(InitConfigUtil.getWorkSpaceBaseDir() + LOCAL_FILE_PATH + mecmPackageId + "/");
+        String localFilePath = "/usr/mecm-north/" + mecmPackageId + File.separator;
+        File filePath = new File(InitConfigUtil.getWorkSpaceBaseDir() + localFilePath);
         if (!filePath.isDirectory()) {
             boolean isSuccess = filePath.mkdirs();
             if (!isSuccess) {
@@ -148,7 +117,7 @@ public class MecmService {
                 return null;
             }
         }
-        LOGGER.info("make file path to {}", LOCAL_FILE_PATH + mecmPackageId + "/");
+        LOGGER.info("make file path to {}", localFilePath);
         String fileName = uploadFile.getOriginalFilename();
 
         if (fileName == null || fileName.length() == 0) {
@@ -163,7 +132,7 @@ public class MecmService {
             return null;
         }
         LOGGER.info("upload file success {}", fileName);
-        return InitConfigUtil.getWorkSpaceBaseDir() + LOCAL_FILE_PATH + mecmPackageId + "/" + fileName;
+        return InitConfigUtil.getWorkSpaceBaseDir() + localFilePath + fileName;
     }
 
     /**
@@ -193,7 +162,8 @@ public class MecmService {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         // 走upload with package，body里放file
-        String url = context.get("apmServerAddress").concat(String.format(APM_UPLOAD_PACKAGE, context.get(TENANT_ID)));
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
+            .concat(String.format(APM_UPLOAD_PACKAGE, context.get(TENANT_ID)));
         try {
             return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         } catch (RestClientException e) {
@@ -241,74 +211,11 @@ public class MecmService {
      * @param hostIp hostIp
      * @return
      */
-    public boolean getApmPackage(Map<String, String> context, String packageId, String hostIp) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("apmServerAddress")
-            .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
-        LOGGER.warn("getApmPackage URL: " + url);
-
-        long startTime = System.currentTimeMillis();
-        while (true) {
-            try {
-                // time out limit
-                if ((System.currentTimeMillis() - startTime) > 180000) {
-                    LOGGER.error("get package {} from apm time out", packageId);
-                    return false;
-                }
-
-                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
-                if (!HttpStatus.OK.equals(response.getStatusCode())) {
-                    LOGGER.error("get package from apm reponse failed. The status code is {}",
-                        response.getStatusCode());
-                    return false;
-                }
-
-                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
-                JsonArray mecHostInfo = jsonObject.get("mecHostInfo").getAsJsonArray();
-                for (JsonElement mecHost : mecHostInfo) {
-                    JsonObject mecHostObject = mecHost.getAsJsonObject();
-                    String status = mecHostObject.get("status").getAsString();
-                    String hostIpReq = mecHostObject.get("hostIp").getAsString();
-                    if (hostIp.equals(hostIpReq)) {
-                        LOGGER.info("status: {}", status);
-                        if ("Distributed".equalsIgnoreCase(status) || "uploaded".equalsIgnoreCase(status)) {
-                            return true;
-                        } else {
-                            if ("Error".equalsIgnoreCase(status)) {
-                                return false;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
-                Thread.sleep(9000);
-            } catch (RestClientException e) {
-                LOGGER.error("Failed to get package from apm which packageId is {} exception {}", packageId,
-                    e.getMessage());
-                return false;
-            } catch (InterruptedException e) {
-                LOGGER.error("thead sleep exception.");
-                return false;
-            }
-        }
-    }
-
-    /**
-     * get package from apm.
-     *
-     * @param context context
-     * @param packageId packageId
-     * @param hostIp hostIp
-     * @return
-     */
     public String getApmPackageOnce(Map<String, String> context, String packageId, String hostIp) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("apmServerAddress")
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
             .concat(String.format(APM_GET_PACKAGE, context.get(TENANT_ID), packageId));
         LOGGER.warn("getApmPackage URL: " + url);
 
@@ -355,7 +262,7 @@ public class MecmService {
         body.put("appInstanceDescription", UUID.randomUUID().toString());
         body.put("appName", appName);
         body.put("appPackageId", context.get(PACKAGE_ID));
-        body.put("appId", context.get(APP_ID));
+        body.put(APP_ID, context.get(APP_ID));
         body.put("mecHost", hostIp);
 
         HttpHeaders headers = new HttpHeaders();
@@ -363,7 +270,7 @@ public class MecmService {
         headers.set(CONTENT_TYPE, APPLICATION_JSON);
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
 
         try {
@@ -397,7 +304,7 @@ public class MecmService {
         HttpHeaders headers = new HttpHeaders();
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("getApplicationInstance URL: " + url);
 
@@ -428,160 +335,6 @@ public class MecmService {
     }
 
     /**
-     * create app instance from appo.
-     *
-     * @param context context info
-     * @param appName appName
-     * @param hostIp mec host ip
-     * @return create app instance sucess or not.s
-     */
-    public String createInstanceFromAppo(Map<String, String> context, String appName, String hostIp,
-        Map<String, Object> parameters) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("appInstanceDescription", UUID.randomUUID().toString());
-        body.put("appName", appName);
-        body.put("appPackageId", context.get(PACKAGE_ID));
-        body.put("appId", context.get(APP_ID));
-        body.put("mecHost", hostIp);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
-        headers.set(CONTENT_TYPE, APPLICATION_JSON);
-
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        String url = context.get("appoServerAddress")
-            .concat(String.format(APPO_CREATE_APPINSTANCE, context.get(TENANT_ID)));
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-            LOGGER.info("response is: {}", response.getStatusCode());
-            if (HttpStatus.OK.equals(response.getStatusCode()) || HttpStatus.ACCEPTED.equals(
-                response.getStatusCode())) {
-                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
-                JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
-                if (null != responseBody) {
-                    String appInstanceId = responseBody.get("app_instance_id").getAsString();
-                    LOGGER.info("appInstanceId: {}", appInstanceId);
-                    if (getApplicationInstance(context, appInstanceId, CREATED) && instantiateAppFromAppo(context,
-                        parameters, appInstanceId)) {
-                        if (getApplicationInstance(context, appInstanceId, INSTANTIATED)) {
-                            return appInstanceId;
-                        }
-                    }
-                    return null;
-                }
-            }
-        } catch (RestClientException e) {
-            LOGGER.error("Failed to create app instance from appo which appId is {} exception {}", context.get(APP_ID),
-                e.getMessage());
-        }
-        return null;
-    }
-
-    /**
-     * get application instance from appo.
-     *
-     * @param context context
-     * @param appInstanceId appInstanceId
-     * @param status status
-     * @return
-     */
-    private boolean getApplicationInstance(Map<String, String> context, String appInstanceId, String status) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        String url = context.get("appoServerAddress")
-            .concat(String.format(APPO_GET_INSTANCE, context.get(TENANT_ID), appInstanceId));
-        LOGGER.warn("getApplicationInstance URL: " + url);
-
-        long startTime = System.currentTimeMillis();
-        while (true) {
-            try {
-                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
-                if (!HttpStatus.OK.equals(response.getStatusCode())) {
-                    LOGGER.error("get application instance from appo reponse failed. The status code is {}",
-                        response.getStatusCode());
-                    return false;
-                }
-
-                JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
-                JsonObject responseBody = jsonObject.get("response").getAsJsonObject();
-                LOGGER.info("status: {}, operationalStatus: {}", status,
-                    responseBody.get("operationalStatus").getAsString());
-
-                String responseStatus = responseBody.get("operationalStatus").getAsString();
-                if ("Instantiation failed".equalsIgnoreCase(responseStatus) || "Create failed".equalsIgnoreCase(
-                    responseStatus)) {
-                    LOGGER.error("instantiate or create app failed. The status  is {}", responseStatus);
-                    return false;
-                }
-
-                if (status.equalsIgnoreCase(responseStatus)) {
-                    LOGGER.info("{} is {}.", appInstanceId, status);
-                    break;
-                }
-
-                if ((System.currentTimeMillis() - startTime) > 40000) {
-                    LOGGER.error("get instance {} from appo time out", appInstanceId);
-                    return false;
-                }
-                Thread.sleep(5000);
-            } catch (RestClientException e) {
-                LOGGER.error("Failed to get application instance from appo which app_instance_id is {} exception {}",
-                    appInstanceId, e.getMessage());
-                return false;
-            } catch (InterruptedException e) {
-                LOGGER.error("thead sleep exception.");
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * instantiate application by appo.
-     *
-     * @param context context info.
-     * @param appInstanceId appInstanceId
-     * @return instantiate app successful
-     */
-    public boolean instantiateAppFromAppo(Map<String, String> context, Map<String, Object> parameters,
-        String appInstanceId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
-        headers.set(CONTENT_TYPE, APPLICATION_JSON);
-
-        HttpEntity<Map<String, Object>> request;
-        if (VM.equalsIgnoreCase(context.get(APP_CLASS))) {
-            Map<String, Object> body = new HashMap<String, Object>();
-            // if package is vm, need parameters body
-            LOGGER.info("package is vm.");
-            body.put("parameters", parameters);
-            request = new HttpEntity<>(body, headers);
-        } else {
-            request = new HttpEntity<>(headers);
-        }
-
-        String url = context.get("appoServerAddress")
-            .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
-        LOGGER.info("instantiateAppFromAppo URL : {}", url);
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-            if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
-                LOGGER.error("instantiate application from appo reponse failed. The status code is {}",
-                    response.getStatusCode());
-                return false;
-            }
-            LOGGER.info("instantiateAppFromAppo: {}", response.getStatusCode());
-        } catch (RestClientException e) {
-            LOGGER.error("Failed to instantiate application from appo which app_instance_id is {} exception {}",
-                appInstanceId, e.getMessage());
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * instantiate application by appo.
      *
      * @param context context info.
@@ -596,11 +349,11 @@ public class MecmService {
 
         HttpEntity<Map<String, Object>> request;
         if (VM.equalsIgnoreCase(context.get(APP_CLASS))) {
-            Map<String, Object> body = new HashMap<String, Object>();
+            Map<String, Object> body = new HashMap<>();
             // if package is vm, need parameters body
             LOGGER.info("package is vm.");
-            for (String key:parameters.keySet()) {
-                LOGGER.info("before instantiation, params have: {},{}",key,parameters.get(key));
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                LOGGER.info("before instantiation, params have: {},{}", entry.getKey(), entry.getValue());
             }
             body.put("parameters", parameters);
             request = new HttpEntity<>(body, headers);
@@ -608,7 +361,7 @@ public class MecmService {
             request = new HttpEntity<>(headers);
         }
 
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_INSTANTIATE_APP, context.get(TENANT_ID), appInstanceId));
         LOGGER.info("instantiateAppFromAppo URL : {}", url);
         try {
@@ -639,7 +392,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        String url = context.get("apmServerAddress")
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
             .concat(String.format(APM_DELETE_EDGE_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID), hostIp));
         LOGGER.warn("deleteEdgePkg URL: {}", url);
         try {
@@ -666,7 +419,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        String url = context.get("apmServerAddress")
+        String url = context.get(Constant.APM_SERVER_ADDRESS)
             .concat(String.format(APM_DELETE_APM_PACKAGE, context.get(TENANT_ID), context.get(PACKAGE_ID)));
         LOGGER.warn("deleteApmPkg URL: {}", url);
         try {
@@ -682,17 +435,6 @@ public class MecmService {
         return false;
     }
 
-    /*
-    private String getMecHostAppInstantiated(Map<String, String> context) {
-        String mecHostIpList = context.get("mecHostIpList");
-        if (null == mecHostIpList) {
-            return null;
-        }
-        String[] hostArray = mecHostIpList.split(",");
-        return hostArray[0];
-    }
-    */
-
     /**
      * delete app instance from appo.
      *
@@ -705,7 +447,7 @@ public class MecmService {
         headers.set(ACCESS_TOKEN, context.get(ACCESS_TOKEN));
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        String url = context.get("appoServerAddress")
+        String url = context.get(Constant.APPO_SERVER_ADDRESS)
             .concat(String.format(APPO_DELETE_APPLICATION_INSTANCE, context.get(TENANT_ID), appInstanceId));
         LOGGER.warn("deleteAppInstance URL: {}", url);
         try {
@@ -732,6 +474,7 @@ public class MecmService {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             LOGGER.error("thread sleep has error.");
+            Thread.currentThread().interrupt();
         }
     }
 
