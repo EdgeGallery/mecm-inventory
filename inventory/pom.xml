@@ -143,9 +143,28 @@
       <version>4.1.72.Final</version>
     </dependency>
     <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+      <version>3.9.8</version>
+    </dependency>
+    <dependency>
       <artifactId>spring-boot2-starter</artifactId>
       <groupId>org.apache.servicecomb</groupId>
       <version>1.3.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-to-slf4j</artifactId>
+        </exclusion>
+       <exclusion>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+      </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.servicecomb</groupId>
