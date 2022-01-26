@@ -15,6 +15,7 @@
 
 package org.edgegallery.mecm.north.facade;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
@@ -52,12 +52,14 @@ public class MecmHostServiceFacade {
      */
     public ResponseEntity<ResponseObject> getAllMecmHosts(String token) {
         LOGGER.info("get all mecm hosts.");
-        LOGGER.info("Facade side, token is {}",token);
+        LOGGER.info("Facade side, token is {}", token);
 
         OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(token);
         if (accessToken == null || accessToken.isExpired()) {
             LOGGER.error("Access token has expired.");
             ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+            ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, new ArrayList<>());
+            return ResponseEntity.ok(new ResponseObject(new ArrayList<>(), resultMsg, "token invalid."));
         }
 
         Map<String, Object> additionalInfoMap = accessToken.getAdditionalInformation();

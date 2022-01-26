@@ -39,16 +39,16 @@ public class ScheduleClearErrorImpl {
     private MecmService mecmService;
 
     @Autowired
-    private MecmPackageMapper mecMPackageMapper;
-
-    @Autowired
     private MecmDeploymentMapper mecMDeploymentMapper;
 
-    @Value("${serveraddress.apm}")
-    private String apmServerAddress;
+    @Autowired
+    private MecmPackageMapper mecMPackageMapper;
 
     @Value("${serveraddress.appo}")
     private String appoServerAddress;
+
+    @Value("${serveraddress.apm}")
+    private String apmServerAddress;
 
     /**
      * delete error status.
@@ -58,8 +58,8 @@ public class ScheduleClearErrorImpl {
     public void deleteErrorStatus(MecmPackageDeploymentInfo subJob) {
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
-        context.put("appoServerAddress", appoServerAddress);
         LOGGER.info("before create instance from appo, apmServerAddress:{}", apmServerAddress);
+        context.put("appoServerAddress", appoServerAddress);
         LOGGER.info("before create instance from appo, appoServerAddress:{}", appoServerAddress);
         MecmPackageInfo mecmPkg = mecMPackageMapper.getMecmPkgInfoByPkgId(subJob.getMecmPackageId());
         context.put(Constant.ACCESS_TOKEN, mecmPkg.getToken());

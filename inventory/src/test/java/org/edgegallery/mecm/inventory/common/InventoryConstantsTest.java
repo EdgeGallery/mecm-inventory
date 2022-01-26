@@ -1,5 +1,11 @@
 package org.edgegallery.mecm.inventory.common;
 
+import org.edgegallery.mecm.inventory.exception.InventoryExceptionResponse;
+import org.junit.Test;
+import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class InventoryConstantsTest {
 
     public static final String ACCESS_TOKEN = "access_token";
@@ -50,6 +56,10 @@ public class InventoryConstantsTest {
 
     public static final String OPERATIONAL_INFO = "operationalInfo";
 
-    private InventoryConstantsTest() {
+    public InventoryConstantsTest() {
+    }
+
+    @Test
+    public void testInventoryConstants() {
     }
 }

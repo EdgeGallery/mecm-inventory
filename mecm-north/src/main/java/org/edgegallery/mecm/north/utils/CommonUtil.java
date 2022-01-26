@@ -18,8 +18,10 @@
 package org.edgegallery.mecm.north.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +40,6 @@ public class CommonUtil {
         String[] paramArr = params.split(";");
         for (String param : paramArr) {
             String[] configItem = param.split("=");
-            // param patter: key = value or key = ;
             resMap.put(configItem[0].trim(), 1 == configItem.length ? "" : configItem[1].trim());
         }
         return resMap;
@@ -51,8 +52,14 @@ public class CommonUtil {
      */
     public static void deleteFile(String filePath) {
         File file = new File(filePath);
-        if (!file.delete()) {
-            LOGGER.error("delete file failed.");
+        try {
+            FileUtils.forceDelete(file);
+        } catch (IOException e) {
+            LOGGER.error("delete file failed, {}", e.getMessage());
         }
+    }
+
+    private CommonUtil() {
+        throw new IllegalStateException("Utility class");
     }
 }

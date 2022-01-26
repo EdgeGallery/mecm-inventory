@@ -26,8 +26,6 @@ import org.edgegallery.mecm.north.facade.schedule.ScheduleDistributeImpl;
 import org.edgegallery.mecm.north.facade.schedule.ScheduleInstantiateImpl;
 import org.edgegallery.mecm.north.model.MecmPackageDeploymentInfo;
 import org.edgegallery.mecm.north.repository.mapper.MecmDeploymentMapper;
-import org.edgegallery.mecm.north.repository.mapper.MecmPackageMapper;
-import org.edgegallery.mecm.north.service.MecmService;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +34,6 @@ import org.springframework.stereotype.Service;
 
 @Service("ScheduleImplementFacade")
 public class ScheduleImplementFacade {
-    @Autowired
-    private MecmService mecmService;
-
-    @Autowired
-    private MecmPackageMapper mecMPackageMapper;
 
     @Autowired
     private MecmDeploymentMapper mecMDeploymentMapper;

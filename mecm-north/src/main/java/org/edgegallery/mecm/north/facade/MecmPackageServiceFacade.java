@@ -48,21 +48,7 @@ import org.springframework.stereotype.Service;
 @Service("MecmPackageServiceFacade")
 public class MecmPackageServiceFacade {
 
-    private static final String RESPONSE_FROM_APM_FAILED = "upload csar file to apm failed, and the response code is: ";
-
     private static final String DISTRIBUTING_STATUS = "Distributing";
-
-    private static final String DISTRIBUTED_STATUS = "Distributed";
-
-    private static final String INSTANTIATING_STATUS = "Instantiating";
-
-    private static final String FINISHED_STATUS = "Finished";
-
-    private static final String FAIL_TO_DISTRIBUTE_STATUS = "failed to distribute";
-
-    private static final String FAILED_TO_INSTANTIATE_STATUS = "failed to instantiate";
-
-    private static final String APP_INSTANCE_ID = "appInstanceId";
 
     private static final String APP_CLASS = "app_class";
 
@@ -99,7 +85,6 @@ public class MecmPackageServiceFacade {
             LOGGER.error("pkgBody has empty field, pls check pkgBody");
             ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_FAIL, null);
             return ResponseEntity.ok(new ResponsePkgPost("", 1, errMsg, "Failed to create server"));
-            // throw new AppException("pkgBody has empty field, pls check pkgBody", RET_PKG_FILED_EMPTY_FAILED);
         }
 
         String pkgName = pkgBody.getAppPkgName();
@@ -108,9 +93,7 @@ public class MecmPackageServiceFacade {
         LOGGER.info("get package Version is {}", pkgVersion);
         String[] hostList = pkgBody.getHostList().split(";");
         String appClass = pkgBody.getAppClass();
-        //String[] paramsMap = pkgBody.getParameters().split(";");
         String parameters = pkgBody.getParameters();
-        // JSONObject obj = JSONObject.parseObject(parameters);
         String tenantId = pkgBody.getTenantId();
 
         String mecmPackageId = UUID.randomUUID().toString();
@@ -152,6 +135,9 @@ public class MecmPackageServiceFacade {
                     .mecmPackageId(mecmPackageId).mecmPkgName(pkgName).hostIp(ip).statusCode(Constant.STATUS_ERROR)
                     .status(Constant.DISTRIBUTE_ERROR_STATUS).params(parameters).build();
                 mecMDeploymentMapper.insertPkgDeploymentInfo(info);
+                ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_FAIL, null);
+                return ResponseEntity.ok(
+                    new ResponsePkgPost("", 1, errMsg, "Fail to upload file to apm with ip: " + ip));
             }
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
             String appIdFromApm = jsonObject.get("appId").getAsString();
@@ -197,7 +183,6 @@ public class MecmPackageServiceFacade {
         String accessToken) {
         String mecmPackageId = checkBody.getMecmPackageId();
         LOGGER.info("begin to delete pkg distribution and instantiation status with mecmPackageId:{}", mecmPackageId);
-        //    String[] hostList = mecMPackageMapper.getMecMPkgInfoByPkgId(mecmPackageId).getHostIps().split(",");
 
         Map<String, String> context = new HashMap<>();
         context.put("apmServerAddress", apmServerAddress);
@@ -284,7 +269,7 @@ public class MecmPackageServiceFacade {
     }
 
     private String listToIps(String[] list) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < list.length; i++) {
             sb.append(list[i]);
             if (i != list.length - 1) {
