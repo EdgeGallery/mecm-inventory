@@ -31,7 +31,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
     <spring-security-oauth2-autoconfigure.version>2.2.2.RELEASE</spring-security-oauth2-autoconfigure.version>
-    <tomcat.embed.version>9.0.44</tomcat.embed.version>
+    <tomcat.embed.version>9.0.56</tomcat.embed.version>
     <log4j.version>2.17.1</log4j.version>
   </properties>
 
@@ -63,6 +63,26 @@
       </exclusions>
       <groupId>org.apache.tomcat.embed</groupId>
       <version>${tomcat.embed.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>5.2.19.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>5.2.19.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>5.2.19.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.3.25.Final</version>
     </dependency>
     <!-- ServiceComb -->
     <dependency>
@@ -279,14 +299,14 @@
     <dependency>
       <artifactId>spring-web</artifactId>
       <groupId>org.springframework</groupId>
-      <version>5.1.13.RELEASE</version>
+      <version>5.2.19.RELEASE</version>
     </dependency>    
 
     <!-- Spring -->
     <dependency>
       <artifactId>spring-aop</artifactId>
       <groupId>org.springframework</groupId>
-      <version>5.1.13.RELEASE</version>
+      <version>5.2.19.RELEASE</version>
     </dependency>
     <!--dependency>
       <groupId>org.springframework.plugin</groupId>
@@ -334,7 +354,6 @@
           <artifactId>spring-boot-starter-logging</artifactId>
         </exclusion>
       </exclusions>
-
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -377,12 +396,12 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>5.3.10.RELEASE</version>
+      <version>5.3.13.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
-      <version>5.3.8.RELEASE</version>
+      <version>5.3.13.RELEASE</version>
     </dependency>
 
     <dependency>
@@ -433,18 +452,18 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
-      <version>5.3.10.RELEASE</version>
+      <version>5.3.13.RELEASE</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>5.1.13.RELEASE</version>
+      <version>5.2.19.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>5.1.13.RELEASE</version>
+      <version>5.2.19.RELEASE</version>
     </dependency>
     <!-- end of spring -->
     <!-- DB -->
@@ -526,12 +545,12 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>5.3.10.RELEASE</version>
+      <version>5.3.13.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
-      <version>5.3.8.RELEASE</version>
+      <version>5.3.13.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
