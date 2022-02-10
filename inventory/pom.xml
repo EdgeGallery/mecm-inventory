@@ -31,6 +31,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
     <spring-framework.version>5.2.19.RELEASE</spring-framework.version>
+    <spring-framework-security.version>5.3.13.RELEASE</spring-framework-security.version>
     <spring-security-oauth2-autoconfigure.version>2.2.2.RELEASE</spring-security-oauth2-autoconfigure.version>
     <tomcat.embed.version>9.0.56</tomcat.embed.version>
     <log4j.version>2.17.1</log4j.version>
@@ -90,7 +91,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>5.1.20.RELEASE</version>
+      <version>${spring-framework.version}</version>
     </dependency>
     <dependency>
       <artifactId>spring-web</artifactId>
@@ -98,9 +99,19 @@
       <version>${spring-framework.version}</version>
     </dependency>
     <dependency>
-      <artifactId>spring-aop</artifactId>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
       <version>${spring-framework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${spring-framework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
+      <version>2.3.3.RELEASE</version>
     </dependency>
 
     <dependency>
@@ -189,12 +200,12 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-      <version>3.9.8</version>
+      <version>3.9.12</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
-      <version>3.9.8</version>
+      <version>3.9.12</version>
     </dependency>
     <dependency>
       <artifactId>spring-boot2-starter</artifactId>
@@ -359,6 +370,22 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>${spring-boot.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>${spring-boot.version}</version>
       <exclusions>
@@ -409,18 +436,18 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>5.3.13.RELEASE</version>
+      <version>${spring-framework-security.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
-      <version>5.3.13.RELEASE</version>
+      <version>${spring-framework-security.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
-      <version>5.3.8.RELEASE</version>
+      <version>${spring-framework-security.version}</version>
     </dependency>
     <dependency>
       <exclusions>
@@ -465,7 +492,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
-      <version>5.3.13.RELEASE</version>
+      <version>${spring-framework-security.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -554,21 +581,6 @@
       <groupId>org.modelmapper</groupId>
       <artifactId>modelmapper</artifactId>
       <version>1.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
-      <version>5.3.13.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <version>5.3.13.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-      <version>5.3.8.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security.oauth.boot</groupId>
