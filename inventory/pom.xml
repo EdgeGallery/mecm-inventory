@@ -506,11 +506,6 @@
       <version>5.2.19.RELEASE</version>
     </dependency>
     <!-- end of spring -->
-    <!-- DB -->
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
