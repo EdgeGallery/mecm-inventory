@@ -57,6 +57,8 @@ spring:
     url: jdbc:postgresql://${INVENTORY_DB_HOST:mecm-postgres}:${INVENTORY_DB_PORT:5432}/${INVENTORY_DB:inventorydb}
     username: ${INVENTORY_DB_USER:inventory}
     password: ${INVENTORY_DB_PASSWORD:}
+    initialization-mode: always
+    schema: classpath:db/migration/V1__Add_Inventory_Task_Table.sql
   jpa:
     properties:
       hibernate:
