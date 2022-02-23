@@ -33,9 +33,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -47,30 +47,30 @@ import org.springframework.web.client.RestTemplate;
 public class SysImageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SysImageController.class);
-
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
-    /**
+    /*
      * get sysImages.
-     * @param url url
+     * @param hostIp hostIp
      */
-    @PostMapping(value = "/sysImages", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(value = "/hosts/{hostIp}/sysImages", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "get system images", response = ResponseObject.class)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "microservice not found", response = String.class),
         @ApiResponse(code = 500, message = "resource grant error", response = String.class)
     })
     public ResponseEntity<ResponseObject> getSysImages(
-        @ApiParam(value = "url", required = true) @RequestParam("url") String url) {
+        @ApiParam(value = "hostIp") @PathVariable("hostIp") String hostIp) {
         LOGGER.info("begin to get system images");
         ResponseEntity<String> response;
         try {
+            String url = "http://" + hostIp + ":30090/image-management/v1/images";
             response = REST_TEMPLATE.exchange(url, HttpMethod.GET, null, String.class);
         } catch (RestClientException e) {
             LOGGER.error("get sysImages exception {}", e.getMessage());
             return null;
         }
-        ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
-        return ResponseEntity.ok(new ResponseObject(response, resultMsg, "query success."));
+        ErrorMessage errMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
+        return ResponseEntity.ok(new ResponseObject(response, errMsg, "query success."));
     }
 }
