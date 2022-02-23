@@ -29,6 +29,7 @@ import org.edgegallery.mecm.north.domain.ResponseConst;
 import org.edgegallery.mecm.north.utils.exception.ErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -49,22 +50,22 @@ public class SysImageController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SysImageController.class);
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
+    @Value("${mecm-north.filesystem-address:}")
+    private String fileSystemAddress;
     /*
-     * get sysImages.
-     * @param hostIp hostIp
+     * get system images.
      */
-    @GetMapping(value = "/hosts/{hostIp}/sysImages", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(value = "/system/images", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "get system images", response = ResponseObject.class)
     @ApiResponses(value = {
         @ApiResponse(code = 404, message = "microservice not found", response = String.class),
         @ApiResponse(code = 500, message = "resource grant error", response = String.class)
     })
-    public ResponseEntity<ResponseObject> getSysImages(
-        @ApiParam(value = "hostIp") @PathVariable("hostIp") String hostIp) {
+    public ResponseEntity<ResponseObject> getSysImages() {
         LOGGER.info("begin to get system images");
         ResponseEntity<String> response;
         try {
-            String url = "http://" + hostIp + ":30090/image-management/v1/images";
+            String url = String.format("%s/image-management/v1/images", fileSystemAddress);
             response = REST_TEMPLATE.exchange(url, HttpMethod.GET, null, String.class);
         } catch (RestClientException e) {
             LOGGER.error("get sysImages exception {}", e.getMessage());
