@@ -75,6 +75,10 @@ spring:
   resources:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${servicecomb.uploads.directory}
 
+### mecm-north config ###
+mecm-north:
+  filesystem-address: ${FILESYSTEM_ADDRESS:}
+
 ###mybtis####
 mybatis:
   mapper-locations: classpath:mybatis/*.xml
