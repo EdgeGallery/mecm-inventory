@@ -19,7 +19,6 @@ package org.edgegallery.mecm.north.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import javax.ws.rs.core.MediaType;
@@ -35,7 +34,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -43,8 +41,6 @@ import org.springframework.web.client.RestTemplate;
 @Controller
 @RestSchema(schemaId = "mecmSysImages")
 @RequestMapping("/north/v1")
-@Api(tags = {"MecM sysImages Controller"})
-@Validated
 public class SysImageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SysImageController.class);
