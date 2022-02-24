@@ -52,9 +52,11 @@ public class SysImageController {
 
     @Value("${mecm-north.filesystem-address:}")
     private String fileSystemAddress;
-    /*
+
+    /**
      * get system images.
      */
+
     @GetMapping(value = "/system/images", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "get system images", response = ResponseObject.class)
     @ApiResponses(value = {
