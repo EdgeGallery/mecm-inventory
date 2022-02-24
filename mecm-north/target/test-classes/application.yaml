@@ -1,0 +1,55 @@
+#  Copyright 2021 Huawei Technologies Co., Ltd.
+# 
+#  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+#  in compliance with the License. You may obtain a copy of the License at
+# 
+#  http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software distributed under the License
+#  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+#  or implied. See the License for the specific language governing permissions and limitations under
+#  the License.
+
+servicecomb:
+  boot:
+    waitUp.timeoutInMilliseconds: 200
+
+
+###spring config######
+server:
+  port: 8103
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username:
+    password:
+    driver-class-name: org.h2.Driver
+    schema: classpath:mecm-north-test.sql
+  main:
+    allow-bean-definition-overriding: true
+
+###mybtis####
+mybatis:
+  mapper-locations: classpath:mybatis/sql/*.xml
+
+client:
+  client-id: ${CLIENT_ID:mecm-north}
+  client-secret: ${CLIENT_SECRET:mecm-north-secret}
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: test
+        key-uri: http://localhost:38067/oauth/token_key
+
+serveraddress:
+  apm: ${APM_SERVER_ADDRESS:https://mecm-apm:8092}
+  appo: ${APPO_SERVER_ADDRESS:https://mecm-appo:8091}
+  inventory: ${INVENTORY_SERVER_ADDRESS:https://mecm-inventory:8093}
+  appstore: ${APPSTORE_SERVER_ADDRESS:https://appstore-be-svc:8099}
+
+plugin:
+  runMode: dev
+  pluginPath: plugins

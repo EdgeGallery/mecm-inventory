@@ -19,12 +19,17 @@ package org.edgegallery.mecm.north.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Pattern;
 import javax.ws.rs.core.MediaType;
 import org.apache.servicecomb.provider.rest.common.RestSchema;
+import org.edgegallery.mecm.north.controller.advice.RequestCheckBody;
 import org.edgegallery.mecm.north.controller.advice.ResponseObject;
+import org.edgegallery.mecm.north.controller.advice.ResponseOfStatus;
+import org.edgegallery.mecm.north.controller.advice.RspHealthCheck;
 import org.edgegallery.mecm.north.facade.MecmHostServiceFacade;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.slf4j.Logger;
@@ -35,7 +40,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RestSchema(schemaId = "mecmHost")
@@ -63,4 +72,20 @@ public class MecHostController {
         return mecmHostServiceFacade.getAllMecmHosts(httpServletRequest.getHeader(Constant.ACCESS_TOKEN));
     }
 
+    /**
+     * transfer the health check request
+     *
+     * @param hostIp mec host ip
+     */
+    @ApiOperation(value = "health check of mec hosts", response = ResponseObject.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "health check of mec host success", response = String.class)
+    })
+    @GetMapping(value = "/mechosts/{hostIp}/health", produces = MediaType.APPLICATION_JSON)
+    public ResponseEntity<RspHealthCheck> healthCheck(
+        @ApiParam(value = "hostIp") @PathVariable("hostIp") String hostIp,
+        HttpServletRequest httpServletRequest) {
+        LOGGER.info("begin to execute mec host health check");
+        return mecmHostServiceFacade.healthCheck(hostIp, httpServletRequest.getHeader(Constant.ACCESS_TOKEN));
+    }
 }

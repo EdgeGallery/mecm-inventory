@@ -63,6 +63,8 @@ public final class Constant {
 
     public static final String APPO_SERVER_ADDRESS = "appoServerAddress";
 
+    public static final String HEALTH_CHECK_ADDRESS = "http://%s:32759";
+
     public static final int STATUS_ERROR = 1;
 
     public static final int STATUS_FINISHED = 0;
@@ -72,8 +74,6 @@ public final class Constant {
     public static final int STATUS_DISTRIBUTED = 3;
 
     public static final int STATUS_INSTANTIATING = 4;
-
-    //int STATUS_INSTANTIATED = 5
 
     public static final int STATUS_CREATED = 6;
 
