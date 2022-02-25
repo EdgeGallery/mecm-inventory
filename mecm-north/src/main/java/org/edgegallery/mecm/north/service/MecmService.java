@@ -24,17 +24,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.apache.http.util.EntityUtils;
 import org.edgegallery.mecm.north.domain.ResponseConst;
 import org.edgegallery.mecm.north.utils.InitConfigUtil;
 import org.edgegallery.mecm.north.utils.constant.Constant;
 import org.edgegallery.mecm.north.utils.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -46,6 +50,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -94,6 +99,8 @@ public class MecmService {
     private static final String APPO_GET_INSTANCE = "/appo/v1/tenants/%s/app_instance_infos/%s";
 
     private static final String VM = "vm";
+
+    private static final String HEALTH_CHECK = "/health-check/v1/edge/health";
 
     private static final RestTemplate restTemplate = new RestTemplate();
 
@@ -223,7 +230,7 @@ public class MecmService {
 
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
-                LOGGER.error("get package from apm reponse failed. The status code is {}", response.getStatusCode());
+                LOGGER.error("get package from apm response failed. The status code is {}", response.getStatusCode());
             }
 
             JsonObject jsonObject = new JsonParser().parse(response.getBody()).getAsJsonObject();
@@ -367,7 +374,7 @@ public class MecmService {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
             if (!HttpStatus.ACCEPTED.equals(response.getStatusCode())) {
-                LOGGER.error("instantiate application from appo reponse failed. The status code is {}",
+                LOGGER.error("instantiate application from appo response failed. The status code is {}",
                     response.getStatusCode());
                 return Constant.INSTANTIATE_ERROR_STATUS;
             }
@@ -400,7 +407,7 @@ public class MecmService {
             if (HttpStatus.OK.equals(response.getStatusCode())) {
                 return true;
             }
-            LOGGER.error("deleteEdgePkg reponse failed. The status code is {}", response.getStatusCode());
+            LOGGER.error("deleteEdgePkg response failed. The status code is {}", response.getStatusCode());
         } catch (RestClientException e) {
             LOGGER.error("deleteEdgePkg failed, exception {}", e.getMessage());
         }
@@ -427,9 +434,9 @@ public class MecmService {
             if (HttpStatus.OK.equals(response.getStatusCode())) {
                 return true;
             }
-            LOGGER.error("deleteApmPkg reponse failed. The status code is {}", response.getStatusCode());
+            LOGGER.error("deleteApmPkg response failed. The status code is {}", response.getStatusCode());
         } catch (RestClientException e) {
-            LOGGER.error("deleteApmPkg failed, aexception {}", e.getMessage());
+            LOGGER.error("deleteApmPkg failed, exception {}", e.getMessage());
         }
 
         return false;
@@ -456,7 +463,7 @@ public class MecmService {
                 response.getStatusCode())) {
                 return true;
             }
-            LOGGER.error("delete app instance from appo reponse failed. The status code is {}",
+            LOGGER.error("delete app instance from appo response failed. The status code is {}",
                 response.getStatusCode());
         } catch (RestClientException e) {
             LOGGER.error("delete app instance from appo failed, appInstanceId is {} exception {}", appInstanceId,
@@ -464,6 +471,38 @@ public class MecmService {
         }
 
         return false;
+    }
+
+    /**
+     * get health check result
+     *
+     * @param hostIp host ip
+     */
+    public String getHealthCheckResult(String hostIp) {
+        String url = String.format(Constant.HEALTH_CHECK_ADDRESS, hostIp).concat(HEALTH_CHECK);
+        LOGGER.info("the health check url is:{}", url);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            // success response code 200
+            if (HttpStatus.OK.equals(response.getStatusCode())) {
+                if (!response.getBody().equals("ok.")) {
+                    return "Unhealthy";
+                }
+                return "Healthy";
+            } else {
+                // Server Error
+                LOGGER.error("Mec host health check failed. Response code not 200. The response code is {}",
+                    response.getStatusCode());
+                return "Health Check Failed";
+            }
+        } catch (RestClientException e) {
+            // Invalid Ip Address
+            LOGGER.error("Mec host health check http request failed. The status code is {}", e.getMessage());
+            return "Http Request Failed";
+        }
     }
 
     /**

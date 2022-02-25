@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.edgegallery.mecm.north.controller.advice.ResponseObject;
+import org.edgegallery.mecm.north.controller.advice.RspHealthCheck;
 import org.edgegallery.mecm.north.domain.ResponseConst;
 import org.edgegallery.mecm.north.dto.MecmHostDto;
 import org.edgegallery.mecm.north.service.MecmService;
@@ -68,5 +69,24 @@ public class MecmHostServiceFacade {
         List<MecmHostDto> respDataDto = mecHostList.stream().map(MecmHostDto::fromMap).collect(Collectors.toList());
         ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
         return ResponseEntity.ok(new ResponseObject(respDataDto, resultMsg, "query mecm host success."));
+    }
+
+    /**
+     * get health check result
+     *
+     * @param hostIp host ip
+     * @return ResponseEntity
+     */
+    public ResponseEntity<RspHealthCheck> healthCheck(String hostIp, String token) {
+        OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(token);
+        if (accessToken == null || accessToken.isExpired()) {
+            LOGGER.error("Access token has expired.");
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+            ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
+            return ResponseEntity.ok(new RspHealthCheck(hostIp, "token invalid", resultMsg));
+        }
+        String res = mecmService.getHealthCheckResult(hostIp);
+        ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
+        return ResponseEntity.ok(new RspHealthCheck(hostIp, res, resultMsg));
     }
 }
