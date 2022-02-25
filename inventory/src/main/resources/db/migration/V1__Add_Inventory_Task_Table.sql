@@ -1,5 +1,5 @@
 
-    create table mepminventory (
+    create table if not exists mepminventory (
         mepm_id varchar(255) not null,
         mepm_name varchar(255) not null,
         mepm_ip varchar(255) not null,
@@ -8,10 +8,7 @@
         primary key (mepm_id)
     );
 
-    Drop table if exists applcminventory;
-    Drop table if exists apprulemanagerinventory;
-
-    create table appstoreinventory (
+    create table if not exists appstoreinventory (
         appstore_id varchar(255) not null,
         appstore_ip varchar(255) not null,
         appstore_port varchar(255) not null,
@@ -26,7 +23,7 @@
         primary key (appstore_id)
     );
 
-    create table apprepoinventory (
+    create table if not exists apprepoinventory (
         repo_id varchar(255) not null,
         repo_name varchar(255),
         repo_endpoint varchar(255) not null,
@@ -35,8 +32,7 @@
         primary key (repo_id)
     );
 
-    Drop table if exists mechostinventory;
-    create table mechostinventory (
+    create table if not exists mechostinventory (
         mechost_id varchar(255) not null,
         mechost_ip varchar(255) not null,
         tenant_id varchar(255) not null,
@@ -58,7 +54,7 @@
         primary key (mechost_id)
     );
 
-    create table mechwcapabilityinventory (
+    create table if not exists mechwcapabilityinventory (
         capability_id varchar(255) not null,
         mechost_id varchar(255) not null,
         hw_type varchar(200),
@@ -72,7 +68,7 @@
         	  references mechostinventory(mechost_id)
     );
 
-    create table mecapplicationinventory (
+    create table if not exists mecapplicationinventory (
         appinstance_id varchar(255) not null,
         mechost_id varchar(255) not null,
         tenant_id varchar(255) not null,
@@ -86,7 +82,7 @@
         	  references mechostinventory(mechost_id)
     );
 
-    create table tenantinventory (
+    create table if not exists tenantinventory (
         tenant_id  varchar(255) not null,
         mepm_count int,
         appstore_count int,
@@ -101,7 +97,7 @@
         primary key (tenant_id)
     );
 
-    create table tunnelinfoinventory (
+    create table if not exists tunnelinfoinventory (
         tunnel_info_id varchar(255) not null,
         tunnel_type varchar(255) not null,
         tunnel_dst_address varchar(255) not null,
@@ -111,7 +107,7 @@
         primary key (tunnel_info_id)
     );
 
-    create table appdruleinventory (
+    create table if not exists appdruleinventory (
         tenant_id varchar(255) not null,
         app_instance_id varchar(255) not null,
         appd_rule_id varchar(255) not null,
@@ -121,7 +117,7 @@
         primary key (appd_rule_id)
     );
 
-    create table appdnsruleinventory (
+    create table if not exists appdnsruleinventory (
         dns_rule_id varchar(255) not null,
         app_instance_id varchar(255) not null,
         domain_name  varchar(255) not null,
@@ -137,7 +133,7 @@
             on delete cascade
     );
 
-    create table apptrafficruleinventory (
+    create table if not exists apptrafficruleinventory (
         traffic_rule_id varchar(255) not null,
         app_instance_id varchar(255) not null,
         filter_type  varchar(255) not null,
@@ -152,7 +148,7 @@
             on delete cascade
     );
 
-    create table trafficfilterinventory (
+    create table if not exists trafficfilterinventory (
         traffic_filter_id varchar(255) not null,
         traffic_rule_id varchar(255) not null,
         src_address varchar(255) array,
@@ -176,7 +172,7 @@
             on delete cascade
     );
 
-    create table trafficfiltersrcaddressinventory (
+    create table if not exists trafficfiltersrcaddressinventory (
         traffic_filter_id varchar(255) not null,
         src_address varchar(255) not null,
         constraint fk_appd_trafficfilter_srcaddress
@@ -185,7 +181,7 @@
             on delete cascade
     );
 
-    create table trafficfilterdstaddressinventory (
+    create table if not exists trafficfilterdstaddressinventory (
         traffic_filter_id varchar(255) not null,
         dst_address varchar(255) not null,
         constraint fk_appd_trafficfilter_dstaddress
@@ -194,7 +190,7 @@
             on delete cascade
     );
 
-    create table trafficfiltersrcportinventory (
+    create table if not exists trafficfiltersrcportinventory (
         traffic_filter_id varchar(255) not null,
         src_port varchar(255) not null,
         constraint fk_appd_trafficfilter_srcport
@@ -203,7 +199,7 @@
             on delete cascade
     );
 
-    create table trafficfilterdstportinventory (
+    create table if not exists trafficfilterdstportinventory (
         traffic_filter_id varchar(255) not null,
         dst_port varchar(255) not null,
         constraint fk_appd_trafficfilter_dstport
@@ -212,7 +208,7 @@
             on delete cascade
     );
 
-    create table trafficfilterprotocolinventory (
+    create table if not exists trafficfilterprotocolinventory (
         traffic_filter_id varchar(255) not null,
         protocol varchar(255) not null,
         constraint fk_appd_trafficfilter_protocol
@@ -221,7 +217,7 @@
             on delete cascade
     );
 
-    create table trafficfiltertaginventory (
+    create table if not exists trafficfiltertaginventory (
         traffic_filter_id varchar(255) not null,
         tag varchar(255) not null,
         constraint fk_appd_trafficfilter_tag
@@ -230,7 +226,7 @@
             on delete cascade
     );
 
-    create table trafficfiltersrctunneladdressinventory (
+    create table if not exists trafficfiltersrctunneladdressinventory (
         traffic_filter_id varchar(255) not null,
         src_tunnel_address varchar(255) not null,
         constraint fk_appd_trafficfilter_srctunneladdress
@@ -239,7 +235,7 @@
             on delete cascade
     );
 
-    create table trafficfilterdsttunneladdressinventory (
+    create table if not exists trafficfilterdsttunneladdressinventory (
         traffic_filter_id varchar(255) not null,
         dst_tunnel_address varchar(255) not null,
         constraint fk_appd_trafficfilter_dsttunneladdress
@@ -248,7 +244,7 @@
             on delete cascade
     );
 
-    create table trafficfiltersrctunnelportinventory (
+    create table if not exists trafficfiltersrctunnelportinventory (
         traffic_filter_id varchar(255) not null,
         src_tunnel_port varchar(255) not null,
         constraint fk_appd_trafficfilter_srctunnelport
@@ -257,7 +253,7 @@
             on delete cascade
     );
 
-    create table trafficfilterdsttunnelportinventory (
+    create table if not exists trafficfilterdsttunnelportinventory (
         traffic_filter_id varchar(255) not null,
         dst_tunnel_port varchar(255) not null,
         constraint fk_appd_trafficfilter_dsttunnelport
@@ -266,7 +262,7 @@
             on delete cascade
     );
 
-    create table dstinterfaceinventory (
+    create table if not exists dstinterfaceinventory (
         dst_interface_id varchar(255) not null,
         traffic_rule_id varchar(255) not null,
         interface_type varchar(255) not null,
