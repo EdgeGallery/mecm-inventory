@@ -13,7 +13,7 @@
 servicecomb-config-order: 1
 APPLICATION_ID: edgegallery
 service_description:
-  name: mec-mecm-north
+  name: mecm-north
   version: 1.0.0
   environment: development
 servicecomb:
