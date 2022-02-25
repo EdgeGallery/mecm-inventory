@@ -318,7 +318,7 @@ public class MecmService {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
             if (!HttpStatus.OK.equals(response.getStatusCode())) {
-                LOGGER.error("get application instance from appo reponse failed. The status code is {}",
+                LOGGER.error("get application instance from appo response failed. The status code is {}",
                     response.getStatusCode());
                 return "";
             }
