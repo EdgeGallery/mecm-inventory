@@ -73,7 +73,7 @@ public class MecHostController {
     }
 
     /**
-     * transfer the health check request
+     * Transfer the health check request.
      *
      * @param hostIp mec host ip
      */
