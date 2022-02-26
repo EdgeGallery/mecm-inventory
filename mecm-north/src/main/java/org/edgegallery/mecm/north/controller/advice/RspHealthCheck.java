@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.edgegallery.mecm.north.controller.advice;
 
 import java.util.List;
