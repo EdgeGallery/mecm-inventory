@@ -72,7 +72,7 @@ public class MecmHostServiceFacade {
     }
 
     /**
-     * get health check result
+     * Get health check result.
      *
      * @param hostIp host ip
      * @return ResponseEntity

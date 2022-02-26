@@ -474,7 +474,7 @@ public class MecmService {
     }
 
     /**
-     * get health check result
+     * Get health check result.
      *
      * @param hostIp host ip
      */
