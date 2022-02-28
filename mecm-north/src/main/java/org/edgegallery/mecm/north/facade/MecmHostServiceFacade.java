@@ -78,13 +78,6 @@ public class MecmHostServiceFacade {
      * @return ResponseEntity
      */
     public ResponseEntity<RspHealthCheck> healthCheck(String hostIp, String token) {
-        OAuth2AccessToken accessToken = jwtTokenStore.readAccessToken(token);
-        if (accessToken == null || accessToken.isExpired()) {
-            LOGGER.error("Access token has expired.");
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED);
-            ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
-            return ResponseEntity.ok(new RspHealthCheck(hostIp, "token invalid", resultMsg));
-        }
         String res = mecmService.getHealthCheckResult(hostIp);
         ErrorMessage resultMsg = new ErrorMessage(ResponseConst.RET_SUCCESS, null);
         return ResponseEntity.ok(new RspHealthCheck(hostIp, res, resultMsg));
