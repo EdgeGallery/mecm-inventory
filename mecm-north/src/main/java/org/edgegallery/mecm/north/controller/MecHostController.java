@@ -82,6 +82,7 @@ public class MecHostController {
         @ApiResponse(code = 200, message = "health check of mec host success", response = String.class)
     })
     @GetMapping(value = "/mechosts/{hostIp}/health", produces = MediaType.APPLICATION_JSON)
+    @PreAuthorize("hasRole('APPSTORE_TENANT') || hasRole('APPSTORE_ADMIN')")
     public ResponseEntity<RspHealthCheck> healthCheck(
         @ApiParam(value = "hostIp") @PathVariable("hostIp") String hostIp,
         HttpServletRequest httpServletRequest) {

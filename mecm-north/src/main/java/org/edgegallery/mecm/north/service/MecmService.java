@@ -201,7 +201,6 @@ public class MecmService {
                 throw new AppException("Failed to get mechosts from mecm inventory.",
                     ResponseConst.RET_GET_MECMHOST_FAILED);
             }
-
             return new Gson().fromJson(response.getBody(), List.class);
         } catch (RestClientException e) {
             LOGGER.error("Failed to get mechosts, RestClientException is {}", e.getMessage());
